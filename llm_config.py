@@ -1,6 +1,7 @@
+%%writefile MechCare-AI/llm_config.py
 
 from crewai.llms.base_llm import BaseLLM
-from google.colab import userdata
+import os
 import litellm
 
 
@@ -13,7 +14,11 @@ class GroqLiteLLM(BaseLLM):
             max_tokens=800
         )
 
-        self.api_key = userdata.get("GROQ_API_KEY")
+        self.api_key = os.getenv("GROQ_API_KEY")
+
+        if not self.api_key:
+            raise ValueError("GROQ_API_KEY is not set.")
+
 
     def call(
         self,
