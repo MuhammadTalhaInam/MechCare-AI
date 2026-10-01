@@ -1,5 +1,6 @@
 import streamlit as st
 import asyncio
+import re
 
 from crew import run_mechcare
 
@@ -34,7 +35,9 @@ st.markdown("""
 }
 
 
-/* HERO */
+/* =========================================================
+   HERO
+   ========================================================= */
 
 .hero-box {
     background: linear-gradient(135deg, #111827, #0F2A43);
@@ -63,7 +66,9 @@ st.markdown("""
 }
 
 
-/* SECTION */
+/* =========================================================
+   SECTION
+   ========================================================= */
 
 .section-box {
     background-color: #111827;
@@ -85,7 +90,9 @@ st.markdown("""
 }
 
 
-/* INPUTS */
+/* =========================================================
+   INPUTS
+   ========================================================= */
 
 label {
     color: #CBD5E1 !important;
@@ -110,7 +117,9 @@ textarea::placeholder {
 }
 
 
-/* SELECT */
+/* =========================================================
+   SELECT
+   ========================================================= */
 
 div[data-baseweb="select"] > div {
     background-color: #111827 !important;
@@ -119,7 +128,9 @@ div[data-baseweb="select"] > div {
 }
 
 
-/* BUTTON */
+/* =========================================================
+   BUTTON
+   ========================================================= */
 
 .stButton > button {
     width: 100%;
@@ -138,7 +149,9 @@ div[data-baseweb="select"] > div {
 }
 
 
-/* REPORT */
+/* =========================================================
+   REPORT
+   ========================================================= */
 
 .report-box {
     background-color: #111827;
@@ -157,7 +170,9 @@ div[data-baseweb="select"] > div {
 }
 
 
-/* FOOTER */
+/* =========================================================
+   FOOTER
+   ========================================================= */
 
 .footer {
     text-align: center;
@@ -169,7 +184,9 @@ div[data-baseweb="select"] > div {
 }
 
 
-/* WORKFLOW CARDS */
+/* =========================================================
+   WORKFLOW
+   ========================================================= */
 
 .workflow-card {
     background-color: #111827;
@@ -200,6 +217,145 @@ div[data-baseweb="select"] > div {
     font-size: 25px;
     text-align: center;
     padding-top: 45px;
+}
+
+
+/* =========================================================
+   OUTPUT DASHBOARD
+   ========================================================= */
+
+.dashboard-card {
+    background: linear-gradient(135deg, #111827, #16263A);
+    border: 1px solid #1E5B83;
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 125px;
+    margin-bottom: 15px;
+}
+
+.dashboard-icon {
+    font-size: 30px;
+}
+
+.dashboard-label {
+    color: #94A3B8;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.dashboard-value {
+    color: #F8FAFC;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   PRIORITY
+   ========================================================= */
+
+.priority-high {
+    background: linear-gradient(135deg, #3B1118, #58151C);
+    border: 1px solid #991B1B;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 25px;
+}
+
+.priority-medium {
+    background: linear-gradient(135deg, #3B2A0B, #4A3410);
+    border: 1px solid #A16207;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 25px;
+}
+
+.priority-low {
+    background: linear-gradient(135deg, #0B3024, #0F3D2E);
+    border: 1px solid #15803D;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 25px;
+}
+
+.priority-title {
+    color: #F8FAFC;
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.priority-description {
+    color: #CBD5E1;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   INDICATOR CARDS
+   ========================================================= */
+
+.indicator-alert {
+    background-color: #3B1118;
+    border: 1px solid #991B1B;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+}
+
+.indicator-warning {
+    background-color: #3B2A0B;
+    border: 1px solid #A16207;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+}
+
+.indicator-normal {
+    background-color: #0B3024;
+    border: 1px solid #15803D;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+}
+
+.indicator-unknown {
+    background-color: #111827;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+}
+
+.indicator-icon {
+    font-size: 28px;
+}
+
+.indicator-name {
+    color: #F8FAFC;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+.indicator-status {
+    color: #CBD5E1;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+
+/* =========================================================
+   SAFETY NOTICE
+   ========================================================= */
+
+.safety-notice {
+    background-color: #172033;
+    border-left: 5px solid #38BDF8;
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 25px;
+    color: #CBD5E1;
 }
 
 </style>
@@ -260,7 +416,9 @@ st.caption(
     "Your machine problem passes through multiple specialized AI agents."
 )
 
-workflow = st.columns([1, 0.15, 1, 0.15, 1, 0.15, 1, 0.15, 1])
+workflow = st.columns(
+    [1, 0.15, 1, 0.15, 1, 0.15, 1, 0.15, 1]
+)
 
 
 with workflow[0]:
@@ -536,6 +694,414 @@ Additional Observations:
             "✅ Analysis completed successfully!"
         )
 
+
+        # =================================================
+        # OUTPUT DASHBOARD
+        # =================================================
+
+        st.markdown(
+            "## 📊 Machine Health Overview"
+        )
+
+        st.caption(
+            "Visual indicators are based on the information provided "
+            "by the user and the AI-generated maintenance report."
+        )
+
+
+        # =================================================
+        # PRIORITY DETECTION
+        # =================================================
+
+        result_text = str(final_result)
+
+        priority_match = re.search(
+            r"priority\s*[:\-]\s*(high|medium|low)",
+            result_text,
+            re.IGNORECASE
+        )
+
+        if priority_match:
+            priority = priority_match.group(1).upper()
+        else:
+            priority = "REVIEW"
+
+
+        if priority == "HIGH":
+
+            st.markdown(
+                """
+                <div class="priority-high">
+                    <div class="priority-title">
+                        🔴 HIGH PRIORITY
+                    </div>
+                    <div class="priority-description">
+                        Immediate inspection and appropriate maintenance
+                        attention are recommended.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        elif priority == "MEDIUM":
+
+            st.markdown(
+                """
+                <div class="priority-medium">
+                    <div class="priority-title">
+                        🟡 MEDIUM PRIORITY
+                    </div>
+                    <div class="priority-description">
+                        The machine should be inspected and monitored
+                        according to the maintenance recommendations.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        elif priority == "LOW":
+
+            st.markdown(
+                """
+                <div class="priority-low">
+                    <div class="priority-title">
+                        🟢 LOW PRIORITY
+                    </div>
+                    <div class="priority-description">
+                        Continue monitoring the machine and follow
+                        the recommended preventive maintenance.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        else:
+
+            st.markdown(
+                """
+                <div class="priority-medium">
+                    <div class="priority-title">
+                        🟡 PRIORITY: REVIEW
+                    </div>
+                    <div class="priority-description">
+                        Review the AI-generated report and confirm the
+                        machine condition through appropriate inspection.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+        # =================================================
+        # DETECTED PROBLEM INDICATORS
+        # =================================================
+
+        st.markdown(
+            "### 🔍 Detected Problem Indicators"
+        )
+
+        combined_input = (
+            problem_description
+            + " "
+            + operating_condition
+            + " "
+            + additional_observations
+        ).lower()
+
+
+        def indicator_status(keywords):
+
+            for word in keywords:
+                if word in combined_input:
+                    return True
+
+            return False
+
+
+        vibration_detected = indicator_status(
+            [
+                "vibration",
+                "vibrating",
+                "shaking",
+                "oscillation"
+            ]
+        )
+
+        noise_detected = indicator_status(
+            [
+                "noise",
+                "noisy",
+                "grinding",
+                "rattling",
+                "humming",
+                "sound"
+            ]
+        )
+
+        temperature_detected = indicator_status(
+            [
+                "hot",
+                "heating",
+                "heated",
+                "temperature",
+                "overheating",
+                "hotter"
+            ]
+        )
+
+        performance_detected = indicator_status(
+            [
+                "reduced",
+                "reduction",
+                "slow",
+                "low output",
+                "low flow",
+                "decreased",
+                "decrease",
+                "performance",
+                "pressure"
+            ]
+        )
+
+
+        indicators = st.columns(4)
+
+
+        with indicators[0]:
+
+            if vibration_detected:
+
+                st.markdown(
+                    """
+                    <div class="indicator-warning">
+                        <div class="indicator-icon">📳</div>
+                        <div class="indicator-name">
+                            Vibration
+                        </div>
+                        <div class="indicator-status">
+                            Detected in input
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            else:
+
+                st.markdown(
+                    """
+                    <div class="indicator-unknown">
+                        <div class="indicator-icon">📳</div>
+                        <div class="indicator-name">
+                            Vibration
+                        </div>
+                        <div class="indicator-status">
+                            Not reported
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+        with indicators[1]:
+
+            if noise_detected:
+
+                st.markdown(
+                    """
+                    <div class="indicator-alert">
+                        <div class="indicator-icon">🔊</div>
+                        <div class="indicator-name">
+                            Noise
+                        </div>
+                        <div class="indicator-status">
+                            Abnormal noise reported
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            else:
+
+                st.markdown(
+                    """
+                    <div class="indicator-unknown">
+                        <div class="indicator-icon">🔊</div>
+                        <div class="indicator-name">
+                            Noise
+                        </div>
+                        <div class="indicator-status">
+                            Not reported
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+        with indicators[2]:
+
+            if temperature_detected:
+
+                st.markdown(
+                    """
+                    <div class="indicator-alert">
+                        <div class="indicator-icon">🌡️</div>
+                        <div class="indicator-name">
+                            Temperature
+                        </div>
+                        <div class="indicator-status">
+                            Heating reported
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            else:
+
+                st.markdown(
+                    """
+                    <div class="indicator-unknown">
+                        <div class="indicator-icon">🌡️</div>
+                        <div class="indicator-name">
+                            Temperature
+                        </div>
+                        <div class="indicator-status">
+                            Not reported
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+        with indicators[3]:
+
+            if performance_detected:
+
+                st.markdown(
+                    """
+                    <div class="indicator-warning">
+                        <div class="indicator-icon">📉</div>
+                        <div class="indicator-name">
+                            Performance
+                        </div>
+                        <div class="indicator-status">
+                            Reduced performance
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            else:
+
+                st.markdown(
+                    """
+                    <div class="indicator-normal">
+                        <div class="indicator-icon">⚙️</div>
+                        <div class="indicator-name">
+                            Performance
+                        </div>
+                        <div class="indicator-status">
+                            No reduction reported
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+        # =================================================
+        # MACHINE SUMMARY
+        # =================================================
+
+        st.write("")
+
+        st.markdown(
+            "### ⚙️ Machine Summary"
+        )
+
+        summary = st.columns(3)
+
+
+        with summary[0]:
+
+            st.markdown(
+                f"""
+                <div class="dashboard-card">
+                    <div class="dashboard-icon">⚙️</div>
+                    <div class="dashboard-label">
+                        Machine Type
+                    </div>
+                    <div class="dashboard-value">
+                        {machine_type}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+        with summary[1]:
+
+            age_value = (
+                machine_age
+                if machine_age.strip()
+                else "Not provided"
+            )
+
+            st.markdown(
+                f"""
+                <div class="dashboard-card">
+                    <div class="dashboard-icon">📅</div>
+                    <div class="dashboard-label">
+                        Machine Age
+                    </div>
+                    <div class="dashboard-value">
+                        {age_value}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+        with summary[2]:
+
+            maintenance_value = (
+                last_maintenance
+                if last_maintenance.strip()
+                else "Not provided"
+            )
+
+            st.markdown(
+                f"""
+                <div class="dashboard-card">
+                    <div class="dashboard-icon">🛠️</div>
+                    <div class="dashboard-label">
+                        Last Maintenance
+                    </div>
+                    <div class="dashboard-value">
+                        {maintenance_value}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+        # =================================================
+        # FINAL AI REPORT
+        # =================================================
+
         st.markdown(
             '<div class="report-box">',
             unsafe_allow_html=True
@@ -551,6 +1117,25 @@ Additional Observations:
 
         st.markdown(
             '</div>',
+            unsafe_allow_html=True
+        )
+
+
+        # =================================================
+        # SAFETY NOTICE
+        # =================================================
+
+        st.markdown(
+            """
+            <div class="safety-notice">
+                <strong>🛡️ Safety Notice</strong><br>
+                This AI-generated report is intended as engineering
+                decision-support information. Equipment should be isolated
+                and appropriate safety procedures should be followed before
+                inspection or maintenance. Final decisions should be verified
+                by a qualified engineer or technician.
+            </div>
+            """,
             unsafe_allow_html=True
         )
 
