@@ -1,5 +1,3 @@
-%%writefile MechCare-AI/llm_config.py
-
 from crewai.llms.base_llm import BaseLLM
 import os
 import litellm
@@ -18,7 +16,6 @@ class GroqLiteLLM(BaseLLM):
 
         if not self.api_key:
             raise ValueError("GROQ_API_KEY is not set.")
-
 
     def call(
         self,
