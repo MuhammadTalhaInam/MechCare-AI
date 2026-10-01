@@ -30,9 +30,20 @@ class GroqLiteLLM(BaseLLM):
         **kwargs
     ):
 
+        # Remove CrewAI's unsupported cache_breakpoint
+        clean_messages = []
+
+        for message in messages:
+            clean_message = dict(message)
+
+            if "cache_breakpoint" in clean_message:
+                del clean_message["cache_breakpoint"]
+
+            clean_messages.append(clean_message)
+
         response = self.client.chat.completions.create(
             model="openai/gpt-oss-20b",
-            messages=messages
+            messages=clean_messages
         )
 
         return response.choices[0].message.content
