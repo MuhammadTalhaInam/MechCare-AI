@@ -221,6 +221,102 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# =========================================================
+# AI WORKFLOW
+# =========================================================
+
+st.markdown("## 🤖 How MechCare AI Works")
+
+st.markdown(
+    """
+    <div style="
+        background: linear-gradient(135deg, #111827, #0F2A43);
+        border: 1px solid #1E5B83;
+        border-radius: 18px;
+        padding: 25px;
+        margin-bottom: 30px;
+    ">
+
+        <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        ">
+
+            <div style="flex: 1;">
+                <div style="font-size: 35px;">👤</div>
+                <div style="color: #F8FAFC; font-weight: 700;">
+                    User Problem
+                </div>
+                <div style="color: #94A3B8; font-size: 13px;">
+                    Machine symptoms
+                </div>
+            </div>
+
+            <div style="color: #38BDF8; font-size: 25px;">
+                →
+            </div>
+
+            <div style="flex: 1;">
+                <div style="font-size: 35px;">🔍</div>
+                <div style="color: #F8FAFC; font-weight: 700;">
+                    Problem Analysis
+                </div>
+                <div style="color: #94A3B8; font-size: 13px;">
+                    Understand symptoms
+                </div>
+            </div>
+
+            <div style="color: #38BDF8; font-size: 25px;">
+                →
+            </div>
+
+            <div style="flex: 1;">
+                <div style="font-size: 35px;">🧠</div>
+                <div style="color: #F8FAFC; font-weight: 700;">
+                    Fault Diagnosis
+                </div>
+                <div style="color: #94A3B8; font-size: 13px;">
+                    Find possible causes
+                </div>
+            </div>
+
+            <div style="color: #38BDF8; font-size: 25px;">
+                →
+            </div>
+
+            <div style="flex: 1;">
+                <div style="font-size: 35px;">🛠️</div>
+                <div style="color: #F8FAFC; font-weight: 700;">
+                    Maintenance
+                </div>
+                <div style="color: #94A3B8; font-size: 13px;">
+                    Plan corrective actions
+                </div>
+            </div>
+
+            <div style="color: #38BDF8; font-size: 25px;">
+                →
+            </div>
+
+            <div style="flex: 1;">
+                <div style="font-size: 35px;">🛡️</div>
+                <div style="color: #F8FAFC; font-weight: 700;">
+                    Safety & Report
+                </div>
+                <div style="color: #94A3B8; font-size: 13px;">
+                    Generate final report
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # =========================================================
 # MACHINE INFORMATION
