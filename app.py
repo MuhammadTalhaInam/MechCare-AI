@@ -16,15 +16,11 @@ st.set_page_config(
 
 
 # =========================================================
-# CUSTOM UI STYLING
+# CUSTOM CSS
 # =========================================================
 
 st.markdown("""
 <style>
-
-/* =====================================================
-   MAIN APP
-   ===================================================== */
 
 .stApp {
     background-color: #0B1220;
@@ -38,28 +34,61 @@ st.markdown("""
 }
 
 
-/* =====================================================
-   TEXT
-   ===================================================== */
+/* Main title */
 
-h1 {
-    color: #38BDF8 !important;
-    font-size: 42px !important;
-    font-weight: 800 !important;
+.main-title {
+    font-size: 44px;
+    font-weight: 800;
+    color: #38BDF8;
 }
 
-h2 {
-    color: #E0F2FE !important;
-    font-weight: 700 !important;
+.main-subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: #7DD3FC;
 }
 
-h3 {
-    color: #7DD3FC !important;
+.main-description {
+    font-size: 16px;
+    color: #CBD5E1;
 }
 
-p {
-    color: #CBD5E1 !important;
+
+/* Hero box */
+
+.hero-box {
+    background: linear-gradient(135deg, #111827, #0F2A43);
+    border: 1px solid #164E63;
+    border-radius: 22px;
+    padding: 35px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.25);
 }
+
+
+/* Section */
+
+.section-box {
+    background-color: #111827;
+    border: 1px solid #1E3A5F;
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 25px;
+    font-weight: 700;
+    color: #E0F2FE;
+}
+
+.section-description {
+    font-size: 14px;
+    color: #94A3B8;
+}
+
+
+/* Input labels */
 
 label {
     color: #CBD5E1 !important;
@@ -67,262 +96,81 @@ label {
 }
 
 
-/* =====================================================
-   HERO SECTION
-   ===================================================== */
-
-.hero-section {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    padding: 35px;
-    margin-bottom: 35px;
-    border-radius: 22px;
-
-    background: linear-gradient(
-        135deg,
-        #111827,
-        #0F2A43
-    );
-
-    border: 1px solid #164E63;
-
-    box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.25);
-}
-
-.hero-icon {
-    width: 85px;
-    height: 85px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 20px;
-
-    background: linear-gradient(
-        135deg,
-        #0284C7,
-        #06B6D4
-    );
-
-    font-size: 45px;
-
-    box-shadow:
-        0 8px 25px rgba(6, 182, 212, 0.25);
-}
-
-.hero-title {
-    font-size: 42px;
-    font-weight: 800;
-    color: #F8FAFC;
-    margin-bottom: 5px;
-}
-
-.hero-subtitle {
-    font-size: 20px;
-    font-weight: 600;
-    color: #38BDF8;
-    margin-bottom: 10px;
-}
-
-.hero-description {
-    font-size: 16px;
-    color: #CBD5E1;
-    line-height: 1.6;
-}
-
-
-/* =====================================================
-   SECTION CARDS
-   ===================================================== */
-
-.section-card {
-    background: #111827;
-    border: 1px solid #1E3A5F;
-    border-radius: 18px;
-    padding: 25px;
-    margin-bottom: 25px;
-
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.18);
-}
-
-.section-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #E0F2FE;
-    margin-bottom: 5px;
-}
-
-.section-description {
-    font-size: 14px;
-    color: #94A3B8;
-    margin-bottom: 15px;
-}
-
-
-/* =====================================================
-   INPUT BOXES
-   ===================================================== */
+/* Input fields */
 
 div[data-baseweb="input"] > div,
 div[data-baseweb="textarea"] > div {
-
     background-color: #111827 !important;
-
     border: 1px solid #334155 !important;
-
     border-radius: 10px !important;
 }
 
 input,
 textarea {
-
     color: #F8FAFC !important;
-
-    caret-color: #38BDF8 !important;
 }
 
-textarea::placeholder,
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
     color: #64748B !important;
 }
 
 
-/* =====================================================
-   SELECT BOX
-   ===================================================== */
+/* Select box */
 
 div[data-baseweb="select"] > div {
-
     background-color: #111827 !important;
-
     border: 1px solid #334155 !important;
-
     border-radius: 10px !important;
-
-    color: #F8FAFC !important;
 }
 
 
-/* =====================================================
-   ANALYZE BUTTON
-   ===================================================== */
+/* Analyze button */
 
 .stButton > button {
-
     width: 100%;
-
-    background: linear-gradient(
-        90deg,
-        #0284C7,
-        #06B6D4
-    );
-
+    background: linear-gradient(90deg, #0284C7, #06B6D4);
     color: white !important;
-
     border: none;
-
     border-radius: 10px;
-
-    padding: 0.7rem 1rem;
-
+    padding: 12px;
     font-size: 18px;
-
     font-weight: 700;
-
-    transition: 0.2s;
 }
 
 .stButton > button:hover {
-
+    box-shadow: 0 8px 25px rgba(6,182,212,0.30);
     transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 20px rgba(6, 182, 212, 0.25);
 }
 
 
-/* =====================================================
-   REPORT CARD
-   ===================================================== */
+/* Report */
 
-.report-card {
-
-    background: #111827;
-
+.report-box {
+    background-color: #111827;
     border: 1px solid #1E5B83;
-
     border-radius: 18px;
-
     padding: 30px;
-
-    margin-top: 20px;
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.22);
-}
-
-
-/* =====================================================
-   REPORT HEADINGS
-   ===================================================== */
-
-.report-card h2 {
-
-    color: #38BDF8 !important;
-
-    border-bottom: 1px solid #334155;
-
-    padding-bottom: 8px;
-
     margin-top: 25px;
 }
 
-.report-card h3 {
+.report-box h2 {
+    color: #38BDF8 !important;
+}
 
+.report-box h3 {
     color: #7DD3FC !important;
 }
 
 
-/* =====================================================
-   SUCCESS / WARNING
-   ===================================================== */
-
-div[data-testid="stAlert"] {
-
-    border-radius: 10px;
-}
-
-
-/* =====================================================
-   DIVIDER
-   ===================================================== */
-
-hr {
-
-    border-color: #1E3A5F !important;
-}
-
-
-/* =====================================================
-   FOOTER
-   ===================================================== */
+/* Footer */
 
 .footer {
-
     text-align: center;
-
     color: #64748B;
-
     font-size: 13px;
-
     margin-top: 40px;
-
     padding-top: 20px;
-
     border-top: 1px solid #1E293B;
 }
 
@@ -331,63 +179,82 @@ hr {
 
 
 # =========================================================
-# HERO HEADER
+# HERO SECTION
 # =========================================================
 
-st.markdown("""
-<div class="hero-section">
+st.markdown(
+    '<div class="hero-box">',
+    unsafe_allow_html=True
+)
 
-    <div class="hero-icon">
-        ⚙️
-    </div>
+col1, col2 = st.columns([1, 8])
 
-    <div>
+with col1:
+    st.markdown(
+        "<div style='font-size:55px;'>⚙️</div>",
+        unsafe_allow_html=True
+    )
 
-        <div class="hero-title">
-            MechCare AI
-        </div>
+with col2:
+    st.markdown(
+        '<div class="main-title">MechCare AI</div>',
+        unsafe_allow_html=True
+    )
 
-        <div class="hero-subtitle">
-            Multi-Agent Machine Maintenance & Troubleshooting Assistant
-        </div>
+    st.markdown(
+        '<div class="main-subtitle">'
+        'Multi-Agent Machine Maintenance & Troubleshooting Assistant'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
-        <div class="hero-description">
-            Analyze machine problems, identify possible causes,
-            and generate clear maintenance guidance using AI.
-        </div>
+    st.markdown(
+        '<div class="main-description">'
+        'Analyze machine problems, identify possible causes, '
+        'and generate clear maintenance guidance using AI.'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
-    </div>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-# =========================================================
-# MACHINE INFORMATION SECTION
-# =========================================================
-
-st.markdown("""
-<div class="section-card">
-
-    <div class="section-title">
-        🔧 Machine Information
-    </div>
-
-    <div class="section-description">
-        Enter the available machine information and describe the problem.
-        MechCare AI will analyze the information using multiple AI agents.
-    </div>
-
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
-# MACHINE TYPE + MACHINE AGE
+# MACHINE INFORMATION
+# =========================================================
+
+st.markdown(
+    '<div class="section-box">',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="section-title">🔧 Machine Information</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="section-description">'
+    'Enter the available machine information and describe the problem. '
+    'MechCare AI will analyze the information using multiple AI agents.'
+    '</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# MACHINE TYPE AND AGE
 # =========================================================
 
 col1, col2 = st.columns(2)
-
 
 with col1:
 
@@ -429,13 +296,12 @@ problem_description = st.text_area(
 
 
 # =========================================================
-# OPERATING CONDITION + LAST MAINTENANCE
+# OPERATING CONDITION AND MAINTENANCE
 # =========================================================
 
-col3, col4 = st.columns(2)
+col1, col2 = st.columns(2)
 
-
-with col3:
+with col1:
 
     operating_condition = st.text_area(
         "🔄 Operating Condition",
@@ -447,7 +313,7 @@ with col3:
     )
 
 
-with col4:
+with col2:
 
     last_maintenance = st.text_input(
         "🛠️ Last Maintenance",
@@ -461,9 +327,7 @@ with col4:
 
 additional_observations = st.text_area(
     "🔍 Additional Observations",
-    placeholder=(
-        "Add any other observations or unusual behavior."
-    ),
+    placeholder="Add any other observations or unusual behavior.",
     height=110
 )
 
@@ -481,7 +345,7 @@ analyze_button = st.button(
 
 
 # =========================================================
-# RUN MECHCARE AI
+# AI ANALYSIS
 # =========================================================
 
 if analyze_button:
@@ -493,10 +357,6 @@ if analyze_button:
         )
 
     else:
-
-        # ---------------------------------------------
-        # Prepare machine information
-        # ---------------------------------------------
 
         machine_problem = f"""
 Machine Type: {machine_type}
@@ -517,11 +377,6 @@ Additional Observations:
 {additional_observations}
 """
 
-
-        # ---------------------------------------------
-        # Run Multi-Agent System
-        # ---------------------------------------------
-
         with st.spinner(
             "🤖 MechCare AI is analyzing the machine..."
         ):
@@ -530,34 +385,24 @@ Additional Observations:
                 run_mechcare(machine_problem)
             )
 
-
-        # ---------------------------------------------
-        # Success message
-        # ---------------------------------------------
-
         st.success(
             "✅ Analysis completed successfully!"
         )
 
-
-        # ---------------------------------------------
-        # Final Report
-        # ---------------------------------------------
-
-        st.markdown("""
-        <div class="report-card">
-        """, unsafe_allow_html=True)
+        # Report container
+        st.markdown(
+            '<div class="report-box">',
+            unsafe_allow_html=True
+        )
 
         st.markdown(
             "## 📋 Final Maintenance Report"
         )
 
-        st.markdown(
-            final_result
-        )
+        st.markdown(final_result)
 
         st.markdown(
-            "</div>",
+            '</div>',
             unsafe_allow_html=True
         )
 
@@ -566,16 +411,12 @@ Additional Observations:
 # FOOTER
 # =========================================================
 
-st.markdown("""
-<div class="footer">
-
-    ⚙️ MechCare AI &nbsp;|&nbsp;
-    Multi-Agent Machine Maintenance Assistant
-
-    <br>
-
-    AI-generated guidance should be verified by a qualified
-    engineer or technician before performing maintenance.
-
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    '<div class="footer">'
+    '⚙️ MechCare AI | Multi-Agent Machine Maintenance Assistant'
+    '<br>'
+    'AI-generated guidance should be verified by a qualified '
+    'engineer or technician before performing maintenance.'
+    '</div>',
+    unsafe_allow_html=True
+)
