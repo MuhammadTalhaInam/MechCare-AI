@@ -117,6 +117,17 @@ Additional Observations:
 
         st.success("Analysis completed!")
 
-        st.header("📋 Final Maintenance Report")
+st.header("📋 Final Maintenance Report")
 
-        st.markdown(final_result)
+st.markdown(
+    """
+    <style>
+    .stMarkdown {
+        font-size: 20px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(final_result)
