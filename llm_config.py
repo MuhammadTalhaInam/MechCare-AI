@@ -8,7 +8,7 @@ class GroqLiteLLM(BaseLLM):
     def __init__(self):
         super().__init__(
             model="groq/openai/gpt-oss-20b",
-            temperature=0.2,
+            temperature=0.6,
             max_tokens=800
         )
 
@@ -32,8 +32,10 @@ class GroqLiteLLM(BaseLLM):
             model=self.model,
             messages=messages,
             api_key=self.api_key,
-            temperature=self.temperature,
-            max_tokens=self.max_tokens
+            temperature=0.6,
+            max_completion_tokens=800,
+            reasoning_effort="low",
+            include_reasoning=False
         )
 
         return response.choices[0].message.content
