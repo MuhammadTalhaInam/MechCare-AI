@@ -1,13 +1,13 @@
 from crewai.llms.base_llm import BaseLLM
 import os
-import litellm
+from groq import Groq
 
 
 class GroqLiteLLM(BaseLLM):
 
     def __init__(self):
         super().__init__(
-            model="groq/openai/gpt-oss-20b",
+            model="openai/gpt-oss-20b",
             temperature=0.6,
             max_tokens=800
         )
@@ -16,6 +16,8 @@ class GroqLiteLLM(BaseLLM):
 
         if not self.api_key:
             raise ValueError("GROQ_API_KEY is not set.")
+
+        self.client = Groq(api_key=self.api_key)
 
     def call(
         self,
@@ -28,13 +30,11 @@ class GroqLiteLLM(BaseLLM):
         **kwargs
     ):
 
-        response = litellm.completion(
-            model=self.model,
+        response = self.client.chat.completions.create(
+            model="openai/gpt-oss-20b",
             messages=messages,
-            api_key=self.api_key,
             temperature=0.6,
             max_completion_tokens=800,
-            reasoning_effort="low",
             include_reasoning=False
         )
 
