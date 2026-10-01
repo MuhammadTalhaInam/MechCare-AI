@@ -19,163 +19,221 @@ st.set_page_config(
 # CUSTOM CSS
 # =========================================================
 
-st.markdown("""
-<style>
+st.markdown(
+    """
+    <style>
 
-.stApp {
-    background-color: #0B1220;
-    color: #F8FAFC;
-}
+    /* Main application */
 
-.block-container {
-    max-width: 1200px;
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-}
+    .stApp {
+        background-color: #0B1220;
+        color: #F8FAFC;
+    }
 
-
-/* Main title */
-
-.main-title {
-    font-size: 44px;
-    font-weight: 800;
-    color: #38BDF8;
-}
-
-.main-subtitle {
-    font-size: 20px;
-    font-weight: 600;
-    color: #7DD3FC;
-}
-
-.main-description {
-    font-size: 16px;
-    color: #CBD5E1;
-}
+    .block-container {
+        max-width: 1200px;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
 
 
-/* Hero box */
+    /* Main title */
 
-.hero-box {
-    background: linear-gradient(135deg, #111827, #0F2A43);
-    border: 1px solid #164E63;
-    border-radius: 22px;
-    padding: 35px;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.25);
-}
+    .main-title {
+        font-size: 44px;
+        font-weight: 800;
+        color: #38BDF8;
+    }
 
+    .main-subtitle {
+        font-size: 20px;
+        font-weight: 600;
+        color: #7DD3FC;
+    }
 
-/* Section */
-
-.section-box {
-    background-color: #111827;
-    border: 1px solid #1E3A5F;
-    border-radius: 18px;
-    padding: 25px;
-    margin-bottom: 25px;
-}
-
-.section-title {
-    font-size: 25px;
-    font-weight: 700;
-    color: #E0F2FE;
-}
-
-.section-description {
-    font-size: 14px;
-    color: #94A3B8;
-}
+    .main-description {
+        font-size: 16px;
+        color: #CBD5E1;
+    }
 
 
-/* Input labels */
+    /* Hero box */
 
-label {
-    color: #CBD5E1 !important;
-    font-weight: 600 !important;
-}
-
-
-/* Input fields */
-
-div[data-baseweb="input"] > div,
-div[data-baseweb="textarea"] > div {
-    background-color: #111827 !important;
-    border: 1px solid #334155 !important;
-    border-radius: 10px !important;
-}
-
-input,
-textarea {
-    color: #F8FAFC !important;
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: #64748B !important;
-}
+    .hero-box {
+        background: linear-gradient(135deg, #111827, #0F2A43);
+        border: 1px solid #164E63;
+        border-radius: 22px;
+        padding: 35px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    }
 
 
-/* Select box */
+    /* Section */
 
-div[data-baseweb="select"] > div {
-    background-color: #111827 !important;
-    border: 1px solid #334155 !important;
-    border-radius: 10px !important;
-}
+    .section-box {
+        background-color: #111827;
+        border: 1px solid #1E3A5F;
+        border-radius: 18px;
+        padding: 25px;
+        margin-bottom: 25px;
+    }
 
+    .section-title {
+        font-size: 25px;
+        font-weight: 700;
+        color: #E0F2FE;
+    }
 
-/* Analyze button */
-
-.stButton > button {
-    width: 100%;
-    background: linear-gradient(90deg, #0284C7, #06B6D4);
-    color: white !important;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.stButton > button:hover {
-    box-shadow: 0 8px 25px rgba(6,182,212,0.30);
-    transform: translateY(-2px);
-}
+    .section-description {
+        font-size: 14px;
+        color: #94A3B8;
+    }
 
 
-/* Report */
+    /* Input labels */
 
-.report-box {
-    background-color: #111827;
-    border: 1px solid #1E5B83;
-    border-radius: 18px;
-    padding: 30px;
-    margin-top: 25px;
-}
-
-.report-box h2 {
-    color: #38BDF8 !important;
-}
-
-.report-box h3 {
-    color: #7DD3FC !important;
-}
+    label {
+        color: #CBD5E1 !important;
+        font-weight: 600 !important;
+    }
 
 
-/* Footer */
+    /* Input fields */
 
-.footer {
-    text-align: center;
-    color: #64748B;
-    font-size: 13px;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #1E293B;
-}
+    div[data-baseweb="input"] > div,
+    div[data-baseweb="textarea"] > div {
+        background-color: #111827 !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+    }
 
-</style>
-""", unsafe_allow_html=True)
+    input,
+    textarea {
+        color: #F8FAFC !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: #64748B !important;
+    }
+
+
+    /* Select box */
+
+    div[data-baseweb="select"] > div {
+        background-color: #111827 !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+    }
+
+
+    /* Analyze button */
+
+    .stButton > button {
+        width: 100%;
+        background: linear-gradient(90deg, #0284C7, #06B6D4);
+        color: white !important;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .stButton > button:hover {
+        box-shadow: 0 8px 25px rgba(6,182,212,0.30);
+        transform: translateY(-2px);
+    }
+
+
+    /* Report */
+
+    .report-box {
+        background-color: #111827;
+        border: 1px solid #1E5B83;
+        border-radius: 18px;
+        padding: 30px;
+        margin-top: 25px;
+    }
+
+    .report-box h2 {
+        color: #38BDF8 !important;
+    }
+
+    .report-box h3 {
+        color: #7DD3FC !important;
+    }
+
+
+    /* Footer */
+
+    .footer {
+        text-align: center;
+        color: #64748B;
+        font-size: 13px;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #1E293B;
+    }
+
+
+    /* Workflow */
+
+    .workflow-container {
+        background: linear-gradient(135deg, #111827, #0F2A43);
+        border: 1px solid #1E5B83;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.20);
+    }
+
+    .workflow-title {
+        color: #E0F2FE;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .workflow-step {
+        background-color: #0B1220;
+        border: 1px solid #334155;
+        border-radius: 14px;
+        padding: 18px 10px;
+        text-align: center;
+        min-height: 125px;
+    }
+
+    .workflow-icon {
+        font-size: 34px;
+        margin-bottom: 8px;
+    }
+
+    .workflow-name {
+        color: #F8FAFC;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .workflow-description {
+        color: #94A3B8;
+        font-size: 11px;
+        margin-top: 5px;
+    }
+
+    .workflow-arrow {
+        color: #38BDF8;
+        font-size: 28px;
+        font-weight: bold;
+        text-align: center;
+        padding-top: 38px;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
@@ -221,93 +279,127 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 # =========================================================
 # AI WORKFLOW
 # =========================================================
 
-st.markdown("## 🤖 How MechCare AI Works")
-
 st.markdown(
     """
-    <div style="
-        background: linear-gradient(135deg, #111827, #0F2A43);
-        border: 1px solid #1E5B83;
-        border-radius: 18px;
-        padding: 25px;
-        margin-bottom: 30px;
-    ">
+    <div class="workflow-container">
+
+        <div class="workflow-title">
+            🤖 How MechCare AI Works
+        </div>
 
         <div style="
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            gap: 10px;
+            align-items: stretch;
+            justify-content: center;
+            gap: 8px;
         ">
 
+            <!-- USER PROBLEM -->
+
             <div style="flex: 1;">
-                <div style="font-size: 35px;">👤</div>
-                <div style="color: #F8FAFC; font-weight: 700;">
-                    User Problem
-                </div>
-                <div style="color: #94A3B8; font-size: 13px;">
-                    Machine symptoms
+                <div class="workflow-step">
+                    <div class="workflow-icon">👤</div>
+
+                    <div class="workflow-name">
+                        User Problem
+                    </div>
+
+                    <div class="workflow-description">
+                        Machine symptoms
+                    </div>
                 </div>
             </div>
 
-            <div style="color: #38BDF8; font-size: 25px;">
+
+            <div class="workflow-arrow">
                 →
             </div>
 
+
+            <!-- PROBLEM ANALYSIS -->
+
             <div style="flex: 1;">
-                <div style="font-size: 35px;">🔍</div>
-                <div style="color: #F8FAFC; font-weight: 700;">
-                    Problem Analysis
-                </div>
-                <div style="color: #94A3B8; font-size: 13px;">
-                    Understand symptoms
+                <div class="workflow-step">
+                    <div class="workflow-icon">🔍</div>
+
+                    <div class="workflow-name">
+                        Problem Analysis
+                    </div>
+
+                    <div class="workflow-description">
+                        Understand symptoms
+                    </div>
                 </div>
             </div>
 
-            <div style="color: #38BDF8; font-size: 25px;">
+
+            <div class="workflow-arrow">
                 →
             </div>
 
+
+            <!-- FAULT DIAGNOSIS -->
+
             <div style="flex: 1;">
-                <div style="font-size: 35px;">🧠</div>
-                <div style="color: #F8FAFC; font-weight: 700;">
-                    Fault Diagnosis
-                </div>
-                <div style="color: #94A3B8; font-size: 13px;">
-                    Find possible causes
+                <div class="workflow-step">
+                    <div class="workflow-icon">🧠</div>
+
+                    <div class="workflow-name">
+                        Fault Diagnosis
+                    </div>
+
+                    <div class="workflow-description">
+                        Find possible causes
+                    </div>
                 </div>
             </div>
 
-            <div style="color: #38BDF8; font-size: 25px;">
+
+            <div class="workflow-arrow">
                 →
             </div>
 
+
+            <!-- MAINTENANCE -->
+
             <div style="flex: 1;">
-                <div style="font-size: 35px;">🛠️</div>
-                <div style="color: #F8FAFC; font-weight: 700;">
-                    Maintenance
-                </div>
-                <div style="color: #94A3B8; font-size: 13px;">
-                    Plan corrective actions
+                <div class="workflow-step">
+                    <div class="workflow-icon">🛠️</div>
+
+                    <div class="workflow-name">
+                        Maintenance Planning
+                    </div>
+
+                    <div class="workflow-description">
+                        Plan corrective actions
+                    </div>
                 </div>
             </div>
 
-            <div style="color: #38BDF8; font-size: 25px;">
+
+            <div class="workflow-arrow">
                 →
             </div>
 
+
+            <!-- SAFETY AND REPORT -->
+
             <div style="flex: 1;">
-                <div style="font-size: 35px;">🛡️</div>
-                <div style="color: #F8FAFC; font-weight: 700;">
-                    Safety & Report
-                </div>
-                <div style="color: #94A3B8; font-size: 13px;">
-                    Generate final report
+                <div class="workflow-step">
+                    <div class="workflow-icon">🛡️</div>
+
+                    <div class="workflow-name">
+                        Safety & Final Report
+                    </div>
+
+                    <div class="workflow-description">
+                        Generate final report
+                    </div>
                 </div>
             </div>
 
@@ -317,6 +409,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 # =========================================================
 # MACHINE INFORMATION
@@ -353,7 +446,6 @@ st.markdown(
 col1, col2 = st.columns(2)
 
 with col1:
-
     machine_type = st.selectbox(
         "⚙️ Machine Type",
         [
@@ -368,9 +460,7 @@ with col1:
         ]
     )
 
-
 with col2:
-
     machine_age = st.text_input(
         "📅 Machine Age",
         placeholder="Example: 3 years"
@@ -398,7 +488,6 @@ problem_description = st.text_area(
 col1, col2 = st.columns(2)
 
 with col1:
-
     operating_condition = st.text_area(
         "🔄 Operating Condition",
         placeholder=(
@@ -408,9 +497,7 @@ with col1:
         height=110
     )
 
-
 with col2:
-
     last_maintenance = st.text_input(
         "🛠️ Last Maintenance",
         placeholder="Example: 6 months ago"
@@ -485,7 +572,6 @@ Additional Observations:
             "✅ Analysis completed successfully!"
         )
 
-        # Report container
         st.markdown(
             '<div class="report-box">',
             unsafe_allow_html=True
@@ -495,7 +581,9 @@ Additional Observations:
             "## 📋 Final Maintenance Report"
         )
 
-        st.markdown(final_result)
+        st.markdown(
+            final_result
+        )
 
         st.markdown(
             '</div>',
