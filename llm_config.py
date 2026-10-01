@@ -32,10 +32,7 @@ class GroqLiteLLM(BaseLLM):
 
         response = self.client.chat.completions.create(
             model="openai/gpt-oss-20b",
-            messages=messages,
-            temperature=0.6,
-            max_completion_tokens=800,
-            include_reasoning=False
+            messages=messages
         )
 
         return response.choices[0].message.content
