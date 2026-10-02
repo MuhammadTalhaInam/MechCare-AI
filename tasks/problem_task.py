@@ -1,21 +1,33 @@
-
 from crewai import Task
+
 
 def create_problem_analysis_task(agent):
     return Task(
         description=(
             "Analyze the user's machine problem. "
-            "Give only the main symptoms and important observations. "
+            "Identify the main symptoms, important observations, "
+            "missing information, and additional measurements or data "
+            "that would help confirm the problem. "
             "Do not give a diagnosis."
         ),
 
         expected_output=(
-            "Give only:\n"
-            "Machine: one line\n"
-            "Symptoms: maximum 3 short points\n"
-            "Important observation: maximum 2 short points\n"
-            "Missing information: maximum 2 short points\n"
-            "Maximum 150 words."
+            "Give the result in this format using Markdown:\n\n"
+
+            "## Symptoms\n"
+            "- Maximum 3 short points\n\n"
+
+            "## Important Observations\n"
+            "- Maximum 2 short points\n\n"
+
+            "## Missing Information\n"
+            "- Maximum 2 short points\n\n"
+
+            "## Additional Data Recommended\n"
+            "- Maximum 5 measurements or pieces of information\n"
+            "- Only recommend data relevant to this machine and problem\n\n"
+
+            "Maximum 200 words."
         ),
 
         agent=agent
