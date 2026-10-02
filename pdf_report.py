@@ -45,6 +45,57 @@ else:
 
 def clean_text(text):
 
+    text = str(text)
+
+    # Replace common Unicode punctuation
+    replacements = {
+        "\u2013": "-",   # en dash
+        "\u2014": "-",   # em dash
+        "\u2018": "'",   # left single quote
+        "\u2019": "'",   # right single quote
+        "\u201c": '"',   # left double quote
+        "\u201d": '"',   # right double quote
+        "\u2022": "-",   # bullet
+        "\u00a0": " ",   # non-breaking space
+        "\u2026": "...", # ellipsis
+        "\u2192": "->",  # arrow
+        "\u00d7": "x",   # multiplication sign
+        "\u00b0": " deg", # degree symbol
+    }
+
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+
+    # Remove zero-width and invisible characters
+    invisible_chars = [
+        "\u200b",
+        "\u200c",
+        "\u200d",
+        "\u2060",
+        "\ufeff",
+        "\u00ad"
+    ]
+
+    for char in invisible_chars:
+        text = text.replace(char, "")
+
+    # Keep only safe printable ASCII characters
+    cleaned = ""
+
+    for char in text:
+
+        if 32 <= ord(char) <= 126:
+            cleaned += char
+
+        elif char in "\n\r\t":
+            cleaned += char
+
+        else:
+            # Replace any remaining unsupported Unicode character
+            cleaned += ""
+
+    return cleaned.strip()
+
     """
     Clean hidden/control characters that can sometimes
     appear in user or AI-generated text.
