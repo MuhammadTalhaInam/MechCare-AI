@@ -4,315 +4,150 @@ import asyncio
 from crew import run_mechcare
 
 
-# =================================================
-# PAGE CONFIGURATION
-# =================================================
+# =========================================================
+# PAGE CONFIG
+# =========================================================
 
 st.set_page_config(
     page_title="MechCare AI",
     page_icon="⚙️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 
-# =================================================
-# TITLE
-# =================================================
+# =========================================================
+# CUSTOM CSS
+# =========================================================
 
-st.title("⚙️ MechCare AI")
+st.markdown(
+    """
+    <style>
 
-st.write(
-    "AI-based machine maintenance and troubleshooting assistant "
-    "for mechanical equipment."
-)
-
-st.divider()
-
-
-# =================================================
-# MACHINE PROFILE
-# =================================================
-
-st.header("🏭 Machine Profile")
-
-col1, col2 = st.columns(2)
-
-with col1:
-
-    machine_type = st.selectbox(
-        "Machine Type",
-        [
-            "Centrifugal Pump",
-            "Electric Motor",
-            "Gearbox",
-            "Compressor",
-            "Fan",
-            "Bearing System",
-            "Turbine",
-            "Other"
-        ]
-    )
-
-    machine_id = st.selectbox(
-        "Machine ID / Name",
-        [
-            "MCH-001",
-            "MCH-002",
-            "MCH-003",
-            "MCH-004",
-            "MCH-005",
-            "MCH-006",
-            "MCH-007",
-            "MCH-008",
-            "Other"
-        ]
-    )
-
-    manufacturer = st.selectbox(
-        "Manufacturer",
-        [
-            "ABB",
-            "Siemens",
-            "WEG",
-            "KSB",
-            "Sulzer",
-            "Grundfos",
-            "Caterpillar",
-            "General Electric",
-            "Other / Unknown"
-        ]
-    )
-
-    model_options = {
-
-        "Centrifugal Pump": [
-            "KSB Etanorm",
-            "Grundfos CR",
-            "Sulzer AHLSTAR",
-            "Generic / Unknown"
-        ],
-
-        "Electric Motor": [
-            "ABB M3BP",
-            "Siemens SIMOTICS",
-            "WEG W22",
-            "Generic / Unknown"
-        ],
-
-        "Gearbox": [
-            "SEW-Eurodrive",
-            "Flender",
-            "Bonfiglioli",
-            "Generic / Unknown"
-        ],
-
-        "Compressor": [
-            "Atlas Copco GA",
-            "Ingersoll Rand",
-            "Kaeser",
-            "Generic / Unknown"
-        ],
-
-        "Fan": [
-            "ABB Fan",
-            "Siemens Fan",
-            "Generic Industrial Fan",
-            "Generic / Unknown"
-        ],
-
-        "Bearing System": [
-            "SKF Bearing",
-            "FAG Bearing",
-            "NTN Bearing",
-            "Generic / Unknown"
-        ],
-
-        "Turbine": [
-            "Francis Turbine",
-            "Pelton Turbine",
-            "Kaplan Turbine",
-            "Generic / Unknown"
-        ],
-
-        "Other": [
-            "Generic Machine",
-            "Custom Equipment",
-            "Unknown"
-        ]
+    .stApp {
+        background: linear-gradient(
+            135deg,
+            #07111f 0%,
+            #0b1728 50%,
+            #101c2f 100%
+        );
     }
 
-    model = st.selectbox(
-        "Model",
-        model_options[machine_type]
-    )
+    .block-container {
+        max-width: 1250px;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
 
+    /* Hero */
+    .hero {
+        background: linear-gradient(135deg, #0d2238, #102d49);
+        border: 1px solid #1e4d73;
+        border-radius: 22px;
+        padding: 35px;
+        margin-bottom: 25px;
+    }
 
-with col2:
+    .hero h1 {
+        color: #f8fafc;
+        font-size: 46px;
+        margin-bottom: 5px;
+    }
 
-    machine_age = st.selectbox(
-        "Machine Age",
-        [
-            "Less than 1 year",
-            "1–2 years",
-            "3–5 years",
-            "6–10 years",
-            "More than 10 years",
-            "Unknown"
-        ]
-    )
+    .hero h3 {
+        color: #38bdf8;
+        margin-top: 0;
+    }
 
-    operating_hours = st.selectbox(
-        "Operating Hours",
-        [
-            "Less than 2 hours/day",
-            "2–4 hours/day",
-            "4–8 hours/day",
-            "8–12 hours/day",
-            "More than 12 hours/day",
-            "Continuous",
-            "Unknown"
-        ]
-    )
+    .hero p {
+        color: #cbd5e1;
+        font-size: 16px;
+        line-height: 1.7;
+    }
 
-    operating_speed = st.selectbox(
-        "Operating Speed",
-        [
-            "Below 500 RPM",
-            "500–1000 RPM",
-            "1000–1500 RPM",
-            "1500–3000 RPM",
-            "Above 3000 RPM",
-            "Variable Speed",
-            "Unknown"
-        ]
-    )
+    /* Selected symptom */
+    .symptom-box {
+        background: #123653;
+        border: 1px solid #1d668f;
+        border-radius: 12px;
+        padding: 12px 15px;
+        color: #7dd3fc;
+        margin-top: 10px;
+    }
 
-    load_condition = st.selectbox(
-        "Load Condition",
-        [
-            "Unknown",
-            "No Load",
-            "Light Load",
-            "Moderate Load",
-            "Heavy Load",
-            "Variable Load"
-        ]
-    )
+    /* Report */
+    .report-box {
+        background: #0b1928;
+        border: 1px solid #245276;
+        border-radius: 18px;
+        padding: 25px;
+        color: #dbeafe;
+        line-height: 1.7;
+    }
 
-    last_maintenance = st.selectbox(
-        "Last Maintenance",
-        [
-            "Less than 1 month ago",
-            "1–3 months ago",
-            "3–6 months ago",
-            "6–12 months ago",
-            "More than 1 year ago",
-            "Unknown"
-        ]
-    )
-
-
-st.divider()
-
-
-# =================================================
-# MACHINE SYMPTOMS
-# =================================================
-
-st.header("📋 Machine Symptoms")
-
-symptoms = st.multiselect(
-    "Select the symptoms you are observing:",
-    [
-        "Unusual Noise",
-        "Excessive Vibration",
-        "Overheating",
-        "Reduced Performance",
-        "Leakage",
-        "Increased Power Consumption",
-        "Slow / Irregular Operation",
-        "Pressure / Flow Problem",
-        "Loose Components",
-        "Lubrication Problem",
-        "Burning Smell",
-        "Other"
-    ]
+    </style>
+    """,
+    unsafe_allow_html=True
 )
 
 
-# =================================================
-# PROBLEM DESCRIPTION
-# =================================================
+# =========================================================
+# HERO SECTION
+# =========================================================
 
-st.header("📝 Problem Description")
-
-problem_description = st.text_area(
-    "Describe the machine problem:",
-    placeholder=(
-        "Example: The pump is producing unusual noise and vibration "
-        "during operation. Flow rate has decreased."
-    ),
-    height=120
+st.markdown(
+    """
+    <div class="hero">
+        <h1>⚙️ MechCare AI</h1>
+        <h3>AI-Powered Machine Maintenance & Troubleshooting Assistant</h3>
+        <p>
+            Describe your machine, operating conditions, and observed
+            symptoms. MechCare AI uses a multi-agent engineering workflow
+            to analyze the problem, identify possible causes, suggest
+            maintenance actions, and generate a structured safety-focused
+            report.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
 
-# =================================================
-# OPERATING CONDITION
-# =================================================
+# =========================================================
+# WORKFLOW
+# =========================================================
 
-operating_condition = st.text_area(
-    "Operating Condition:",
-    placeholder=(
-        "Example: Machine is operating continuously at normal load."
-    ),
-    height=100
+st.subheader("🤖 How MechCare AI Works")
+
+st.caption(
+    "Your machine problem passes through four specialized AI agents. "
+    "Each agent performs a different engineering task before the final report is generated."
 )
 
-
-# =================================================
-# ADDITIONAL OBSERVATIONS
-# =================================================
-
-additional_observations = st.text_area(
-    "Additional Observations:",
-    placeholder=(
-        "Example: Temperature is slightly higher than normal."
-    ),
-    height=100
-)
-
-
-st.divider()
-
-
-# =================================================
-# AI AGENT WORKFLOW
-# =================================================
-
-st.header("🤖 AI Agent Workflow")
 
 workflow = [
     (
-        "1",
-        "Problem Analysis",
-        "Understands the machine problem and symptoms."
+        "AGENT 01",
+        "🔍 Problem Analysis Agent",
+        "Analyzes machine information, symptoms, observations, and missing information."
     ),
     (
-        "2",
-        "Fault Diagnosis",
-        "Identifies possible mechanical causes."
+        "AGENT 02",
+        "🧠 Fault Diagnosis Agent",
+        "Examines symptoms and identifies possible mechanical and operational causes."
     ),
     (
-        "3",
-        "Maintenance Planning",
-        "Creates practical maintenance actions."
+        "AGENT 03",
+        "🛠️ Maintenance Planning Agent",
+        "Converts possible causes into practical inspection and maintenance actions."
     ),
     (
-        "4",
-        "Safety & Final Report",
-        "Reviews the information and creates the final report."
+        "AGENT 04",
+        "🛡️ Safety & Final Report Agent",
+        "Reviews the previous results and creates the final safety-focused engineering report."
     )
 ]
+
 
 workflow_columns = st.columns(4)
 
@@ -332,306 +167,593 @@ for column, agent in zip(workflow_columns, workflow):
 st.divider()
 
 
-# =================================================
-# ANALYZE BUTTON
-# =================================================
+# =========================================================
+# MACHINE PROFILE
+# =========================================================
 
-if st.button(
-    "🔍 Analyze Machine",
-    type="primary",
-    use_container_width=True
-):
+st.subheader("🏭 Machine Profile")
 
-    if not problem_description.strip():
-
-        st.warning(
-            "Please describe the machine problem before starting the analysis."
-        )
-
-        st.stop()
+st.caption(
+    "Provide basic information about the machine so the AI can understand its operating context."
+)
 
 
-    # =================================================
-    # PREPARE MACHINE INFORMATION
-    # =================================================
+MACHINE_MODELS = {
 
-    selected_symptoms = ", ".join(symptoms)
+    "Centrifugal Pump": [
+        "KSB Etanorm",
+        "Grundfos CR",
+        "Sulzer AHLSTAR",
+        "Generic / Unknown"
+    ],
 
-    if not selected_symptoms:
+    "Electric Motor": [
+        "ABB M3BP",
+        "Siemens SIMOTICS",
+        "WEG W22",
+        "Generic / Unknown"
+    ],
 
-        selected_symptoms = "No specific symptoms selected."
+    "Gearbox": [
+        "SEW-Eurodrive",
+        "Flender",
+        "Bonfiglioli",
+        "Generic / Unknown"
+    ],
 
+    "Compressor": [
+        "Atlas Copco GA",
+        "Ingersoll Rand",
+        "Kaeser",
+        "Generic / Unknown"
+    ],
 
-    machine_problem = f"""
-MACHINE INFORMATION
+    "Fan": [
+        "ABB Fan",
+        "Siemens Fan",
+        "Generic Industrial Fan",
+        "Generic / Unknown"
+    ],
 
-Machine Type: {machine_type}
-Machine ID / Name: {machine_id}
-Manufacturer: {manufacturer}
-Model: {model}
-Machine Age: {machine_age}
-Operating Hours: {operating_hours}
-Operating Speed: {operating_speed}
-Load Condition: {load_condition}
-Last Maintenance: {last_maintenance}
+    "Bearing System": [
+        "SKF Bearing",
+        "FAG Bearing",
+        "NTN Bearing",
+        "Generic / Unknown"
+    ],
 
-SELECTED SYMPTOMS
+    "Turbine": [
+        "Francis Turbine",
+        "Pelton Turbine",
+        "Kaplan Turbine",
+        "Generic / Unknown"
+    ],
 
-{selected_symptoms}
-
-PROBLEM DESCRIPTION
-
-{problem_description}
-
-OPERATING CONDITION
-
-{operating_condition}
-
-ADDITIONAL OBSERVATIONS
-
-{additional_observations}
-"""
-
-
-    # =================================================
-    # RUN MECHCARE AI
-    # =================================================
-
-    with st.spinner(
-        "🤖 MechCare AI is analyzing the machine..."
-    ):
-
-        try:
-
-            result = asyncio.run(
-                run_mechcare(machine_problem)
-            )
-
-            diagnosis_result = result["diagnosis"]
-
-            final_report = result["final_report"]
+    "Other": [
+        "Generic Machine",
+        "Custom Equipment",
+        "Unknown"
+    ]
+}
 
 
-        except Exception as e:
+# =========================================================
+# MACHINE INFORMATION
+# =========================================================
 
-            st.error(
-                "An error occurred while analyzing the machine."
-            )
-
-            st.exception(e)
-
-            st.stop()
+col1, col2, col3 = st.columns(3)
 
 
-    st.success(
-        "✅ Machine analysis completed successfully!"
+with col1:
+
+    machine_type = st.selectbox(
+        "⚙️ Machine Type",
+        [
+            "Centrifugal Pump",
+            "Electric Motor",
+            "Gearbox",
+            "Compressor",
+            "Fan",
+            "Bearing System",
+            "Turbine",
+            "Other"
+        ]
     )
 
-    st.divider()
+
+with col2:
+
+    machine_id = st.selectbox(
+        "🆔 Machine ID / Name",
+        [
+            "MCH-001",
+            "MCH-002",
+            "MCH-003",
+            "MCH-004",
+            "MCH-005",
+            "MCH-006",
+            "MCH-007",
+            "MCH-008",
+            "Other"
+        ]
+    )
 
 
-    # =================================================
-    # MACHINE HEALTH DASHBOARD
-    # =================================================
+with col3:
 
-    st.subheader("📊 Machine Health Dashboard")
-
-    report_text = final_report
-
-    priority = "Not specified"
-
-
-    if "## Priority" in report_text:
-
-        priority_section = report_text.split(
-            "## Priority",
-            1
-        )[1]
-
-        if "##" in priority_section:
-
-            priority = priority_section.split(
-                "##",
-                1
-            )[0].strip()
-
-        else:
-
-            priority = priority_section.strip()
+    manufacturer = st.selectbox(
+        "🏢 Manufacturer",
+        [
+            "ABB",
+            "Siemens",
+            "WEG",
+            "KSB",
+            "Sulzer",
+            "Grundfos",
+            "Caterpillar",
+            "General Electric",
+            "Other / Unknown"
+        ]
+    )
 
 
-    priority_lower = priority.lower()
+col4, col5, col6 = st.columns(3)
 
 
-    if (
-        "critical" in priority_lower
-        or "urgent" in priority_lower
-    ):
+with col4:
 
-        health_status = "🔴 Critical"
-
-        maintenance_status = "Immediate Inspection"
+    model = st.selectbox(
+        "🔧 Model",
+        MACHINE_MODELS[machine_type]
+    )
 
 
-    elif "high" in priority_lower:
+with col5:
 
-        health_status = "🟠 Attention Required"
+    machine_age = st.selectbox(
+        "📅 Machine Age",
+        [
+            "Less than 1 year",
+            "1–2 years",
+            "3–5 years",
+            "6–10 years",
+            "More than 10 years",
+            "Unknown"
+        ]
+    )
 
-        maintenance_status = "Inspection Recommended"
+
+with col6:
+
+    operating_hours = st.selectbox(
+        "⏱️ Operating Hours",
+        [
+            "Less than 2 hours/day",
+            "2–4 hours/day",
+            "4–8 hours/day",
+            "8–12 hours/day",
+            "More than 12 hours/day",
+            "Continuous",
+            "Unknown"
+        ]
+    )
 
 
-    elif (
-        "medium" in priority_lower
-        or "moderate" in priority_lower
-    ):
+col7, col8, col9 = st.columns(3)
 
-        health_status = "🟡 Monitor"
 
-        maintenance_status = "Further Inspection"
+with col7:
 
+    operating_speed = st.selectbox(
+        "🔄 Operating Speed",
+        [
+            "Below 500 RPM",
+            "500–1000 RPM",
+            "1000–1500 RPM",
+            "1500–3000 RPM",
+            "Above 3000 RPM",
+            "Variable Speed",
+            "Unknown"
+        ]
+    )
+
+
+with col8:
+
+    load_condition = st.selectbox(
+        "⚡ Load Condition",
+        [
+            "Unknown",
+            "No Load",
+            "Light Load",
+            "Moderate Load",
+            "Heavy Load",
+            "Variable Load"
+        ]
+    )
+
+
+with col9:
+
+    last_maintenance = st.selectbox(
+        "🛠️ Last Maintenance",
+        [
+            "Less than 1 month ago",
+            "1–3 months ago",
+            "3–6 months ago",
+            "6–12 months ago",
+            "More than 1 year ago",
+            "Unknown"
+        ]
+    )
+
+
+st.divider()
+
+
+# =========================================================
+# SYMPTOMS
+# =========================================================
+
+st.subheader("🔍 Observed Symptoms")
+
+st.caption(
+    "Select all symptoms currently observed in the machine. "
+    "You can select multiple symptoms."
+)
+
+
+symptom_options = [
+    "🔊 Unusual Noise",
+    "📳 Excessive Vibration",
+    "🌡️ Overheating",
+    "📉 Reduced Performance",
+    "💧 Leakage",
+    "⚡ Increased Power Consumption",
+    "🔄 Slow / Irregular Operation",
+    "💨 Pressure / Flow Problem",
+    "🔩 Loose Components",
+    "🛢️ Lubrication Problem",
+    "🔥 Burning Smell",
+    "⚠️ Other"
+]
+
+
+selected_symptoms = st.multiselect(
+    "Select observed symptoms",
+    symptom_options,
+    placeholder="Choose one or more symptoms..."
+)
+
+
+if selected_symptoms:
+
+    st.info(
+        "Selected symptoms: " + "  •  ".join(selected_symptoms)
+    )
+
+
+st.divider()
+
+
+# =========================================================
+# PROBLEM INFORMATION
+# =========================================================
+
+st.subheader("🚨 Problem Information")
+
+st.caption(
+    "Describe what is happening with the machine. "
+    "More useful information helps the AI produce a more relevant engineering analysis."
+)
+
+
+problem_description = st.text_area(
+    "Problem Description",
+    placeholder=(
+        "Example: The pump produces unusual noise and vibration "
+        "during operation. Flow rate has decreased."
+    ),
+    height=130
+)
+
+
+operating_condition = st.text_area(
+    "Operating Condition",
+    placeholder=(
+        "Example: Machine operates continuously at approximately "
+        "1450 RPM under moderate load."
+    ),
+    height=110
+)
+
+
+additional_observations = st.text_area(
+    "Additional Observations",
+    placeholder=(
+        "Example: Vibration becomes higher after several hours "
+        "of continuous operation."
+    ),
+    height=110
+)
+
+
+# =========================================================
+# ANALYZE BUTTON
+# =========================================================
+
+st.write("")
+
+
+analyze_button = st.button(
+    "🔍 Analyze Machine Problem",
+    use_container_width=True
+)
+
+
+# =========================================================
+# AI ANALYSIS
+# =========================================================
+
+if analyze_button:
+
+    if not problem_description.strip() and not selected_symptoms:
+
+        st.warning(
+            "Please provide a problem description or select at least one symptom."
+        )
 
     else:
 
-        health_status = "🟢 Review Required"
-
-        maintenance_status = "Follow Recommended Checks"
-
-
-    dash1, dash2, dash3, dash4 = st.columns(4)
-
-
-    with dash1:
-
-        st.markdown("### 🏭 Machine")
-
-        st.write(machine_type)
-
-
-    with dash2:
-
-        st.markdown("### ❤️ Health Status")
-
-        st.write(health_status)
-
-
-    with dash3:
-
-        st.markdown("### ⚠️ Priority")
-
-        st.write(priority)
-
-
-    with dash4:
-
-        st.markdown("### 🔧 Maintenance")
-
-        st.write(maintenance_status)
-
-
-    st.divider()
-
-
-    # =================================================
-    # SMART DIAGNOSIS
-    # =================================================
-
-    st.subheader(
-        "🧠 Possible Faults & Diagnostic Checks"
-    )
-
-    st.caption(
-        "The AI identifies possible causes, explains why they "
-        "may be related to the symptoms, and suggests simple "
-        "checks for confirmation."
-    )
-
-    st.markdown(
-        diagnosis_result
-    )
-
-
-    st.divider()
-
-
-    # =================================================
-    # MAINTENANCE CHECKLIST
-    # =================================================
-
-    st.subheader(
-        "🔧 Maintenance Checklist"
-    )
-
-    st.caption(
-        "Use these checks as a practical guide during inspection."
-    )
-
-    check1, check2 = st.columns(2)
-
-
-    with check1:
-
-        st.checkbox(
-            "☐ Check machine for unusual noise"
-        )
-
-        st.checkbox(
-            "☐ Check for excessive vibration"
-        )
-
-        st.checkbox(
-            "☐ Check temperature"
-        )
-
-        st.checkbox(
-            "☐ Check for leakage"
+        selected_symptoms_text = (
+            ", ".join(selected_symptoms)
+            if selected_symptoms
+            else "No specific symptoms selected"
         )
 
 
-    with check2:
+        # -----------------------------------------------------
+        # CREATE MACHINE INFORMATION FOR THE AI
+        # -----------------------------------------------------
 
-        st.checkbox(
-            "☐ Check lubrication condition"
-        )
+        machine_problem = f"""
 
-        st.checkbox(
-            "☐ Check loose components"
-        )
+MACHINE PROFILE
 
-        st.checkbox(
-            "☐ Check alignment"
-        )
+Machine ID / Name:
+{machine_id}
 
-        st.checkbox(
-            "☐ Check operating conditions"
-        )
+Manufacturer:
+{manufacturer}
 
+Model:
+{model}
 
-    st.divider()
+Machine Type:
+{machine_type}
 
+Machine Age:
+{machine_age}
 
-    # =================================================
-    # FINAL ENGINEERING REPORT
-    # =================================================
+Operating Hours:
+{operating_hours}
 
-    st.subheader(
-        "📋 Engineering Analysis Report"
-    )
+Operating Speed:
+{operating_speed}
 
-    st.markdown(
-        final_report
-    )
+Load Condition:
+{load_condition}
 
-
-    st.divider()
+Last Maintenance:
+{last_maintenance}
 
 
-    # =================================================
-    # DISCLAIMER
-    # =================================================
+PROBLEM INFORMATION
 
-    st.caption(
-        "⚠️ MechCare AI provides an initial engineering "
-        "decision-support analysis. Always follow manufacturer "
-        "procedures and consult a qualified engineer or technician "
-        "before performing maintenance or repairs."
-    )
+Observed Symptoms:
+{selected_symptoms_text}
+
+Problem Description:
+{problem_description}
+
+Operating Condition:
+{operating_condition}
+
+Additional Observations:
+{additional_observations}
+
+"""
+
+
+        # -----------------------------------------------------
+        # RUN FOUR AGENTS
+        # -----------------------------------------------------
+
+        with st.spinner(
+            "🤖 MechCare AI is analyzing the machine through 4 AI agents..."
+        ):
+
+            try:
+
+                result = asyncio.run(
+                    run_mechcare(machine_problem)
+                )
+
+                # -------------------------------------------------
+                # GET DIAGNOSIS AND FINAL REPORT
+                # -------------------------------------------------
+
+                diagnosis_result = result["diagnosis"]
+                final_report = result["final_report"]
+
+
+                st.success(
+                    "✅ Machine analysis completed successfully."
+                )
+
+
+                # =================================================
+                # ENHANCED HEALTH DASHBOARD
+                # =================================================
+
+                st.subheader("📊 Machine Health Dashboard")
+
+                report_text = final_report
+
+                # -------------------------------------------------
+                # EXTRACT PRIORITY FROM AI REPORT
+                # -------------------------------------------------
+
+                priority = "Not specified"
+
+                if "## Priority" in report_text:
+
+                    priority_section = report_text.split(
+                        "## Priority",
+                        1
+                    )[1]
+
+                    if "##" in priority_section:
+
+                        priority = priority_section.split(
+                            "##",
+                            1
+                        )[0].strip()
+
+                    else:
+
+                        priority = priority_section.strip()
+
+
+                # -------------------------------------------------
+                # DETERMINE HEALTH STATUS
+                # -------------------------------------------------
+
+                priority_lower = priority.lower()
+
+                if (
+                    "critical" in priority_lower
+                    or "urgent" in priority_lower
+                ):
+
+                    health_status = "🔴 Critical"
+                    maintenance_status = "Immediate Inspection"
+
+                elif "high" in priority_lower:
+
+                    health_status = "🟠 Attention Required"
+                    maintenance_status = "Inspection Recommended"
+
+                elif (
+                    "medium" in priority_lower
+                    or "moderate" in priority_lower
+                ):
+
+                    health_status = "🟡 Monitor"
+                    maintenance_status = "Further Inspection"
+
+                else:
+
+                    health_status = "🟢 Review Required"
+                    maintenance_status = "Follow Recommended Checks"
+
+
+                # -------------------------------------------------
+                # DASHBOARD CARDS
+                # -------------------------------------------------
+
+                dash1, dash2, dash3, dash4 = st.columns(4)
+
+                with dash1:
+
+                    st.markdown("### 🏭 Machine")
+                    st.write(machine_type)
+
+                with dash2:
+
+                    st.markdown("### ❤️ Health Status")
+                    st.write(health_status)
+
+                with dash3:
+
+                    st.markdown("### ⚠️ Priority")
+                    st.write(priority)
+
+                with dash4:
+
+                    st.markdown("### 🔧 Maintenance")
+                    st.write(maintenance_status)
+
+
+                st.info(
+                    f"**Machine:** {machine_type}  |  "
+                    f"**ID:** {machine_id}  |  "
+                    f"**Manufacturer:** {manufacturer}"
+                )
+
+
+                # =================================================
+                # SMART DIAGNOSIS
+                # =================================================
+
+                st.subheader(
+                    "🧠 Possible Faults & Diagnostic Checks"
+                )
+
+                st.caption(
+                    "The AI identifies possible causes, explains why they "
+                    "may be related to the symptoms, and suggests simple "
+                    "checks for confirmation."
+                )
+
+                st.markdown(
+                    diagnosis_result
+                )
+
+
+                # =================================================
+                # FINAL REPORT
+                # =================================================
+
+                st.subheader(
+                    "📋 Engineering Analysis Report"
+                )
+
+                st.caption(
+                    "Generated by the MechCare AI multi-agent engineering workflow."
+                )
+
+
+                st.markdown(
+                    final_report
+                )
+
+
+            except Exception as e:
+
+                st.error(
+                    "❌ An error occurred while analyzing the machine."
+                )
+
+                st.warning(
+                    "Please check your Groq API key and Streamlit deployment logs."
+                )
+
+                st.code(
+                    str(e)
+                )
+
+
+# =========================================================
+# FOOTER
+# =========================================================
+
+st.divider()
+
+st.caption(
+    "⚙️ MechCare AI | AI-Based Mechanical Maintenance & Troubleshooting Assistant"
+)
+
+st.caption(
+    "Designed for engineering decision support and educational use."
+)
