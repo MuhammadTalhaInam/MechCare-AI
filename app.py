@@ -606,14 +606,37 @@ Additional Observations:
         # RUN FOUR AGENTS
         # -----------------------------------------------------
 
-        with st.spinner(
-            "🤖 MechCare AI is analyzing the machine through 4 AI agents..."
-        ):
+        with st.status(
+            "⚙️ MechCare AI is analyzing your machine...",
+            expanded=True
+        ) as analysis_status:
 
             try:
 
+                st.write(
+                    "🔍 Problem Analysis Agent — analyzing symptoms..."
+                )
+
+                st.write(
+                    "🧠 Fault Diagnosis Agent — identifying possible causes..."
+                )
+
+                st.write(
+                    "🛠️ Maintenance Planning Agent — preparing maintenance actions..."
+                )
+
+                st.write(
+                    "🛡️ Safety & Final Report Agent — preparing final report..."
+                )
+
                 result = asyncio.run(
                     run_mechcare(machine_problem)
+                )
+
+                analysis_status.update(
+                    label="✅ Analysis Complete",
+                    state="complete",
+                    expanded=False
                 )
 
                 # SAVE THE AI RESULT
@@ -627,6 +650,12 @@ Additional Observations:
                 )
 
             except Exception as e:
+
+                analysis_status.update(
+                    label="❌ Analysis Failed",
+                    state="error",
+                    expanded=True
+                )
 
                 st.error(
                     "❌ An error occurred while analyzing the machine."
