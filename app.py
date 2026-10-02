@@ -65,35 +65,6 @@ st.markdown(
         line-height: 1.7;
     }
 
-    /* Workflow cards */
-    .agent-card {
-        background: #0d1b2a;
-        border: 1px solid #29445d;
-        border-radius: 16px;
-        padding: 20px;
-        min-height: 180px;
-    }
-
-    .agent-number {
-        color: #38bdf8;
-        font-weight: 800;
-        font-size: 13px;
-    }
-
-    .agent-title {
-        color: #f8fafc;
-        font-weight: 700;
-        font-size: 17px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-
-    .agent-description {
-        color: #94a3b8;
-        font-size: 13px;
-        line-height: 1.6;
-    }
-
     /* Selected symptom */
     .symptom-box {
         background: #123653;
@@ -112,13 +83,6 @@ st.markdown(
         padding: 25px;
         color: #dbeafe;
         line-height: 1.7;
-    }
-
-    .footer {
-        text-align: center;
-        color: #64748b;
-        margin-top: 40px;
-        padding: 20px;
     }
 
     </style>
@@ -617,184 +581,135 @@ Additional Observations:
 
 
                 st.success(
-    "✅ Machine analysis completed successfully."
-)
+                    "✅ Machine analysis completed successfully."
+                )
 
 
-# -------------------------------------------------
-# HEALTH DASHBOARD
-# -------------------------------------------------
+                # =================================================
+                # ENHANCED HEALTH DASHBOARD
+                # =================================================
 
-st.subheader("📊 Machine Health Dashboard")
+                st.subheader("📊 Machine Health Dashboard")
 
-report_text = str(result)
+                report_text = str(result)
 
-# Extract priority from the AI report
-priority = "Not specified"
+                # -------------------------------------------------
+                # EXTRACT PRIORITY FROM AI REPORT
+                # -------------------------------------------------
 
-if "## Priority" in report_text:
+                priority = "Not specified"
 
-    priority_section = report_text.split("## Priority", 1)[1]
+                if "## Priority" in report_text:
 
-    if "##" in priority_section:
-        priority = priority_section.split("##", 1)[0].strip()
-    else:
-        priority = priority_section.strip()
+                    priority_section = report_text.split(
+                        "## Priority",
+                        1
+                    )[1]
 
+                    if "##" in priority_section:
 
-# Determine simple status
-priority_lower = priority.lower()
+                        priority = priority_section.split(
+                            "##",
+                            1
+                        )[0].strip()
 
-if "critical" in priority_lower or "urgent" in priority_lower:
-    health_status = "🔴 Critical"
-    maintenance_status = "Immediate inspection recommended"
+                    else:
 
-elif "high" in priority_lower:
-    health_status = "🟠 Attention Required"
-    maintenance_status = "Inspection recommended"
-
-elif "medium" in priority_lower or "moderate" in priority_lower:
-    health_status = "🟡 Monitor"
-    maintenance_status = "Further inspection recommended"
-
-else:
-    health_status = "🟢 Review Required"
-    maintenance_status = "Follow recommended checks"
+                        priority = priority_section.strip()
 
 
-# Dashboard columns
-dash1, dash2, dash3, dash4 = st.columns(4)
+                # -------------------------------------------------
+                # DETERMINE HEALTH STATUS
+                # -------------------------------------------------
+
+                priority_lower = priority.lower()
+
+                if (
+                    "critical" in priority_lower
+                    or "urgent" in priority_lower
+                ):
+
+                    health_status = "🔴 Critical"
+                    maintenance_status = "Immediate Inspection"
+
+                elif "high" in priority_lower:
+
+                    health_status = "🟠 Attention Required"
+                    maintenance_status = "Inspection Recommended"
+
+                elif (
+                    "medium" in priority_lower
+                    or "moderate" in priority_lower
+                ):
+
+                    health_status = "🟡 Monitor"
+                    maintenance_status = "Further Inspection"
+
+                else:
+
+                    health_status = "🟢 Review Required"
+                    maintenance_status = "Follow Recommended Checks"
 
 
-with dash1:
-    st.metric(
-        "Machine",
-        machine_type
-    )
+                # -------------------------------------------------
+                # DASHBOARD CARDS
+                # -------------------------------------------------
+
+                dash1, dash2, dash3, dash4 = st.columns(4)
 
 
-with dash2:
-    st.metric(
-        "Health Status",
-        health_status
-    )
+                with dash1:
+
+                    st.metric(
+                        "🏭 Machine",
+                        machine_type
+                    )
 
 
-with dash3:
-    st.metric(
-        "Priority",
-        priority[:30]
-    )
+                with dash2:
+
+                    st.metric(
+                        "❤️ Health Status",
+                        health_status
+                    )
 
 
-with dash4:
-    st.metric(
-        "Maintenance",
-        "Recommended"
-    )
+                with dash3:
+
+                    st.metric(
+                        "⚠️ Priority",
+                        priority[:25]
+                    )
 
 
-st.info(
-    f"🔧 **Maintenance Status:** {maintenance_status}"
-)
+                with dash4:
+
+                    st.metric(
+                        "🔧 Maintenance",
+                        "Recommended"
+                    )
 
 
-# -------------------------------------------------
-# HEALTH DASHBOARD
-# -------------------------------------------------
-
-st.subheader("📊 Machine Health Dashboard")
-
-report_text = str(result)
-
-# Get priority from AI report
-priority = "Not specified"
-
-if "## Priority" in report_text:
-    priority_section = report_text.split("## Priority", 1)[1]
-
-    if "##" in priority_section:
-        priority = priority_section.split("##", 1)[0].strip()
-    else:
-        priority = priority_section.strip()
+                st.info(
+                    f"**Machine:** {machine_type}  |  "
+                    f"**ID:** {machine_id}  |  "
+                    f"**Manufacturer:** {manufacturer}"
+                )
 
 
-# Health status based on priority
-priority_lower = priority.lower()
+                # =================================================
+                # FINAL REPORT
+                # =================================================
 
-if "critical" in priority_lower or "urgent" in priority_lower:
-    health_status = "🔴 Critical"
-    maintenance_status = "Immediate Inspection"
-
-elif "high" in priority_lower:
-    health_status = "🟠 Attention Required"
-    maintenance_status = "Inspection Recommended"
-
-elif "medium" in priority_lower or "moderate" in priority_lower:
-    health_status = "🟡 Monitor"
-    maintenance_status = "Further Inspection"
-
-else:
-    health_status = "🟢 Review Required"
-    maintenance_status = "Follow Recommended Checks"
-
-
-# Dashboard
-dash1, dash2, dash3, dash4 = st.columns(4)
-
-with dash1:
-    st.metric(
-        "🏭 Machine",
-        machine_type
-    )
-
-with dash2:
-    st.metric(
-        "❤️ Health Status",
-        health_status
-    )
-
-with dash3:
-    st.metric(
-        "⚠️ Priority",
-        priority[:25]
-    )
-
-with dash4:
-    st.metric(
-        "🔧 Maintenance",
-        maintenance_status
-    )
-
-
-st.info(
-    f"**Machine:** {machine_type}  |  "
-    f"**ID:** {machine_id}  |  "
-    f"**Manufacturer:** {manufacturer}"
-)
-
-
-# -------------------------------------------------
-# FINAL REPORT
-# -------------------------------------------------
-
-st.subheader("📋 Engineering Analysis Report")
-
-st.caption(
-    "Generated by the MechCare AI multi-agent engineering workflow."
-)
-
-st.markdown(
-    str(result)
-)
+                st.subheader(
+                    "📋 Engineering Analysis Report"
+                )
 
                 st.caption(
                     "Generated by the MechCare AI multi-agent engineering workflow."
                 )
 
 
-                # Display result as Markdown so headings
-                # such as ## Machine render correctly.
                 st.markdown(
                     str(result)
                 )
