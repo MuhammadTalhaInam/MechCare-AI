@@ -16,7 +16,74 @@ st.set_page_config(
 
 
 # =========================================================
-# CUSTOM CSS
+# MACHINE DATA
+# =========================================================
+
+MACHINE_MODELS = {
+    "Centrifugal Pump": [
+        "General Purpose Pump",
+        "End-Suction Pump",
+        "Horizontal Split-Case Pump",
+        "Multistage Pump",
+        "Other"
+    ],
+
+    "Electric Motor": [
+        "Induction Motor",
+        "Synchronous Motor",
+        "Three-Phase Motor",
+        "Single-Phase Motor",
+        "Other"
+    ],
+
+    "Gearbox": [
+        "Helical Gearbox",
+        "Worm Gearbox",
+        "Planetary Gearbox",
+        "Bevel Gearbox",
+        "Other"
+    ],
+
+    "Compressor": [
+        "Reciprocating Compressor",
+        "Screw Compressor",
+        "Centrifugal Compressor",
+        "Scroll Compressor",
+        "Other"
+    ],
+
+    "Fan": [
+        "Axial Fan",
+        "Centrifugal Fan",
+        "Radial Fan",
+        "Industrial Exhaust Fan",
+        "Other"
+    ],
+
+    "Bearing System": [
+        "Ball Bearing",
+        "Roller Bearing",
+        "Tapered Roller Bearing",
+        "Thrust Bearing",
+        "Other"
+    ],
+
+    "Turbine": [
+        "Francis Turbine",
+        "Pelton Turbine",
+        "Kaplan Turbine",
+        "Steam Turbine",
+        "Other"
+    ],
+
+    "Other": [
+        "Other Machine / Equipment"
+    ]
+}
+
+
+# =========================================================
+# PAGE STYLE
 # =========================================================
 
 st.markdown("""
@@ -169,7 +236,7 @@ div[data-baseweb="select"] > div {
 }
 
 
-/* WORKFLOW CARDS */
+/* WORKFLOW */
 
 .workflow-card {
     background-color: #111827;
@@ -207,7 +274,7 @@ div[data-baseweb="select"] > div {
 
 
 # =========================================================
-# HERO SECTION
+# HERO
 # =========================================================
 
 st.markdown(
@@ -224,6 +291,7 @@ with col1:
     )
 
 with col2:
+
     st.markdown(
         '<div class="main-title">MechCare AI</div>',
         unsafe_allow_html=True
@@ -260,10 +328,13 @@ st.caption(
     "Your machine problem passes through multiple specialized AI agents."
 )
 
-workflow = st.columns([1, 0.15, 1, 0.15, 1, 0.15, 1, 0.15, 1])
+workflow = st.columns(
+    [1, 0.15, 1, 0.15, 1, 0.15, 1, 0.15, 1]
+)
 
 
 with workflow[0]:
+
     st.markdown(
         """
         <div class="workflow-card">
@@ -280,6 +351,7 @@ with workflow[0]:
 
 
 with workflow[1]:
+
     st.markdown(
         '<div class="workflow-arrow">→</div>',
         unsafe_allow_html=True
@@ -287,6 +359,7 @@ with workflow[1]:
 
 
 with workflow[2]:
+
     st.markdown(
         """
         <div class="workflow-card">
@@ -303,6 +376,7 @@ with workflow[2]:
 
 
 with workflow[3]:
+
     st.markdown(
         '<div class="workflow-arrow">→</div>',
         unsafe_allow_html=True
@@ -310,6 +384,7 @@ with workflow[3]:
 
 
 with workflow[4]:
+
     st.markdown(
         """
         <div class="workflow-card">
@@ -326,6 +401,7 @@ with workflow[4]:
 
 
 with workflow[5]:
+
     st.markdown(
         '<div class="workflow-arrow">→</div>',
         unsafe_allow_html=True
@@ -333,6 +409,7 @@ with workflow[5]:
 
 
 with workflow[6]:
+
     st.markdown(
         """
         <div class="workflow-card">
@@ -349,6 +426,7 @@ with workflow[6]:
 
 
 with workflow[7]:
+
     st.markdown(
         '<div class="workflow-arrow">→</div>',
         unsafe_allow_html=True
@@ -356,6 +434,7 @@ with workflow[7]:
 
 
 with workflow[8]:
+
     st.markdown(
         """
         <div class="workflow-card">
@@ -376,7 +455,7 @@ st.write("")
 
 
 # =========================================================
-# MACHINE INFORMATION
+# MACHINE PROFILE
 # =========================================================
 
 st.markdown(
@@ -391,8 +470,8 @@ st.markdown(
 
 st.markdown(
     '<div class="section-description">'
-    'Enter the basic identification and operating information '
-    'of the machine before describing the problem.'
+    'Select the machine information below. The model options '
+    'change automatically based on the selected machine type.'
     '</div>',
     unsafe_allow_html=True
 )
@@ -404,85 +483,155 @@ st.markdown(
 
 
 # =========================================================
-# MACHINE IDENTIFICATION
+# MACHINE TYPE
+# =========================================================
+
+machine_types = list(MACHINE_MODELS.keys())
+
+machine_type = st.selectbox(
+    "⚙️ Machine Type",
+    machine_types
+)
+
+
+# =========================================================
+# MACHINE ID / MANUFACTURER / MODEL
 # =========================================================
 
 col1, col2, col3 = st.columns(3)
 
+
 with col1:
-    machine_id = st.text_input(
+
+    machine_id = st.selectbox(
         "🆔 Machine ID / Name",
-        placeholder="Example: Pump-01"
-    )
-
-with col2:
-    manufacturer = st.text_input(
-        "🏢 Manufacturer",
-        placeholder="Example: KSB"
-    )
-
-with col3:
-    model = st.text_input(
-        "📦 Model",
-        placeholder="Example: Etanorm 50-32"
-    )
-
-
-# =========================================================
-# MACHINE TYPE, AGE AND OPERATING HOURS
-# =========================================================
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    machine_type = st.selectbox(
-        "⚙️ Machine Type",
         [
-            "Centrifugal Pump",
-            "Electric Motor",
-            "Gearbox",
-            "Compressor",
-            "Fan",
-            "Bearing System",
-            "Turbine",
+            "MCH-001",
+            "MCH-002",
+            "MCH-003",
+            "MCH-004",
+            "MCH-005",
+            "MCH-006",
+            "MCH-007",
+            "MCH-008",
             "Other"
         ]
     )
 
+
 with col2:
-    machine_age = st.text_input(
-        "📅 Machine Age",
-        placeholder="Example: 3 years"
+
+    manufacturer = st.selectbox(
+        "🏢 Manufacturer",
+        [
+            "ABB",
+            "Siemens",
+            "WEG",
+            "KSB",
+            "Sulzer",
+            "Grundfos",
+            "Caterpillar",
+            "General Electric",
+            "Other / Unknown"
+        ]
     )
 
+
 with col3:
-    operating_hours = st.text_input(
-        "⏱️ Operating Hours",
-        placeholder="Example: 8 hours/day"
+
+    model = st.selectbox(
+        "📦 Model",
+        MACHINE_MODELS[machine_type]
     )
 
 
 # =========================================================
-# OPERATING PARAMETERS
+# MACHINE AGE / OPERATING HOURS
+# =========================================================
+
+col1, col2, col3 = st.columns(3)
+
+
+with col1:
+
+    machine_age = st.selectbox(
+        "📅 Machine Age",
+        [
+            "Less than 1 year",
+            "1–2 years",
+            "3–5 years",
+            "6–10 years",
+            "More than 10 years",
+            "Unknown"
+        ]
+    )
+
+
+with col2:
+
+    operating_hours = st.selectbox(
+        "⏱️ Operating Hours",
+        [
+            "Less than 2 hours/day",
+            "2–4 hours/day",
+            "4–8 hours/day",
+            "8–12 hours/day",
+            "More than 12 hours/day",
+            "Continuous operation",
+            "Unknown"
+        ]
+    )
+
+
+with col3:
+
+    operating_speed = st.selectbox(
+        "⚙️ Operating Speed",
+        [
+            "Below 500 RPM",
+            "500–1000 RPM",
+            "1000–1500 RPM",
+            "1500–3000 RPM",
+            "Above 3000 RPM",
+            "Variable Speed",
+            "Unknown"
+        ]
+    )
+
+
+# =========================================================
+# LOAD CONDITION / LAST MAINTENANCE
 # =========================================================
 
 col1, col2 = st.columns(2)
 
-with col1:
-    operating_speed = st.text_input(
-        "⚙️ Operating Speed (RPM)",
-        placeholder="Example: 1450 RPM"
-    )
 
-with col2:
+with col1:
+
     load_condition = st.selectbox(
         "🔩 Load Condition",
         [
             "Unknown",
+            "No Load",
             "Light Load",
             "Moderate Load",
             "Heavy Load",
             "Variable Load"
+        ]
+    )
+
+
+with col2:
+
+    last_maintenance = st.selectbox(
+        "🛠️ Last Maintenance",
+        [
+            "Less than 1 month ago",
+            "1–3 months ago",
+            "3–6 months ago",
+            "6–12 months ago",
+            "More than 1 year ago",
+            "Unknown"
         ]
     )
 
@@ -502,26 +651,17 @@ problem_description = st.text_area(
 
 
 # =========================================================
-# OPERATING CONDITION AND MAINTENANCE
+# OPERATING CONDITION
 # =========================================================
 
-col1, col2 = st.columns(2)
-
-with col1:
-    operating_condition = st.text_area(
-        "🔄 Operating Condition",
-        placeholder=(
-            "Example: Running continuously at normal "
-            "operating speed."
-        ),
-        height=110
-    )
-
-with col2:
-    last_maintenance = st.text_input(
-        "🛠️ Last Maintenance",
-        placeholder="Example: 6 months ago"
-    )
+operating_condition = st.text_area(
+    "🔄 Operating Condition",
+    placeholder=(
+        "Example: Running continuously at normal operating "
+        "speed under moderate load."
+    ),
+    height=110
+)
 
 
 # =========================================================
