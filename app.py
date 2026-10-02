@@ -37,6 +37,14 @@ for item in checklist_items:
 
 
 # =========================================================
+# AI ANALYSIS STATE
+# =========================================================
+
+if "analysis_result" not in st.session_state:
+    st.session_state.analysis_result = None
+
+
+# =========================================================
 # CUSTOM CSS
 # =========================================================
 
@@ -512,7 +520,7 @@ analyze_button = st.button(
 
 
 # =========================================================
-# AI ANALYSIS
+# RUN AI ANALYSIS
 # =========================================================
 
 if analyze_button:
@@ -599,214 +607,12 @@ Additional Observations:
                     run_mechcare(machine_problem)
                 )
 
-                # -------------------------------------------------
-                # GET DIAGNOSIS AND FINAL REPORT
-                # -------------------------------------------------
-
-                diagnosis_result = result["diagnosis"]
-                final_report = result["final_report"]
-
+                # SAVE THE AI RESULT
+                st.session_state.analysis_result = result
 
                 st.success(
                     "✅ Machine analysis completed successfully."
                 )
-
-
-                # =================================================
-                # ENHANCED HEALTH DASHBOARD
-                # =================================================
-
-                st.subheader("📊 Machine Health Dashboard")
-
-                report_text = final_report
-
-                # -------------------------------------------------
-                # EXTRACT PRIORITY FROM AI REPORT
-                # -------------------------------------------------
-
-                priority = "Not specified"
-
-                if "## Priority" in report_text:
-
-                    priority_section = report_text.split(
-                        "## Priority",
-                        1
-                    )[1]
-
-                    if "##" in priority_section:
-
-                        priority = priority_section.split(
-                            "##",
-                            1
-                        )[0].strip()
-
-                    else:
-
-                        priority = priority_section.strip()
-
-
-                # -------------------------------------------------
-                # DETERMINE HEALTH STATUS
-                # -------------------------------------------------
-
-                priority_lower = priority.lower()
-
-                if (
-                    "critical" in priority_lower
-                    or "urgent" in priority_lower
-                ):
-
-                    health_status = "🔴 Critical"
-                    maintenance_status = "Immediate Inspection"
-
-                elif "high" in priority_lower:
-
-                    health_status = "🟠 Attention Required"
-                    maintenance_status = "Inspection Recommended"
-
-                elif (
-                    "medium" in priority_lower
-                    or "moderate" in priority_lower
-                ):
-
-                    health_status = "🟡 Monitor"
-                    maintenance_status = "Further Inspection"
-
-                else:
-
-                    health_status = "🟢 Review Required"
-                    maintenance_status = "Follow Recommended Checks"
-
-
-                # -------------------------------------------------
-                # DASHBOARD CARDS
-                # -------------------------------------------------
-
-                dash1, dash2, dash3, dash4 = st.columns(4)
-
-                with dash1:
-
-                    st.markdown("### 🏭 Machine")
-                    st.write(machine_type)
-
-                with dash2:
-
-                    st.markdown("### ❤️ Health Status")
-                    st.write(health_status)
-
-                with dash3:
-
-                    st.markdown("### ⚠️ Priority")
-                    st.write(priority)
-
-                with dash4:
-
-                    st.markdown("### 🔧 Maintenance")
-                    st.write(maintenance_status)
-
-
-                st.info(
-                    f"**Machine:** {machine_type}  |  "
-                    f"**ID:** {machine_id}  |  "
-                    f"**Manufacturer:** {manufacturer}"
-                )
-
-
-                # =================================================
-                # SMART DIAGNOSIS
-                # =================================================
-
-                st.subheader(
-                    "🧠 Possible Faults & Diagnostic Checks"
-                )
-
-                st.caption(
-                    "The AI identifies possible causes, explains why they "
-                    "may be related to the symptoms, and suggests simple "
-                    "checks for confirmation."
-                )
-
-                st.markdown(
-                    diagnosis_result
-                )
-
-
-                # =================================================
-                # MAINTENANCE CHECKLIST
-                # =================================================
-
-                st.subheader(
-                    "🔧 Maintenance Checklist"
-                )
-
-                st.caption(
-                    "Tick each check when you have completed it."
-                )
-
-                check1, check2 = st.columns(2)
-
-                with check1:
-
-                    st.checkbox(
-                        "Check machine for unusual noise",
-                        key="Check machine for unusual noise"
-                    )
-
-                    st.checkbox(
-                        "Check for excessive vibration",
-                        key="Check for excessive vibration"
-                    )
-
-                    st.checkbox(
-                        "Check temperature",
-                        key="Check temperature"
-                    )
-
-                    st.checkbox(
-                        "Check for leakage",
-                        key="Check for leakage"
-                    )
-
-                with check2:
-
-                    st.checkbox(
-                        "Check lubrication condition",
-                        key="Check lubrication condition"
-                    )
-
-                    st.checkbox(
-                        "Check loose components",
-                        key="Check loose components"
-                    )
-
-                    st.checkbox(
-                        "Check alignment",
-                        key="Check alignment"
-                    )
-
-                    st.checkbox(
-                        "Check operating conditions",
-                        key="Check operating conditions"
-                    )
-
-
-                # =================================================
-                # FINAL REPORT
-                # =================================================
-
-                st.subheader(
-                    "📋 Engineering Analysis Report"
-                )
-
-                st.caption(
-                    "Generated by the MechCare AI multi-agent engineering workflow."
-                )
-
-
-                st.markdown(
-                    final_report
-                )
-
 
             except Exception as e:
 
@@ -821,6 +627,218 @@ Additional Observations:
                 st.code(
                     str(e)
                 )
+
+
+# =========================================================
+# DISPLAY AI ANALYSIS
+# =========================================================
+
+if st.session_state.analysis_result is not None:
+
+    result = st.session_state.analysis_result
+
+    # -------------------------------------------------
+    # GET DIAGNOSIS AND FINAL REPORT
+    # -------------------------------------------------
+
+    diagnosis_result = result["diagnosis"]
+    final_report = result["final_report"]
+
+
+    # =================================================
+    # ENHANCED HEALTH DASHBOARD
+    # =================================================
+
+    st.subheader("📊 Machine Health Dashboard")
+
+    report_text = final_report
+
+    # -------------------------------------------------
+    # EXTRACT PRIORITY FROM AI REPORT
+    # -------------------------------------------------
+
+    priority = "Not specified"
+
+    if "## Priority" in report_text:
+
+        priority_section = report_text.split(
+            "## Priority",
+            1
+        )[1]
+
+        if "##" in priority_section:
+
+            priority = priority_section.split(
+                "##",
+                1
+            )[0].strip()
+
+        else:
+
+            priority = priority_section.strip()
+
+
+    # -------------------------------------------------
+    # DETERMINE HEALTH STATUS
+    # -------------------------------------------------
+
+    priority_lower = priority.lower()
+
+    if (
+        "critical" in priority_lower
+        or "urgent" in priority_lower
+    ):
+
+        health_status = "🔴 Critical"
+        maintenance_status = "Immediate Inspection"
+
+    elif "high" in priority_lower:
+
+        health_status = "🟠 Attention Required"
+        maintenance_status = "Inspection Recommended"
+
+    elif (
+        "medium" in priority_lower
+        or "moderate" in priority_lower
+    ):
+
+        health_status = "🟡 Monitor"
+        maintenance_status = "Further Inspection"
+
+    else:
+
+        health_status = "🟢 Review Required"
+        maintenance_status = "Follow Recommended Checks"
+
+
+    # -------------------------------------------------
+    # DASHBOARD CARDS
+    # -------------------------------------------------
+
+    dash1, dash2, dash3, dash4 = st.columns(4)
+
+    with dash1:
+
+        st.markdown("### 🏭 Machine")
+        st.write(machine_type)
+
+    with dash2:
+
+        st.markdown("### ❤️ Health Status")
+        st.write(health_status)
+
+    with dash3:
+
+        st.markdown("### ⚠️ Priority")
+        st.write(priority)
+
+    with dash4:
+
+        st.markdown("### 🔧 Maintenance")
+        st.write(maintenance_status)
+
+
+    st.info(
+        f"**Machine:** {machine_type}  |  "
+        f"**ID:** {machine_id}  |  "
+        f"**Manufacturer:** {manufacturer}"
+    )
+
+
+    # =================================================
+    # SMART DIAGNOSIS
+    # =================================================
+
+    st.subheader(
+        "🧠 Possible Faults & Diagnostic Checks"
+    )
+
+    st.caption(
+        "The AI identifies possible causes, explains why they "
+        "may be related to the symptoms, and suggests simple "
+        "checks for confirmation."
+    )
+
+    st.markdown(
+        diagnosis_result
+    )
+
+
+    # =================================================
+    # MAINTENANCE CHECKLIST
+    # =================================================
+
+    st.subheader(
+        "🔧 Maintenance Checklist"
+    )
+
+    st.caption(
+        "Tick each check when you have completed it."
+    )
+
+    check1, check2 = st.columns(2)
+
+    with check1:
+
+        st.checkbox(
+            "Check machine for unusual noise",
+            key="Check machine for unusual noise"
+        )
+
+        st.checkbox(
+            "Check for excessive vibration",
+            key="Check for excessive vibration"
+        )
+
+        st.checkbox(
+            "Check temperature",
+            key="Check temperature"
+        )
+
+        st.checkbox(
+            "Check for leakage",
+            key="Check for leakage"
+        )
+
+    with check2:
+
+        st.checkbox(
+            "Check lubrication condition",
+            key="Check lubrication condition"
+        )
+
+        st.checkbox(
+            "Check loose components",
+            key="Check loose components"
+        )
+
+        st.checkbox(
+            "Check alignment",
+            key="Check alignment"
+        )
+
+        st.checkbox(
+            "Check operating conditions",
+            key="Check operating conditions"
+        )
+
+
+    # =================================================
+    # FINAL REPORT
+    # =================================================
+
+    st.subheader(
+        "📋 Engineering Analysis Report"
+    )
+
+    st.caption(
+        "Generated by the MechCare AI multi-agent engineering workflow."
+    )
+
+
+    st.markdown(
+        final_report
+    )
 
 
 # =========================================================
