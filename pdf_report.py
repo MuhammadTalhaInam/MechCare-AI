@@ -4,15 +4,65 @@ from reportlab.platypus import (
     Paragraph,
     Spacer,
     Table,
-    TableStyle,
-    PageBreak
+    TableStyle
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.enums import TA_CENTER
 from reportlab.lib import colors
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.units import mm
 from xml.sax.saxutils import escape
 import re
+import os
+
+
+# =================================================
+# UNICODE FONT
+# =================================================
+
+FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+FONT_BOLD_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+
+if os.path.exists(FONT_PATH) and os.path.exists(FONT_BOLD_PATH):
+
+    pdfmetrics.registerFont(
+        TTFont("DejaVuSans", FONT_PATH)
+    )
+
+    pdfmetrics.registerFont(
+        TTFont("DejaVuSans-Bold", FONT_BOLD_PATH)
+    )
+
+    NORMAL_FONT = "DejaVuSans"
+    BOLD_FONT = "DejaVuSans-Bold"
+
+else:
+
+    NORMAL_FONT = "Helvetica"
+    BOLD_FONT = "Helvetica-Bold"
+
+
+def clean_text(text):
+
+    """
+    Clean hidden/control characters that can sometimes
+    appear in user or AI-generated text.
+    """
+
+    text = str(text)
+
+    # Remove zero-width characters
+    text = text.replace("\u200b", "")
+    text = text.replace("\u200c", "")
+    text = text.replace("\u200d", "")
+    text = text.replace("\ufeff", "")
+
+    # Replace unusual line characters
+    text = text.replace("\r", "")
+    text = text.replace("\t", " ")
+
+    return text.strip()
 
 
 def create_pdf_report(
@@ -45,7 +95,7 @@ def create_pdf_report(
     title_style = ParagraphStyle(
         "CustomTitle",
         parent=styles["Title"],
-        fontName="Helvetica-Bold",
+        fontName=BOLD_FONT,
         fontSize=24,
         leading=28,
         alignment=TA_CENTER,
@@ -56,7 +106,7 @@ def create_pdf_report(
     subtitle_style = ParagraphStyle(
         "Subtitle",
         parent=styles["Normal"],
-        fontName="Helvetica",
+        fontName=NORMAL_FONT,
         fontSize=11,
         leading=15,
         alignment=TA_CENTER,
@@ -67,7 +117,7 @@ def create_pdf_report(
     section_style = ParagraphStyle(
         "Section",
         parent=styles["Heading2"],
-        fontName="Helvetica-Bold",
+        fontName=BOLD_FONT,
         fontSize=13,
         leading=17,
         textColor=colors.HexColor("#17365D"),
@@ -78,7 +128,7 @@ def create_pdf_report(
     body_style = ParagraphStyle(
         "Body",
         parent=styles["BodyText"],
-        fontName="Helvetica",
+        fontName=NORMAL_FONT,
         fontSize=9.5,
         leading=14,
         textColor=colors.HexColor("#222222"),
@@ -101,10 +151,21 @@ def create_pdf_report(
         spaceAfter=6
     )
 
+    cause_style = ParagraphStyle(
+        "CauseHeading",
+        parent=section_style,
+        fontName=BOLD_FONT,
+        fontSize=11,
+        leading=14,
+        textColor=colors.HexColor("#244F7A"),
+        spaceBefore=7,
+        spaceAfter=4
+    )
+
     small_style = ParagraphStyle(
         "Small",
         parent=styles["Normal"],
-        fontName="Helvetica",
+        fontName=NORMAL_FONT,
         fontSize=8,
         leading=11,
         textColor=colors.HexColor("#666666")
@@ -117,7 +178,7 @@ def create_pdf_report(
     story = []
 
     # =================================================
-    # HEADER / TITLE
+    # TITLE
     # =================================================
 
     story.append(Spacer(1, 8))
@@ -147,24 +208,36 @@ def create_pdf_report(
         )
     )
 
+    machine_type = clean_text(machine_type)
+    machine_id = clean_text(machine_id)
+    manufacturer = clean_text(manufacturer)
+
     machine_data = [
         [
             Paragraph("<b>Machine Type</b>", body_style),
-            Paragraph(escape(str(machine_type)), body_style),
+            Paragraph(escape(machine_type), body_style),
             Paragraph("<b>Machine ID</b>", body_style),
-            Paragraph(escape(str(machine_id)), body_style)
+            Paragraph(escape(machine_id), body_style)
         ],
         [
             Paragraph("<b>Manufacturer</b>", body_style),
-            Paragraph(escape(str(manufacturer)), body_style),
+            Paragraph(escape(manufacturer), body_style),
             Paragraph("<b>Report</b>", body_style),
-            Paragraph("AI-Assisted Engineering Analysis", body_style)
+            Paragraph(
+                "AI-Assisted Engineering Analysis",
+                body_style
+            )
         ]
     ]
 
     machine_table = Table(
         machine_data,
-        colWidths=[32 * mm, 52 * mm, 30 * mm, 52 * mm]
+        colWidths=[
+            32 * mm,
+            52 * mm,
+            30 * mm,
+            52 * mm
+        ]
     )
 
     machine_table.setStyle(
@@ -243,32 +316,33 @@ def create_pdf_report(
         )
     )
 
+    final_report = clean_text(final_report)
+
     # =================================================
-    # CLEAN AI REPORT
+    # PROCESS AI REPORT
     # =================================================
 
-    lines = final_report.split("\n")
+    for raw_line in final_report.split("\n"):
 
-    cause_number = 0
-
-    for raw_line in lines:
-
-        line = raw_line.strip()
+        line = clean_text(raw_line)
 
         if not line:
             story.append(Spacer(1, 4))
             continue
 
         # -------------------------------------------------
-        # Remove Markdown heading symbols
+        # Markdown headings
         # -------------------------------------------------
 
         if line.startswith("### "):
+
             heading = line[4:].strip()
 
             story.append(
                 Paragraph(
-                    escape(heading),
+                    escape(
+                        heading.replace("**", "")
+                    ),
                     section_style
                 )
             )
@@ -276,11 +350,14 @@ def create_pdf_report(
             continue
 
         if line.startswith("## "):
+
             heading = line[3:].strip()
 
             story.append(
                 Paragraph(
-                    escape(heading),
+                    escape(
+                        heading.replace("**", "")
+                    ),
                     section_style
                 )
             )
@@ -292,8 +369,6 @@ def create_pdf_report(
         # -------------------------------------------------
 
         if line.lower().startswith("possible cause"):
-
-            cause_number += 1
 
             clean_heading = re.sub(
                 r"^#+\s*",
@@ -309,15 +384,7 @@ def create_pdf_report(
             story.append(
                 Paragraph(
                     escape(clean_heading),
-                    ParagraphStyle(
-                        "CauseHeading",
-                        parent=section_style,
-                        fontSize=11,
-                        leading=14,
-                        textColor=colors.HexColor("#244F7A"),
-                        spaceBefore=7,
-                        spaceAfter=4
-                    )
+                    cause_style
                 )
             )
 
@@ -341,7 +408,8 @@ def create_pdf_report(
 
             story.append(
                 Paragraph(
-                    f"<b>{number}.</b> {escape(text)}",
+                    f"<b>{number}.</b> "
+                    f"{escape(text)}",
                     numbered_style
                 )
             )
@@ -356,8 +424,10 @@ def create_pdf_report(
 
             bullet_text = line[2:].strip()
 
-            # Remove Markdown bold
-            bullet_text = bullet_text.replace("**", "")
+            bullet_text = bullet_text.replace(
+                "**",
+                ""
+            )
 
             story.append(
                 Paragraph(
@@ -369,12 +439,14 @@ def create_pdf_report(
             continue
 
         # -------------------------------------------------
-        # Bold labels such as Why / How to Confirm
+        # Bold labels
         # -------------------------------------------------
 
-        clean_line = line.replace("**", "")
+        clean_line = line.replace(
+            "**",
+            ""
+        )
 
-        # Detect labels before colon
         if ":" in clean_line:
 
             label, content = clean_line.split(
@@ -472,10 +544,6 @@ def create_pdf_report(
 
     story.append(Spacer(1, 15))
 
-    # =================================================
-    # FOOTER
-    # =================================================
-
     story.append(
         Paragraph(
             "Generated by MechCare AI",
@@ -491,7 +559,7 @@ def create_pdf_report(
     )
 
     # =================================================
-    # PAGE NUMBER
+    # FOOTER / PAGE NUMBER
     # =================================================
 
     def add_page_number(canvas, doc):
@@ -512,7 +580,7 @@ def create_pdf_report(
         )
 
         canvas.setFont(
-            "Helvetica",
+            NORMAL_FONT,
             8
         )
 
