@@ -709,7 +709,29 @@ Additional Observations:
                 st.markdown(
                     diagnosis_result
                 )
+# =================================================
+# MAINTENANCE CHECKLIST
+# =================================================
 
+st.subheader("🔧 Maintenance Checklist")
+
+st.caption(
+    "Use these checks as a practical guide during inspection."
+)
+
+check1, check2 = st.columns(2)
+
+with check1:
+    st.checkbox("☐ Check machine for unusual noise")
+    st.checkbox("☐ Check for excessive vibration")
+    st.checkbox("☐ Check temperature")
+    st.checkbox("☐ Check for leakage")
+
+with check2:
+    st.checkbox("☐ Check lubrication condition")
+    st.checkbox("☐ Check loose components")
+    st.checkbox("☐ Check alignment")
+    st.checkbox("☐ Check operating conditions")
 
                 # =================================================
                 # FINAL REPORT
