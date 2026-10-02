@@ -1,4 +1,3 @@
-
 from llm_config import create_llm
 
 from agents.problem_agent import create_problem_analysis_agent
@@ -16,6 +15,7 @@ async def run_mechcare(machine_problem):
 
     # Create LLM
     llm = create_llm()
+
 
     # =========================
     # AGENT 1 — PROBLEM ANALYSIS
@@ -89,6 +89,10 @@ MACHINE INFORMATION:
 
 {machine_problem}
 
+FAULT DIAGNOSIS FROM AGENT 2:
+
+{diagnosis_result}
+
 MAINTENANCE PLAN FROM AGENT 3:
 
 {maintenance_result}
@@ -101,4 +105,7 @@ MAINTENANCE PLAN FROM AGENT 3:
     # FINAL RESULT
     # =========================
 
-    return safety_result
+    return {
+        "diagnosis": str(diagnosis_result),
+        "final_report": str(safety_result)
+    }
