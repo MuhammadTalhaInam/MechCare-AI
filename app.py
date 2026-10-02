@@ -1,5 +1,7 @@
 import streamlit as st
 import asyncio
+import json
+import os
 from datetime import datetime
 
 from crew import run_mechcare
@@ -55,11 +57,54 @@ if "agents_completed" not in st.session_state:
 
 
 # =========================================================
-# MAINTENANCE HISTORY STATE
+# MAINTENANCE HISTORY
 # =========================================================
 
+HISTORY_FILE = "maintenance_history.json"
+
+
+def load_maintenance_history():
+
+    if os.path.exists(HISTORY_FILE):
+
+        try:
+
+            with open(
+                HISTORY_FILE,
+                "r",
+                encoding="utf-8"
+            ) as file:
+
+                return json.load(file)
+
+        except Exception:
+
+            return []
+
+    return []
+
+
+def save_maintenance_history(history):
+
+    with open(
+        HISTORY_FILE,
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(
+            history,
+            file,
+            indent=4,
+            ensure_ascii=False
+        )
+
+
 if "maintenance_history" not in st.session_state:
-    st.session_state.maintenance_history = []
+
+    st.session_state.maintenance_history = (
+        load_maintenance_history()
+    )
 
 
 # =========================================================
@@ -697,6 +742,10 @@ Additional Observations:
                     history_record
                 )
 
+                save_maintenance_history(
+                    st.session_state.maintenance_history
+                )
+
                 st.success(
                     "✅ Machine analysis completed successfully."
                 )
@@ -982,7 +1031,7 @@ if st.session_state.maintenance_history:
     st.subheader("📚 Maintenance History")
 
     st.caption(
-        "Previous machine analyses completed during this app session."
+        "Previous machine analyses saved by MechCare AI."
     )
 
     for index, record in enumerate(
