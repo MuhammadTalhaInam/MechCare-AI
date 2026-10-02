@@ -45,6 +45,14 @@ if "analysis_result" not in st.session_state:
 
 
 # =========================================================
+# AGENT WORKFLOW STATE
+# =========================================================
+
+if "agents_completed" not in st.session_state:
+    st.session_state.agents_completed = False
+
+
+# =========================================================
 # CUSTOM CSS
 # =========================================================
 
@@ -609,6 +617,9 @@ Additional Observations:
 
                 # SAVE THE AI RESULT
                 st.session_state.analysis_result = result
+
+                # MARK ALL AGENTS AS COMPLETED
+                st.session_state.agents_completed = True
 
                 st.success(
                     "✅ Machine analysis completed successfully."
