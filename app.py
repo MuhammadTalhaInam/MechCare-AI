@@ -709,6 +709,7 @@ Additional Observations:
                 st.markdown(
                     diagnosis_result
                 )
+                
 # =================================================
 # MAINTENANCE CHECKLIST
 # =================================================
