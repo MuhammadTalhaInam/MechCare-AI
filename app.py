@@ -83,8 +83,6 @@ with col1:
         ]
     )
 
-    # Model options according to machine type
-
     model_options = {
 
         "Centrifugal Pump": [
@@ -147,6 +145,7 @@ with col1:
         "Model",
         model_options[machine_type]
     )
+
 
 with col2:
 
@@ -217,7 +216,7 @@ st.divider()
 
 
 # =================================================
-# SYMPTOM SELECTION
+# MACHINE SYMPTOMS
 # =================================================
 
 st.header("📋 Machine Symptoms")
@@ -287,7 +286,7 @@ st.divider()
 
 
 # =================================================
-# WORKFLOW
+# AI AGENT WORKFLOW
 # =================================================
 
 st.header("🤖 AI Agent Workflow")
@@ -343,8 +342,6 @@ if st.button(
     use_container_width=True
 ):
 
-    # Check problem description
-
     if not problem_description.strip():
 
         st.warning(
@@ -355,7 +352,7 @@ if st.button(
 
 
     # =================================================
-    # COMBINE USER INFORMATION
+    # PREPARE MACHINE INFORMATION
     # =================================================
 
     selected_symptoms = ", ".join(symptoms)
@@ -397,7 +394,7 @@ ADDITIONAL OBSERVATIONS
 
 
     # =================================================
-    # RUN AI WORKFLOW
+    # RUN MECHCARE AI
     # =================================================
 
     with st.spinner(
