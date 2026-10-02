@@ -2,6 +2,7 @@ import streamlit as st
 import asyncio
 
 from crew import run_mechcare
+from pdf_report import create_pdf_report
 
 
 # =========================================================
