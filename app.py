@@ -193,25 +193,10 @@ for column, agent in zip(workflow_columns, workflow):
 
     with column:
 
-        st.markdown(
-            f"""
-            <div class="agent-card">
-
-                <div class="agent-number">
-                    {number}
-                </div>
-
-                <div class="agent-title">
-                    {title}
-                </div>
-
-                <div class="agent-description">
-                    {description}
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
+        st.info(
+            f"**{number}**\n\n"
+            f"### {title}\n\n"
+            f"{description}"
         )
 
 
