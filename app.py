@@ -638,9 +638,10 @@ if st.session_state.analysis_result is not None:
     result = st.session_state.analysis_result
 
     # -------------------------------------------------
-    # GET DIAGNOSIS AND FINAL REPORT
+    # GET PROBLEM ANALYSIS, DIAGNOSIS AND FINAL REPORT
     # -------------------------------------------------
 
+    problem_analysis = result["problem_analysis"]
     diagnosis_result = result["diagnosis"]
     final_report = result["final_report"]
 
@@ -742,6 +743,24 @@ if st.session_state.analysis_result is not None:
         f"**Machine:** {machine_type}  |  "
         f"**ID:** {machine_id}  |  "
         f"**Manufacturer:** {manufacturer}"
+    )
+
+
+    # =================================================
+    # ADDITIONAL DATA RECOMMENDED
+    # =================================================
+
+    st.subheader(
+        "📈 Additional Data Recommended"
+    )
+
+    st.caption(
+        "Collecting the following measurements or information "
+        "can help confirm the possible machine fault."
+    )
+
+    st.markdown(
+        problem_analysis
     )
 
 
