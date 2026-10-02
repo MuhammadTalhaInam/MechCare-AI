@@ -105,7 +105,8 @@ MAINTENANCE PLAN FROM AGENT 3:
     # FINAL RESULT
     # =========================
 
-    return {
-        "diagnosis": str(diagnosis_result),
-        "final_report": str(safety_result)
-    }
+return {
+    "problem_analysis": str(problem_result),
+    "diagnosis": str(diagnosis_result),
+    "final_report": str(safety_result)
+}
