@@ -17,6 +17,26 @@ st.set_page_config(
 
 
 # =========================================================
+# CHECKLIST STATE
+# =========================================================
+
+checklist_items = [
+    "Check machine for unusual noise",
+    "Check for excessive vibration",
+    "Check temperature",
+    "Check for leakage",
+    "Check lubrication condition",
+    "Check loose components",
+    "Check alignment",
+    "Check operating conditions"
+]
+
+for item in checklist_items:
+    if item not in st.session_state:
+        st.session_state[item] = False
+
+
+# =========================================================
 # CUSTOM CSS
 # =========================================================
 
@@ -720,7 +740,7 @@ Additional Observations:
                 )
 
                 st.caption(
-                    "Use these checks as a practical guide during inspection."
+                    "Tick each check when you have completed it."
                 )
 
                 check1, check2 = st.columns(2)
@@ -728,37 +748,45 @@ Additional Observations:
                 with check1:
 
                     st.checkbox(
-                        "☐ Check machine for unusual noise"
+                        "Check machine for unusual noise",
+                        key="Check machine for unusual noise"
                     )
 
                     st.checkbox(
-                        "☐ Check for excessive vibration"
+                        "Check for excessive vibration",
+                        key="Check for excessive vibration"
                     )
 
                     st.checkbox(
-                        "☐ Check temperature"
+                        "Check temperature",
+                        key="Check temperature"
                     )
 
                     st.checkbox(
-                        "☐ Check for leakage"
+                        "Check for leakage",
+                        key="Check for leakage"
                     )
 
                 with check2:
 
                     st.checkbox(
-                        "☐ Check lubrication condition"
+                        "Check lubrication condition",
+                        key="Check lubrication condition"
                     )
 
                     st.checkbox(
-                        "☐ Check loose components"
+                        "Check loose components",
+                        key="Check loose components"
                     )
 
                     st.checkbox(
-                        "☐ Check alignment"
+                        "Check alignment",
+                        key="Check alignment"
                     )
 
                     st.checkbox(
-                        "☐ Check operating conditions"
+                        "Check operating conditions",
+                        key="Check operating conditions"
                     )
 
 
