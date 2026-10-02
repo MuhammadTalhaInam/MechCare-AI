@@ -12,29 +12,29 @@ def create_fault_diagnosis_task(agent):
         ),
 
         expected_output=(
-            "Give the result in this format:\n\n"
+    "Give the result in this format using Markdown:\n\n"
 
-            "Possible Cause 1: [cause]\n"
-            "Why: [short reason]\n"
-            "How to Confirm: [simple inspection or measurement]\n\n"
+    "## **Possible Cause 1: [cause]**\n"
+    "**Why:** [short reason]\n"
+    "**How to Confirm:** [simple inspection or measurement]\n\n"
 
-            "Possible Cause 2: [cause]\n"
-            "Why: [short reason]\n"
-            "How to Confirm: [simple inspection or measurement]\n\n"
+    "## **Possible Cause 2: [cause]**\n"
+    "**Why:** [short reason]\n"
+    "**How to Confirm:** [simple inspection or measurement]\n\n"
 
-            "Possible Cause 3: [cause]\n"
-            "Why: [short reason]\n"
-            "How to Confirm: [simple inspection or measurement]\n\n"
+    "## **Possible Cause 3: [cause]**\n"
+    "**Why:** [short reason]\n"
+    "**How to Confirm:** [simple inspection or measurement]\n\n"
 
-            "Possible Cause 4: [cause]\n"
-            "Why: [short reason]\n"
-            "How to Confirm: [simple inspection or measurement]\n\n"
+    "## **Possible Cause 4: [cause]**\n"
+    "**Why:** [short reason]\n"
+    "**How to Confirm:** [simple inspection or measurement]\n\n"
 
-            "Use only the causes that are relevant to the machine problem. "
-            "Maximum 4 possible causes. "
-            "Keep the language simple and practical. "
-            "Maximum 250 words."
-        ),
+    "Use only the causes that are relevant to the machine problem. "
+    "Maximum 4 possible causes. "
+    "Keep the language simple and practical. "
+    "Maximum 250 words."
+),
 
         agent=agent
     )
