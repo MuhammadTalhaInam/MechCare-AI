@@ -1,5 +1,6 @@
 import streamlit as st
 import asyncio
+from datetime import datetime
 
 from crew import run_mechcare
 from pdf_report import create_pdf_report
@@ -51,6 +52,14 @@ if "analysis_result" not in st.session_state:
 
 if "agents_completed" not in st.session_state:
     st.session_state.agents_completed = False
+
+
+# =========================================================
+# MAINTENANCE HISTORY STATE
+# =========================================================
+
+if "maintenance_history" not in st.session_state:
+    st.session_state.maintenance_history = []
 
 
 # =========================================================
@@ -622,6 +631,72 @@ Additional Observations:
                 # MARK ALL AGENTS AS COMPLETED
                 st.session_state.agents_completed = True
 
+                # -------------------------------------------------
+                # SAVE MAINTENANCE HISTORY
+                # -------------------------------------------------
+
+                final_report_for_history = result["final_report"]
+
+                history_priority = "Not specified"
+
+                if "## Priority" in final_report_for_history:
+
+                    priority_section = final_report_for_history.split(
+                        "## Priority",
+                        1
+                    )[1]
+
+                    if "##" in priority_section:
+
+                        history_priority = priority_section.split(
+                            "##",
+                            1
+                        )[0].strip()
+
+                    else:
+
+                        history_priority = priority_section.strip()
+
+
+                history_summary = "Analysis completed successfully."
+
+                if "## Final Summary" in final_report_for_history:
+
+                    summary_section = final_report_for_history.split(
+                        "## Final Summary",
+                        1
+                    )[1]
+
+                    if "##" in summary_section:
+
+                        history_summary = summary_section.split(
+                            "##",
+                            1
+                        )[0].strip()
+
+                    else:
+
+                        history_summary = summary_section.strip()
+
+
+                history_record = {
+                    "Date & Time": datetime.now().strftime(
+                        "%d %b %Y, %I:%M %p"
+                    ),
+                    "Machine": machine_type,
+                    "Machine ID": machine_id,
+                    "Manufacturer": manufacturer,
+                    "Problem": problem_description
+                    if problem_description.strip()
+                    else ", ".join(selected_symptoms),
+                    "Priority": history_priority,
+                    "Summary": history_summary
+                }
+
+                st.session_state.maintenance_history.append(
+                    history_record
+                )
+
                 st.success(
                     "✅ Machine analysis completed successfully."
                 )
@@ -894,6 +969,57 @@ if st.session_state.analysis_result is not None:
             mime="application/pdf",
             use_container_width=True
         )
+
+
+# =========================================================
+# MAINTENANCE HISTORY
+# =========================================================
+
+if st.session_state.maintenance_history:
+
+    st.divider()
+
+    st.subheader("📚 Maintenance History")
+
+    st.caption(
+        "Previous machine analyses completed during this app session."
+    )
+
+    for index, record in enumerate(
+        reversed(st.session_state.maintenance_history)
+    ):
+
+        with st.expander(
+            f"🔧 {record['Machine']} | "
+            f"{record['Machine ID']} | "
+            f"{record['Date & Time']}"
+        ):
+
+            history_col1, history_col2, history_col3 = st.columns(3)
+
+            with history_col1:
+
+                st.markdown("**Machine**")
+                st.write(record["Machine"])
+
+            with history_col2:
+
+                st.markdown("**Machine ID**")
+                st.write(record["Machine ID"])
+
+            with history_col3:
+
+                st.markdown("**Priority**")
+                st.write(record["Priority"])
+
+            st.markdown("**Manufacturer**")
+            st.write(record["Manufacturer"])
+
+            st.markdown("**Problem**")
+            st.write(record["Problem"])
+
+            st.markdown("**Final Summary**")
+            st.write(record["Summary"])
 
 
 # =========================================================
