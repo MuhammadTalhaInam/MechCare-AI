@@ -867,8 +867,33 @@ if st.session_state.analysis_result is not None:
     )
 
 
-    st.markdown(
-        final_report
+   st.markdown(
+    final_report
+)
+
+
+# =================================================
+# PDF REPORT DOWNLOAD
+# =================================================
+
+pdf_filename = "MechCare_AI_Report.pdf"
+
+create_pdf_report(
+    pdf_filename,
+    machine_type,
+    machine_id,
+    manufacturer,
+    final_report
+)
+
+with open(pdf_filename, "rb") as pdf_file:
+
+    st.download_button(
+        label="📄 Download PDF Report",
+        data=pdf_file,
+        file_name="MechCare_AI_Report.pdf",
+        mime="application/pdf",
+        use_container_width=True
     )
 
 
