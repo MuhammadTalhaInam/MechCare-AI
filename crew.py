@@ -13,13 +13,7 @@ from tasks.safety_task import create_safety_final_report_task
 
 async def run_mechcare(machine_problem):
 
-    # Create LLM
     llm = create_llm()
-
-
-    # =========================
-    # AGENT 1 — PROBLEM ANALYSIS
-    # =========================
 
     problem_agent = create_problem_analysis_agent(llm)
     problem_task = create_problem_analysis_task(problem_agent)
@@ -33,10 +27,6 @@ USER MACHINE INFORMATION:
 
     problem_result = await problem_agent.aexecute_task(problem_task)
 
-
-    # =========================
-    # AGENT 2 — FAULT DIAGNOSIS
-    # =========================
 
     diagnosis_agent = create_fault_diagnosis_agent(llm)
     diagnosis_task = create_fault_diagnosis_task(diagnosis_agent)
@@ -55,10 +45,6 @@ PROBLEM ANALYSIS FROM AGENT 1:
     diagnosis_result = await diagnosis_agent.aexecute_task(diagnosis_task)
 
 
-    # =========================
-    # AGENT 3 — MAINTENANCE
-    # =========================
-
     maintenance_agent = create_maintenance_planning_agent(llm)
     maintenance_task = create_maintenance_planning_task(maintenance_agent)
 
@@ -73,12 +59,10 @@ FAULT DIAGNOSIS FROM AGENT 2:
 {diagnosis_result}
 """
 
-    maintenance_result = await maintenance_agent.aexecute_task(maintenance_task)
+    maintenance_result = await maintenance_agent.aexecute_task(
+        maintenance_task
+    )
 
-
-    # =========================
-    # AGENT 4 — SAFETY & REPORT
-    # =========================
 
     safety_agent = create_safety_final_report_agent(llm)
     safety_task = create_safety_final_report_task(safety_agent)
@@ -101,12 +85,8 @@ MAINTENANCE PLAN FROM AGENT 3:
     safety_result = await safety_agent.aexecute_task(safety_task)
 
 
-    # =========================
-    # FINAL RESULT
-    # =========================
-
-return {
-    "problem_analysis": str(problem_result),
-    "diagnosis": str(diagnosis_result),
-    "final_report": str(safety_result)
-}
+    return {
+        "problem_analysis": str(problem_result),
+        "diagnosis": str(diagnosis_result),
+        "final_report": str(safety_result)
+    }
