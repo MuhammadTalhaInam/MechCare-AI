@@ -1,12 +1,11 @@
 import streamlit as st
 import asyncio
-import html
 
 from crew import run_mechcare
 
 
 # =========================================================
-# PAGE CONFIGURATION
+# PAGE CONFIG
 # =========================================================
 
 st.set_page_config(
@@ -25,10 +24,6 @@ st.markdown(
     """
     <style>
 
-    /* ================================
-       MAIN APP
-    ================================= */
-
     .stApp {
         background: linear-gradient(
             135deg,
@@ -36,246 +31,94 @@ st.markdown(
             #0b1728 50%,
             #101c2f 100%
         );
-        color: #f1f5f9;
     }
 
     .block-container {
+        max-width: 1250px;
         padding-top: 2rem;
         padding-bottom: 3rem;
-        max-width: 1250px;
     }
 
-
-    /* ================================
-       HERO
-    ================================= */
-
-    .hero-box {
-        background: linear-gradient(
-            135deg,
-            #0d2238,
-            #102d49
-        );
+    /* Hero */
+    .hero {
+        background: linear-gradient(135deg, #0d2238, #102d49);
         border: 1px solid #1e4d73;
         border-radius: 22px;
-        padding: 38px 40px;
-        margin-bottom: 28px;
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+        padding: 35px;
+        margin-bottom: 25px;
     }
 
-    .main-title {
+    .hero h1 {
+        color: #f8fafc;
         font-size: 46px;
-        font-weight: 800;
-        margin-bottom: 8px;
-        color: #f8fafc;
-    }
-
-    .main-subtitle {
-        font-size: 21px;
-        font-weight: 600;
-        color: #38bdf8;
-        margin-bottom: 15px;
-    }
-
-    .main-description {
-        font-size: 16px;
-        line-height: 1.7;
-        color: #cbd5e1;
-        max-width: 950px;
-    }
-
-
-    /* ================================
-       SECTIONS
-    ================================= */
-
-    .section-box {
-        background: #0d1b2a;
-        border: 1px solid #20384f;
-        border-radius: 18px;
-        padding: 25px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-    .section-title {
-        font-size: 25px;
-        font-weight: 700;
-        color: #f8fafc;
         margin-bottom: 5px;
     }
 
-    .section-description {
-        color: #94a3b8;
-        font-size: 14px;
-        line-height: 1.6;
+    .hero h3 {
+        color: #38bdf8;
+        margin-top: 0;
     }
 
+    .hero p {
+        color: #cbd5e1;
+        font-size: 16px;
+        line-height: 1.7;
+    }
 
-    /* ================================
-       WORKFLOW CARDS
-    ================================= */
-
-    .workflow-card {
-        background: linear-gradient(
-            145deg,
-            #0c1a29,
-            #102338
-        );
+    /* Workflow cards */
+    .agent-card {
+        background: #0d1b2a;
         border: 1px solid #29445d;
         border-radius: 16px;
         padding: 20px;
-        min-height: 190px;
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
-        transition: all 0.2s ease;
+        min-height: 180px;
     }
 
-    .workflow-card:hover {
-        border-color: #38bdf8;
-        transform: translateY(-3px);
-    }
-
-    .workflow-number {
-        display: inline-block;
-        font-size: 12px;
-        font-weight: 800;
+    .agent-number {
         color: #38bdf8;
-        background: #102f49;
-        border: 1px solid #245b7d;
-        border-radius: 20px;
-        padding: 5px 10px;
-        margin-bottom: 12px;
+        font-weight: 800;
+        font-size: 13px;
     }
 
-    .workflow-title {
-        font-size: 17px;
-        font-weight: 700;
+    .agent-title {
         color: #f8fafc;
-        line-height: 1.4;
+        font-weight: 700;
+        font-size: 17px;
+        margin-top: 10px;
         margin-bottom: 10px;
     }
 
-    .workflow-text {
-        font-size: 13px;
+    .agent-description {
         color: #94a3b8;
+        font-size: 13px;
         line-height: 1.6;
     }
 
-
-    /* ================================
-       SYMPTOM TAGS
-    ================================= */
-
-    .symptom-container {
-        margin-top: 10px;
-        margin-bottom: 15px;
-    }
-
-    .symptom-tag {
-        display: inline-block;
+    /* Selected symptom */
+    .symptom-box {
         background: #123653;
         border: 1px solid #1d668f;
-        color: #7dd3fc;
-        border-radius: 20px;
-        padding: 7px 13px;
-        margin: 4px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-
-    /* ================================
-       INPUTS
-    ================================= */
-
-    label {
-        color: #dbeafe !important;
-        font-weight: 600 !important;
-    }
-
-    div[data-baseweb="select"] > div {
-        background-color: #101f31 !important;
-        border-color: #29445d !important;
-    }
-
-    textarea {
-        background-color: #101f31 !important;
-        color: #f8fafc !important;
-    }
-
-    input {
-        background-color: #101f31 !important;
-        color: #f8fafc !important;
-    }
-
-
-    /* ================================
-       BUTTON
-    ================================= */
-
-    .stButton > button {
-        width: 100%;
         border-radius: 12px;
-        padding: 14px;
-        font-size: 17px;
-        font-weight: 700;
-        border: none;
-        background: linear-gradient(
-            90deg,
-            #0284c7,
-            #06b6d4
-        );
-        color: white;
-        transition: all 0.2s ease;
+        padding: 12px 15px;
+        color: #7dd3fc;
+        margin-top: 10px;
     }
 
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(6, 182, 212, 0.25);
-    }
-
-
-    /* ================================
-       REPORT
-    ================================= */
-
+    /* Report */
     .report-box {
         background: #0b1928;
         border: 1px solid #245276;
         border-radius: 18px;
-        padding: 30px;
-        margin-top: 20px;
+        padding: 25px;
+        color: #dbeafe;
         line-height: 1.7;
-        color: #dbeafe;
     }
-
-    .report-box h1,
-    .report-box h2 {
-        color: #38bdf8;
-        border-bottom: 1px solid #29445d;
-        padding-bottom: 8px;
-    }
-
-    .report-box h3 {
-        color: #67e8f9;
-    }
-
-    .report-box p,
-    .report-box li {
-        color: #dbeafe;
-    }
-
-
-    /* ================================
-       FOOTER
-    ================================= */
 
     .footer {
         text-align: center;
         color: #64748b;
-        margin-top: 45px;
-        font-size: 13px;
-        line-height: 1.7;
+        margin-top: 40px;
+        padding: 20px;
     }
 
     </style>
@@ -290,24 +133,16 @@ st.markdown(
 
 st.markdown(
     """
-    <div class="hero-box">
-
-        <div class="main-title">
-            ⚙️ MechCare AI
-        </div>
-
-        <div class="main-subtitle">
-            AI-Powered Machine Maintenance & Troubleshooting Assistant
-        </div>
-
-        <div class="main-description">
+    <div class="hero">
+        <h1>⚙️ MechCare AI</h1>
+        <h3>AI-Powered Machine Maintenance & Troubleshooting Assistant</h3>
+        <p>
             Describe your machine, operating conditions, and observed
             symptoms. MechCare AI uses a multi-agent engineering workflow
             to analyze the problem, identify possible causes, suggest
             maintenance actions, and generate a structured safety-focused
             report.
-        </div>
-
+        </p>
     </div>
     """,
     unsafe_allow_html=True
@@ -315,74 +150,62 @@ st.markdown(
 
 
 # =========================================================
-# AI WORKFLOW
+# WORKFLOW
 # =========================================================
 
-st.markdown(
-    """
-    <div class="section-box">
+st.subheader("🤖 How MechCare AI Works")
 
-        <div class="section-title">
-            🤖 How MechCare AI Works
-        </div>
-
-        <div class="section-description">
-            Your machine problem passes through four specialized AI agents.
-            Each agent performs a different engineering task before the
-            final report is generated.
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
+st.caption(
+    "Your machine problem passes through four specialized AI agents. "
+    "Each agent performs a different engineering task before the final report is generated."
 )
 
 
-workflow_cols = st.columns(4)
-
-workflow_data = [
+workflow = [
     (
-        "01",
+        "AGENT 01",
         "🔍 Problem Analysis Agent",
         "Analyzes machine information, symptoms, observations, and missing information."
     ),
     (
-        "02",
+        "AGENT 02",
         "🧠 Fault Diagnosis Agent",
         "Examines symptoms and identifies possible mechanical and operational causes."
     ),
     (
-        "03",
+        "AGENT 03",
         "🛠️ Maintenance Planning Agent",
         "Converts possible causes into practical inspection and maintenance actions."
     ),
     (
-        "04",
+        "AGENT 04",
         "🛡️ Safety & Final Report Agent",
         "Reviews the previous results and creates the final safety-focused engineering report."
     )
 ]
 
 
-for col, data in zip(workflow_cols, workflow_data):
+workflow_columns = st.columns(4)
 
-    number, title, description = data
+for column, agent in zip(workflow_columns, workflow):
 
-    with col:
+    number, title, description = agent
+
+    with column:
 
         st.markdown(
             f"""
-            <div class="workflow-card">
+            <div class="agent-card">
 
-                <div class="workflow-number">
-                    AGENT {number}
+                <div class="agent-number">
+                    {number}
                 </div>
 
-                <div class="workflow-title">
+                <div class="agent-title">
                     {title}
                 </div>
 
-                <div class="workflow-text">
+                <div class="agent-description">
                     {description}
                 </div>
 
@@ -392,32 +215,19 @@ for col, data in zip(workflow_cols, workflow_data):
         )
 
 
+st.divider()
+
+
 # =========================================================
 # MACHINE PROFILE
 # =========================================================
 
-st.markdown(
-    """
-    <div class="section-box">
+st.subheader("🏭 Machine Profile")
 
-        <div class="section-title">
-            🏭 Machine Profile
-        </div>
-
-        <div class="section-description">
-            Provide basic information about the machine so the AI can
-            understand its operating context.
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
+st.caption(
+    "Provide basic information about the machine so the AI can understand its operating context."
 )
 
-
-# =========================================================
-# MACHINE MODELS
-# =========================================================
 
 MACHINE_MODELS = {
 
@@ -479,7 +289,7 @@ MACHINE_MODELS = {
 
 
 # =========================================================
-# MACHINE PROFILE INPUTS
+# MACHINE INFORMATION
 # =========================================================
 
 col1, col2, col3 = st.columns(3)
@@ -629,26 +439,18 @@ with col9:
     )
 
 
+st.divider()
+
+
 # =========================================================
-# SMART SYMPTOM SELECTION
+# SYMPTOMS
 # =========================================================
 
-st.markdown(
-    """
-    <div class="section-box">
+st.subheader("🔍 Observed Symptoms")
 
-        <div class="section-title">
-            🔍 Observed Symptoms
-        </div>
-
-        <div class="section-description">
-            Select all symptoms currently observed in the machine.
-            You can select multiple symptoms.
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
+st.caption(
+    "Select all symptoms currently observed in the machine. "
+    "You can select multiple symptoms."
 )
 
 
@@ -677,51 +479,23 @@ selected_symptoms = st.multiselect(
 
 if selected_symptoms:
 
-    st.markdown(
-        "### Selected Symptoms"
+    st.info(
+        "Selected symptoms: " + "  •  ".join(selected_symptoms)
     )
 
-    symptom_html = '<div class="symptom-container">'
 
-    for symptom in selected_symptoms:
-
-        safe_symptom = html.escape(symptom)
-
-        symptom_html += (
-            f'<span class="symptom-tag">'
-            f'{safe_symptom}'
-            f'</span>'
-        )
-
-    symptom_html += "</div>"
-
-    st.markdown(
-        symptom_html,
-        unsafe_allow_html=True
-    )
+st.divider()
 
 
 # =========================================================
 # PROBLEM INFORMATION
 # =========================================================
 
-st.markdown(
-    """
-    <div class="section-box">
+st.subheader("🚨 Problem Information")
 
-        <div class="section-title">
-            🚨 Problem Information
-        </div>
-
-        <div class="section-description">
-            Describe what is happening with the machine. More useful
-            information helps the AI produce a more relevant engineering
-            analysis.
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
+st.caption(
+    "Describe what is happening with the machine. "
+    "More useful information helps the AI produce a more relevant engineering analysis."
 )
 
 
@@ -759,16 +533,17 @@ additional_observations = st.text_area(
 # ANALYZE BUTTON
 # =========================================================
 
-st.markdown("<br>", unsafe_allow_html=True)
+st.write("")
 
 
 analyze_button = st.button(
-    "🔍 Analyze Machine Problem"
+    "🔍 Analyze Machine Problem",
+    use_container_width=True
 )
 
 
 # =========================================================
-# RUN AI WORKFLOW
+# AI ANALYSIS
 # =========================================================
 
 if analyze_button:
@@ -788,9 +563,9 @@ if analyze_button:
         )
 
 
-        # =====================================================
-        # MACHINE INFORMATION SENT TO CREW
-        # =====================================================
+        # -----------------------------------------------------
+        # CREATE MACHINE INFORMATION FOR THE AI
+        # -----------------------------------------------------
 
         machine_problem = f"""
 
@@ -841,9 +616,9 @@ Additional Observations:
 """
 
 
-        # =====================================================
-        # AI PROCESSING
-        # =====================================================
+        # -----------------------------------------------------
+        # RUN FOUR AGENTS
+        # -----------------------------------------------------
 
         with st.spinner(
             "🤖 MechCare AI is analyzing the machine through 4 AI agents..."
@@ -861,42 +636,21 @@ Additional Observations:
                 )
 
 
-                # =================================================
+                # -------------------------------------------------
                 # FINAL REPORT
-                # =================================================
+                # -------------------------------------------------
 
-                st.markdown(
-                    """
-                    <div class="section-box">
+                st.subheader("📋 Engineering Analysis Report")
 
-                        <div class="section-title">
-                            📋 Engineering Analysis Report
-                        </div>
-
-                        <div class="section-description">
-                            Generated by the MechCare AI multi-agent
-                            engineering workflow.
-                        </div>
-
-                    </div>
-                    """,
-                    unsafe_allow_html=True
+                st.caption(
+                    "Generated by the MechCare AI multi-agent engineering workflow."
                 )
 
 
-                # Convert result safely to string
-                result_text = str(result)
-
-
+                # Display result as Markdown so headings
+                # such as ## Machine render correctly.
                 st.markdown(
-                    f"""
-                    <div class="report-box">
-
-                    {result_text}
-
-                    </div>
-                    """,
-                    unsafe_allow_html=True
+                    str(result)
                 )
 
 
@@ -919,20 +673,12 @@ Additional Observations:
 # FOOTER
 # =========================================================
 
-st.markdown(
-    """
-    <div class="footer">
+st.divider()
 
-        ⚙️ <b>MechCare AI</b>
-        <br>
+st.caption(
+    "⚙️ MechCare AI | AI-Based Mechanical Maintenance & Troubleshooting Assistant"
+)
 
-        AI-Based Mechanical Maintenance & Troubleshooting Assistant
-
-        <br><br>
-
-        Designed for engineering decision support and educational use.
-
-    </div>
-    """,
-    unsafe_allow_html=True
+st.caption(
+    "Designed for engineering decision support and educational use."
 )
