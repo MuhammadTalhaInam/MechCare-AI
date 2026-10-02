@@ -578,8 +578,14 @@ Additional Observations:
                 result = asyncio.run(
                     run_mechcare(machine_problem)
                 )
-diagnosis_result = result["diagnosis"]
-final_report = result["final_report"]
+
+                # -------------------------------------------------
+                # GET DIAGNOSIS AND FINAL REPORT
+                # -------------------------------------------------
+
+                diagnosis_result = result["diagnosis"]
+                final_report = result["final_report"]
+
 
                 st.success(
                     "✅ Machine analysis completed successfully."
@@ -687,6 +693,25 @@ final_report = result["final_report"]
 
 
                 # =================================================
+                # SMART DIAGNOSIS
+                # =================================================
+
+                st.subheader(
+                    "🧠 Possible Faults & Diagnostic Checks"
+                )
+
+                st.caption(
+                    "The AI identifies possible causes, explains why they "
+                    "may be related to the symptoms, and suggests simple "
+                    "checks for confirmation."
+                )
+
+                st.markdown(
+                    diagnosis_result
+                )
+
+
+                # =================================================
                 # FINAL REPORT
                 # =================================================
 
@@ -700,7 +725,7 @@ final_report = result["final_report"]
 
 
                 st.markdown(
-                    str(result)
+                    final_report
                 )
 
 
