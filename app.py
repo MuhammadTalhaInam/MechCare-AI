@@ -578,7 +578,8 @@ Additional Observations:
                 result = asyncio.run(
                     run_mechcare(machine_problem)
                 )
-
+diagnosis_result = result["diagnosis"]
+final_report = result["final_report"]
 
                 st.success(
                     "✅ Machine analysis completed successfully."
@@ -591,7 +592,7 @@ Additional Observations:
 
                 st.subheader("📊 Machine Health Dashboard")
 
-                report_text = str(result)
+                report_text = final_report
 
                 # -------------------------------------------------
                 # EXTRACT PRIORITY FROM AI REPORT
