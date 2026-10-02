@@ -385,14 +385,14 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="section-title">🔧 Machine Information</div>',
+    '<div class="section-title">🏭 Machine Profile</div>',
     unsafe_allow_html=True
 )
 
 st.markdown(
     '<div class="section-description">'
-    'Enter the available machine information and describe the problem. '
-    'MechCare AI will analyze the information using multiple AI agents.'
+    'Enter the basic identification and operating information '
+    'of the machine before describing the problem.'
     '</div>',
     unsafe_allow_html=True
 )
@@ -404,10 +404,35 @@ st.markdown(
 
 
 # =========================================================
-# MACHINE TYPE AND AGE
+# MACHINE IDENTIFICATION
 # =========================================================
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    machine_id = st.text_input(
+        "🆔 Machine ID / Name",
+        placeholder="Example: Pump-01"
+    )
+
+with col2:
+    manufacturer = st.text_input(
+        "🏢 Manufacturer",
+        placeholder="Example: KSB"
+    )
+
+with col3:
+    model = st.text_input(
+        "📦 Model",
+        placeholder="Example: Etanorm 50-32"
+    )
+
+
+# =========================================================
+# MACHINE TYPE, AGE AND OPERATING HOURS
+# =========================================================
+
+col1, col2, col3 = st.columns(3)
 
 with col1:
     machine_type = st.selectbox(
@@ -428,6 +453,37 @@ with col2:
     machine_age = st.text_input(
         "📅 Machine Age",
         placeholder="Example: 3 years"
+    )
+
+with col3:
+    operating_hours = st.text_input(
+        "⏱️ Operating Hours",
+        placeholder="Example: 8 hours/day"
+    )
+
+
+# =========================================================
+# OPERATING PARAMETERS
+# =========================================================
+
+col1, col2 = st.columns(2)
+
+with col1:
+    operating_speed = st.text_input(
+        "⚙️ Operating Speed (RPM)",
+        placeholder="Example: 1450 RPM"
+    )
+
+with col2:
+    load_condition = st.selectbox(
+        "🔩 Load Condition",
+        [
+            "Unknown",
+            "Light Load",
+            "Moderate Load",
+            "Heavy Load",
+            "Variable Load"
+        ]
     )
 
 
@@ -506,16 +562,40 @@ if analyze_button:
     else:
 
         machine_problem = f"""
-Machine Type: {machine_type}
+MACHINE PROFILE
+
+Machine ID / Name:
+{machine_id}
+
+Manufacturer:
+{manufacturer}
+
+Model:
+{model}
+
+Machine Type:
+{machine_type}
+
+Machine Age:
+{machine_age}
+
+Operating Hours:
+{operating_hours}
+
+Operating Speed:
+{operating_speed}
+
+Load Condition:
+{load_condition}
+
+
+PROBLEM INFORMATION
 
 Problem Description:
 {problem_description}
 
 Operating Condition:
 {operating_condition}
-
-Machine Age:
-{machine_age}
 
 Last Maintenance:
 {last_maintenance}
