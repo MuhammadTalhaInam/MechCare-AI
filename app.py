@@ -651,44 +651,27 @@ Additional Observations:
                     maintenance_status = "Follow Recommended Checks"
 
 
-                # -------------------------------------------------
-                # DASHBOARD CARDS
-                # -------------------------------------------------
+              # -------------------------------------------------
+# DASHBOARD CARDS
+# -------------------------------------------------
 
-                dash1, dash2, dash3, dash4 = st.columns(4)
+dash1, dash2, dash3, dash4 = st.columns(4)
 
+with dash1:
+    st.markdown("### 🏭 Machine")
+    st.write(machine_type)
 
-                with dash1:
+with dash2:
+    st.markdown("### ❤️ Health Status")
+    st.write(health_status)
 
-                    st.metric(
-                        "🏭 Machine",
-                        machine_type
-                    )
+with dash3:
+    st.markdown("### ⚠️ Priority")
+    st.write(priority)
 
-
-                with dash2:
-
-                    st.metric(
-                        "❤️ Health Status",
-                        health_status
-                    )
-
-
-                with dash3:
-
-                    st.metric(
-                        "⚠️ Priority",
-                        priority[:25]
-                    )
-
-
-                with dash4:
-
-                    st.metric(
-                        "🔧 Maintenance",
-                        "Recommended"
-                    )
-
+with dash4:
+    st.markdown("### 🔧 Maintenance")
+    st.write(maintenance_status)
 
                 st.info(
                     f"**Machine:** {machine_type}  |  "
