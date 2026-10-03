@@ -3362,6 +3362,84 @@ with main_column:
             ]
         )
 
+    # =====================================================
+    # CONDITION MONITORING DATA
+    # =====================================================
+
+    st.divider()
+
+    st.html(
+        '<div class="section-title">📊 Condition Monitoring Data</div>'
+    )
+
+    st.html(
+        '<div class="section-description">Enter available machine measurements. Use 0 if a measurement is not available.</div>'
+    )
+
+    monitor_col1, monitor_col2, monitor_col3 = st.columns(3)
+
+    with monitor_col1:
+
+        temperature = st.number_input(
+            "🌡️ Temperature (°C)",
+            min_value=0.0,
+            max_value=1000.0,
+            value=0.0,
+            step=0.1
+        )
+
+    with monitor_col2:
+
+        vibration = st.number_input(
+            "📳 Vibration (mm/s)",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1
+        )
+
+    with monitor_col3:
+
+        rpm = st.number_input(
+            "⚙️ RPM",
+            min_value=0.0,
+            max_value=100000.0,
+            value=0.0,
+            step=10.0
+        )
+
+    monitor_col4, monitor_col5, monitor_col6 = st.columns(3)
+
+    with monitor_col4:
+
+        pressure = st.number_input(
+            "💨 Pressure (bar)",
+            min_value=0.0,
+            max_value=1000.0,
+            value=0.0,
+            step=0.1
+        )
+
+    with monitor_col5:
+
+        flow_rate = st.number_input(
+            "💧 Flow Rate (L/min)",
+            min_value=0.0,
+            max_value=100000.0,
+            value=0.0,
+            step=1.0
+        )
+
+    with monitor_col6:
+
+        current = st.number_input(
+            "⚡ Current (A)",
+            min_value=0.0,
+            max_value=10000.0,
+            value=0.0,
+            step=0.1
+        )
+
     st.divider()
 
     st.html(
@@ -3500,6 +3578,27 @@ Load Condition:
 
 Last Maintenance:
 {last_maintenance}
+
+
+CONDITION MONITORING DATA
+
+Temperature:
+{temperature} °C
+
+Vibration:
+{vibration} mm/s
+
+RPM:
+{rpm}
+
+Pressure:
+{pressure} bar
+
+Flow Rate:
+{flow_rate} L/min
+
+Current:
+{current} A
 
 
 PROBLEM INFORMATION
