@@ -1993,6 +1993,10 @@ textarea:focus {
 
     min-height: 125px;
 
+    height: 170px;
+
+    box-sizing: border-box;
+
     box-shadow:
 
         0 7px 23px rgba(0,0,0,0.18),
