@@ -1,10 +1,12 @@
 from llm_config import create_llm
 
+from agents.condition_monitoring_agent import create_condition_monitoring_agent
 from agents.problem_agent import create_problem_analysis_agent
 from agents.diagnosis_agent import create_fault_diagnosis_agent
 from agents.maintenance_agent import create_maintenance_planning_agent
 from agents.safety_agent import create_safety_final_report_agent
 
+from tasks.condition_monitoring_task import create_condition_monitoring_task
 from tasks.problem_task import create_problem_analysis_task
 from tasks.diagnosis_task import create_fault_diagnosis_task
 from tasks.maintenance_task import create_maintenance_planning_task
@@ -15,6 +17,23 @@ async def run_mechcare(machine_problem):
 
     llm = create_llm()
 
+    condition_monitoring_agent = create_condition_monitoring_agent(llm)
+    condition_monitoring_task = create_condition_monitoring_task(
+        condition_monitoring_agent
+    )
+
+    condition_monitoring_task.description += f"""
+
+USER MACHINE INFORMATION:
+
+{machine_problem}
+"""
+
+    condition_monitoring_result = await condition_monitoring_agent.aexecute_task(
+        condition_monitoring_task
+    )
+
+
     problem_agent = create_problem_analysis_agent(llm)
     problem_task = create_problem_analysis_task(problem_agent)
 
@@ -23,6 +42,10 @@ async def run_mechcare(machine_problem):
 USER MACHINE INFORMATION:
 
 {machine_problem}
+
+CONDITION MONITORING & PREDICTIVE INTELLIGENCE FROM AGENT 1:
+
+{condition_monitoring_result}
 """
 
     problem_result = await problem_agent.aexecute_task(problem_task)
@@ -37,9 +60,13 @@ MACHINE PROBLEM:
 
 {machine_problem}
 
-PROBLEM ANALYSIS FROM AGENT 1:
+PROBLEM ANALYSIS FROM AGENT 2:
 
 {problem_result}
+
+CONDITION MONITORING & PREDICTIVE INTELLIGENCE FROM AGENT 1:
+
+{condition_monitoring_result}
 """
 
     diagnosis_result = await diagnosis_agent.aexecute_task(diagnosis_task)
@@ -54,9 +81,13 @@ MACHINE PROBLEM:
 
 {machine_problem}
 
-FAULT DIAGNOSIS FROM AGENT 2:
+FAULT DIAGNOSIS FROM AGENT 3:
 
 {diagnosis_result}
+
+CONDITION MONITORING & PREDICTIVE INTELLIGENCE FROM AGENT 1:
+
+{condition_monitoring_result}
 """
 
     maintenance_result = await maintenance_agent.aexecute_task(
@@ -73,11 +104,15 @@ MACHINE INFORMATION:
 
 {machine_problem}
 
-FAULT DIAGNOSIS FROM AGENT 2:
+CONDITION MONITORING & PREDICTIVE INTELLIGENCE FROM AGENT 1:
+
+{condition_monitoring_result}
+
+FAULT DIAGNOSIS FROM AGENT 3:
 
 {diagnosis_result}
 
-MAINTENANCE PLAN FROM AGENT 3:
+MAINTENANCE PLAN FROM AGENT 4:
 
 {maintenance_result}
 """
@@ -86,6 +121,7 @@ MAINTENANCE PLAN FROM AGENT 3:
 
 
     return {
+        "condition_monitoring": str(condition_monitoring_result),
         "problem_analysis": str(problem_result),
         "diagnosis": str(diagnosis_result),
         "final_report": str(safety_result)
