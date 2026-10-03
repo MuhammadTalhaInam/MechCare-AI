@@ -13,27 +13,32 @@ def create_condition_monitoring_task(agent):
         ),
 
         expected_output=(
-            "Give the result in this format using Markdown:\n\n"
+            "Give the result in EXACTLY this format using Markdown:\n\n"
 
             "## Asset Health\n"
-            "- Current health condition of the machine\n"
-            "- Health score from 0-100 if enough information is available\n\n"
+            "Health Status: [brief description of the current machine condition]\n"
+            "Health Score: [number from 0-100 or Not Available]\n\n"
 
             "## Active Anomalies\n"
-            "- Maximum 3 short points\n\n"
+            "- [maximum 3 short points]\n\n"
 
             "## Early Warning Signs\n"
-            "- Maximum 3 short points\n\n"
+            "- [maximum 3 short points]\n\n"
 
             "## RUL Estimate\n"
-            "- Estimated remaining useful life if enough information is available\n"
-            "- Clearly state when there is not enough data for an estimate\n\n"
+            "RUL: [estimated remaining useful life if enough historical data "
+            "exists, otherwise Not Available]\n\n"
 
             "## Alert Severity Level\n"
-            "- Low, Medium, High, or Critical\n\n"
+            "Severity: [Low, Medium, High, or Critical]\n\n"
 
             "## Recommended Next Action\n"
-            "- Maximum 3 short points for the next engineering agent\n\n"
+            "- [maximum 3 short points]\n\n"
+
+            "IMPORTANT:\n"
+            "Keep Health Status, Health Score, Severity, and Recommended Next "
+            "Action as separate fields. Do not put Recommended Next Action "
+            "inside Asset Health or Alert Severity.\n\n"
 
             "Maximum 250 words."
         ),
