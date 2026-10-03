@@ -204,6 +204,8 @@ def speak_text(text):
 
         let availableVoice = null;
 
+        let pendingAction = null;
+
 
         // =================================================
         // SPLIT REPORT INTO SMALLER SPEECH CHUNKS
@@ -404,6 +406,8 @@ def speak_text(text):
 
                 isChangingSpeed = false;
 
+                pendingAction = null;
+
                 updateStatus("✅ Finished");
 
                 return;
@@ -527,8 +531,6 @@ def speak_text(text):
 
             isStopped = false;
 
-            isPaused = false;
-
 
             // -------------------------------------------------
             // START
@@ -541,6 +543,9 @@ def speak_text(text):
                 }}
 
 
+                isPaused = false;
+
+
                 updateStatus(
                     "🔊 Speaking at " +
                     currentSpeed +
@@ -551,7 +556,7 @@ def speak_text(text):
 
 
             // -------------------------------------------------
-            // TRACK EXACT REPORTED POSITION
+            // TRACK CURRENT POSITION
             // -------------------------------------------------
 
             speech.onboundary = function(event) {{
@@ -575,22 +580,48 @@ def speak_text(text):
 
 
             // -------------------------------------------------
-            // PAUSE
+            // PAUSE EVENT
             // -------------------------------------------------
+            // IMPORTANT:
+            // The pause event itself gives us charIndex.
+            // This is more accurate than relying only
+            // on the previous boundary event.
 
-            speech.onpause = function() {{
+            speech.onpause = function(event) {{
 
                 if (thisSession !== speechSession) {{
                     return;
                 }}
 
 
+                if (
+                    event &&
+                    typeof event.charIndex === "number"
+                ) {{
+
+                    currentChunkPosition =
+                        speechStartPosition +
+                        event.charIndex;
+
+                }}
+
+
                 isPaused = true;
 
 
-                updateStatus(
-                    "⏸️ Paused — press Play to continue"
-                );
+                if (pendingAction === "speed") {{
+
+                    updateStatus(
+                        "🔄 Changing speed..."
+                    );
+
+                }} else {{
+
+                    updateStatus(
+                        "⏸️ Paused — press Play to continue"
+                    );
+
+                }}
 
             }};
 
@@ -632,8 +663,23 @@ def speak_text(text):
                 speech = null;
 
 
-                // Move to the next chunk only when
-                // this chunk really finished.
+                // If the speech was manually paused,
+                // DO NOT move to the next chunk.
+
+                if (isPaused) {{
+                    return;
+                }}
+
+
+                // If the user is changing speed,
+                // DO NOT move to the next chunk.
+
+                if (isChangingSpeed) {{
+                    return;
+                }}
+
+
+                // Normal completion of this chunk.
 
                 currentChunkIndex++;
 
@@ -643,16 +689,6 @@ def speak_text(text):
 
 
                 if (isStopped) {{
-                    return;
-                }}
-
-
-                if (isChangingSpeed) {{
-                    return;
-                }}
-
-
-                if (isPaused) {{
                     return;
                 }}
 
@@ -697,6 +733,7 @@ def speak_text(text):
 
                 speech = null;
 
+
                 updateStatus(
                     "❌ Voice playback error. Please press Play again."
                 );
@@ -735,39 +772,37 @@ def speak_text(text):
 
 
             // -------------------------------------------------
-            // IF CURRENT SPEECH IS PAUSED
+            // RESUME AFTER PAUSE
             // -------------------------------------------------
-            // IMPORTANT:
-            // Do NOT use speechSynthesis.resume().
-            //
-            // Some mobile browsers do not reliably resume
-            // from the exact position.
-            //
-            // Instead, cancel the paused utterance and create
-            // a new utterance from the saved position.
 
-            if (
-                speech &&
-                isPaused
-            ) {{
-
-                isChangingSpeed = false;
-
-                isStopped = false;
+            if (isPaused) {{
 
                 const savedChunk =
                     currentChunkIndex;
+
 
                 const savedPosition =
                     currentChunkPosition;
 
 
+                isChangingSpeed = false;
+
+                pendingAction = null;
+
+                isStopped = false;
+
+
+                // Invalidate the old utterance first.
+
                 speechSession++;
+
 
                 window.speechSynthesis.cancel();
 
                 speech = null;
 
+
+                // Restore exactly the saved location.
 
                 currentChunkIndex =
                     savedChunk;
@@ -781,6 +816,13 @@ def speak_text(text):
                 isPaused = false;
 
 
+                updateStatus(
+                    "▶️ Continuing from saved position at " +
+                    currentSpeed +
+                    "×..."
+                );
+
+
                 setTimeout(function() {{
 
                     if (!isStopped) {{
@@ -791,7 +833,7 @@ def speak_text(text):
 
                     }}
 
-                }}, 80);
+                }}, 120);
 
 
                 return;
@@ -837,6 +879,8 @@ def speak_text(text):
 
             isChangingSpeed = false;
 
+            pendingAction = null;
+
 
             window.speechSynthesis.cancel();
 
@@ -851,7 +895,7 @@ def speak_text(text):
 
                 }}
 
-            }}, 80);
+            }}, 100);
 
         }}
 
@@ -863,27 +907,37 @@ def speak_text(text):
         function pauseSpeech() {{
 
             if (
-                "speechSynthesis" in window &&
-                speech &&
-                window.speechSynthesis.speaking &&
-                !window.speechSynthesis.paused
+                !("speechSynthesis" in window)
             ) {{
-
-                // Pause the browser speech first.
-
-                window.speechSynthesis.pause();
-
-                isPaused = true;
-
-
-                // The latest onboundary event has already
-                // updated currentChunkPosition.
-
-                updateStatus(
-                    "⏸️ Paused — press Play to continue"
-                );
-
+                return;
             }}
+
+
+            if (
+                !speech ||
+                !window.speechSynthesis.speaking ||
+                isPaused
+            ) {{
+                return;
+            }}
+
+
+            // IMPORTANT:
+            // Do NOT cancel here.
+            //
+            // We first use the browser's pause event.
+            // That event provides charIndex, which lets
+            // us save the current position accurately.
+
+            pendingAction = "pause";
+
+
+            window.speechSynthesis.pause();
+
+
+            updateStatus(
+                "⏸️ Pausing..."
+            );
 
         }}
 
@@ -899,6 +953,8 @@ def speak_text(text):
                 speechSession++;
 
                 isChangingSpeed = false;
+
+                pendingAction = null;
 
                 window.speechSynthesis.cancel();
 
@@ -962,34 +1018,7 @@ def speak_text(text):
 
                 isChangingSpeed = true;
 
-
-                // Save the CURRENT position before
-                // cancelling the old utterance.
-
-                const savedChunk =
-                    currentChunkIndex;
-
-
-                const savedPosition =
-                    currentChunkPosition;
-
-
-                speechSession++;
-
-
-                window.speechSynthesis.cancel();
-
-                speech = null;
-
-
-                currentChunkIndex =
-                    savedChunk;
-
-                currentChunkPosition =
-                    savedPosition;
-
-                speechStartPosition =
-                    savedPosition;
+                pendingAction = "speed";
 
 
                 updateStatus(
@@ -999,21 +1028,84 @@ def speak_text(text):
                 );
 
 
+                // IMPORTANT:
+                // Pause FIRST.
+                //
+                // The onpause event will capture the
+                // actual current charIndex.
+                //
+                // We do NOT immediately cancel because
+                // that could lose the latest position.
+
+                window.speechSynthesis.pause();
+
+
+                // Wait for the browser to process
+                // the pause event.
+
                 setTimeout(function() {{
 
-                    if (!isStopped) {{
-
-                        isChangingSpeed = false;
-
-                        isPaused = false;
-
-                        speakCurrentChunk(
-                            savedPosition
-                        );
-
+                    if (!isChangingSpeed) {{
+                        return;
                     }}
 
-                }}, 100);
+
+                    const savedChunk =
+                        currentChunkIndex;
+
+
+                    const savedPosition =
+                        currentChunkPosition;
+
+
+                    // Invalidate the old utterance.
+
+                    speechSession++;
+
+
+                    window.speechSynthesis.cancel();
+
+                    speech = null;
+
+
+                    currentChunkIndex =
+                        savedChunk;
+
+                    currentChunkPosition =
+                        savedPosition;
+
+                    speechStartPosition =
+                        savedPosition;
+
+                    isPaused = false;
+
+
+                    updateStatus(
+                        "🔊 Speaking at " +
+                        currentSpeed +
+                        "×..."
+                    );
+
+
+                    setTimeout(function() {{
+
+                        if (!isStopped) {{
+
+                            isChangingSpeed = false;
+
+                            pendingAction = null;
+
+
+                            speakCurrentChunk(
+                                savedPosition
+                            );
+
+                        }}
+
+                    }}, 100);
+
+
+                }}, 150);
 
 
                 return;
@@ -1026,14 +1118,13 @@ def speak_text(text):
             // -------------------------------------------------
 
             if (
-                speech &&
                 isPaused
             ) {{
 
-                // We do NOT restart immediately.
+                // Do not restart.
                 //
-                // The new speed will be used when
-                // Play is pressed.
+                // The selected speed will be used
+                // when Play is pressed.
 
                 updateStatus(
                     "⏸️ Paused — " +
