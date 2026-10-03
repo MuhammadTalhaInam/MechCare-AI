@@ -516,11 +516,7 @@ def speak_text(text):
             isStopped = false;
 
 
-            // -------------------------------------------------
-            // START
-            // -------------------------------------------------
-
-            speech.onstart = function() {{
+            speech.onstart = function(){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -539,11 +535,7 @@ def speak_text(text):
             }};
 
 
-            // -------------------------------------------------
-            // TRACK CURRENT POSITION
-            // -------------------------------------------------
-
-            speech.onboundary = function(event) {{
+            speech.onboundary = function(event){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -563,11 +555,7 @@ def speak_text(text):
             }};
 
 
-            // -------------------------------------------------
-            // PAUSE EVENT
-            // -------------------------------------------------
-
-            speech.onpause = function(event) {{
+            speech.onpause = function(event){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -606,11 +594,7 @@ def speak_text(text):
             }};
 
 
-            // -------------------------------------------------
-            // RESUME EVENT
-            // -------------------------------------------------
-
-            speech.onresume = function() {{
+            speech.onresume = function(){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -629,11 +613,7 @@ def speak_text(text):
             }};
 
 
-            // -------------------------------------------------
-            // FINISHED CURRENT CHUNK
-            // -------------------------------------------------
-
-            speech.onend = function() {{
+            speech.onend = function(){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -665,7 +645,7 @@ def speak_text(text):
                 }}
 
 
-                setTimeout(function() {{
+                setTimeout(function(){{
 
                     if (
                         thisSession !== speechSession ||
@@ -684,11 +664,7 @@ def speak_text(text):
             }};
 
 
-            // -------------------------------------------------
-            // ERROR
-            // -------------------------------------------------
-
-            speech.onerror = function(event) {{
+            speech.onerror = function(event){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -713,10 +689,6 @@ def speak_text(text):
             }};
 
 
-            // -------------------------------------------------
-            // START SPEECH
-            // -------------------------------------------------
-
             window.speechSynthesis.speak(
                 speech
             );
@@ -728,7 +700,7 @@ def speak_text(text):
         // PLAY / RESUME
         // =================================================
 
-        function playSpeech() {{
+        function playSpeech(){{
 
             if (!("speechSynthesis" in window)) {{
 
@@ -742,10 +714,6 @@ def speak_text(text):
 
             loadAvailableVoice();
 
-
-            // -------------------------------------------------
-            // RESUME AFTER PAUSE
-            // -------------------------------------------------
 
             if (isPaused) {{
 
@@ -762,21 +730,13 @@ def speak_text(text):
                 isStopped = false;
 
 
-                // Invalidate every event belonging
-                // to the previous utterance.
-
                 speechSession++;
 
-
-                // Completely cancel the old mobile
-                // speech instance.
 
                 window.speechSynthesis.cancel();
 
                 speech = null;
 
-
-                // Restore saved position.
 
                 currentChunkIndex =
                     savedChunk;
@@ -797,10 +757,7 @@ def speak_text(text):
                 );
 
 
-                // Small delay is important on mobile
-                // browsers after cancel().
-
-                setTimeout(function() {{
+                setTimeout(function(){{
 
                     if (
                         !isStopped &&
@@ -821,10 +778,6 @@ def speak_text(text):
             }}
 
 
-            // -------------------------------------------------
-            // IF ALREADY SPEAKING
-            // -------------------------------------------------
-
             if (
                 speech &&
                 window.speechSynthesis.speaking
@@ -834,10 +787,6 @@ def speak_text(text):
 
             }}
 
-
-            // -------------------------------------------------
-            // IF REPORT FINISHED
-            // -------------------------------------------------
 
             if (
                 currentChunkIndex >=
@@ -863,7 +812,7 @@ def speak_text(text):
             window.speechSynthesis.cancel();
 
 
-            setTimeout(function() {{
+            setTimeout(function(){{
 
                 if (!isStopped) {{
 
@@ -882,7 +831,7 @@ def speak_text(text):
         // PAUSE
         // =================================================
 
-        function pauseSpeech() {{
+        function pauseSpeech(){{
 
             if (
                 !("speechSynthesis" in window)
@@ -899,18 +848,6 @@ def speak_text(text):
                 return;
             }}
 
-
-            // -------------------------------------------------
-            // IMPORTANT MOBILE FIX
-            // -------------------------------------------------
-            //
-            // Do NOT depend on the mobile browser firing
-            // onpause before we mark the player as paused.
-            //
-            // Save the latest position immediately.
-            // onboundary continuously updates
-            // currentChunkPosition while speaking.
-            //
 
             const savedPosition =
                 currentChunkPosition;
@@ -930,25 +867,10 @@ def speak_text(text):
             );
 
 
-            // Ask the browser to pause.
-
             window.speechSynthesis.pause();
 
 
-            // -------------------------------------------------
-            // MOBILE FALLBACK
-            // -------------------------------------------------
-            //
-            // Some mobile browsers do not reliably handle
-            // speechSynthesis.pause().
-            //
-            // We keep the speech object paused for a short
-            // moment, then Play will completely cancel it
-            // and create a fresh utterance from the saved
-            // position.
-            //
-
-            setTimeout(function() {{
+            setTimeout(function(){{
 
                 if (isPaused) {{
 
@@ -967,7 +889,7 @@ def speak_text(text):
         // STOP
         // =================================================
 
-        function stopSpeech() {{
+        function stopSpeech(){{
 
             if ("speechSynthesis" in window) {{
 
@@ -1003,7 +925,7 @@ def speak_text(text):
         // CHANGE SPEED
         // =================================================
 
-        function changeSpeed() {{
+        function changeSpeed(){{
 
             const selectedSpeed =
                 parseFloat(
@@ -1025,18 +947,11 @@ def speak_text(text):
             }}
 
 
-            // -------------------------------------------------
-            // CURRENTLY SPEAKING
-            // -------------------------------------------------
-
             if (
                 speech &&
                 window.speechSynthesis.speaking &&
                 !isPaused
-            ) {{
-
-                // Save the latest known position BEFORE
-                // changing the speech object.
+            ){{
 
                 const savedChunk =
                     currentChunkIndex;
@@ -1058,22 +973,10 @@ def speak_text(text):
                 );
 
 
-                // Pause the current speech first.
-
                 window.speechSynthesis.pause();
 
 
-                // -------------------------------------------------
-                // RESTART FROM SAVED POSITION
-                // -------------------------------------------------
-                //
-                // We do not use resume().
-                //
-                // Instead, cancel the old utterance and create
-                // a new one with the selected speed.
-                //
-
-                setTimeout(function() {{
+                setTimeout(function(){{
 
                     if (!isChangingSpeed) {{
                         return;
@@ -1108,7 +1011,7 @@ def speak_text(text):
                     );
 
 
-                    setTimeout(function() {{
+                    setTimeout(function(){{
 
                         if (!isStopped) {{
 
@@ -1131,10 +1034,6 @@ def speak_text(text):
 
             }}
 
-
-            // -------------------------------------------------
-            // CURRENTLY PAUSED
-            // -------------------------------------------------
 
             if (isPaused) {{
 
@@ -1212,10 +1111,6 @@ st.markdown(
     """
     <style>
 
-    /* =====================================================
-       GLOBAL
-       ===================================================== */
-
     .stApp {
         background:
             radial-gradient(
@@ -1244,11 +1139,6 @@ st.markdown(
         padding-right: 2rem;
     }
 
-
-    /* =====================================================
-       SIDEBAR
-       ===================================================== */
-
     [data-testid="stSidebar"] {
         background:
             linear-gradient(
@@ -1257,7 +1147,6 @@ st.markdown(
                 #081725 55%,
                 #06101b 100%
             );
-
         border-right: 1px solid #17344b;
     }
 
@@ -1340,11 +1229,6 @@ st.markdown(
         font-weight: 700;
     }
 
-
-    /* =====================================================
-       HEADERS
-       ===================================================== */
-
     h1, h2, h3 {
         color: #f8fafc !important;
     }
@@ -1363,11 +1247,6 @@ st.markdown(
         margin-bottom: 14px;
     }
 
-
-    /* =====================================================
-       TOP HEADER
-       ===================================================== */
-
     .top-header {
         display: flex;
         justify-content: space-between;
@@ -1375,17 +1254,14 @@ st.markdown(
         gap: 20px;
         padding: 20px 22px;
         margin-bottom: 20px;
-
         background:
             linear-gradient(
                 135deg,
                 rgba(13,34,56,0.95),
                 rgba(9,24,39,0.95)
             );
-
         border: 1px solid #1a4059;
         border-radius: 18px;
-
         box-shadow:
             0 16px 40px rgba(0,0,0,0.22);
     }
@@ -1414,15 +1290,9 @@ st.markdown(
         white-space: nowrap;
     }
 
-
-    /* =====================================================
-       HERO
-       ===================================================== */
-
     .hero {
         position: relative;
         overflow: hidden;
-
         background:
             linear-gradient(
                 135deg,
@@ -1430,14 +1300,10 @@ st.markdown(
                 #0b1b2c 60%,
                 #111d31 100%
             );
-
         border: 1px solid #1d4d6b;
         border-radius: 20px;
-
         padding: 28px;
-
         margin-bottom: 20px;
-
         box-shadow:
             0 20px 50px rgba(0,0,0,0.25);
     }
@@ -1473,18 +1339,12 @@ st.markdown(
         margin-bottom: 0;
     }
 
-
-    /* =====================================================
-       CARDS
-       ===================================================== */
-
     .ui-card {
         background: #0b1928;
         border: 1px solid #1b3b52;
         border-radius: 16px;
         padding: 18px;
         margin-bottom: 15px;
-
         box-shadow:
             0 12px 30px rgba(0,0,0,0.16);
     }
@@ -1510,18 +1370,12 @@ st.markdown(
         margin-top: 5px;
     }
 
-
-    /* =====================================================
-       STATUS CARDS
-       ===================================================== */
-
     .status-card {
         background: #0b1928;
         border: 1px solid #1b3b52;
         border-radius: 16px;
         padding: 17px;
         min-height: 112px;
-
         box-shadow:
             0 10px 26px rgba(0,0,0,0.15);
     }
@@ -1548,11 +1402,6 @@ st.markdown(
         margin-top: 5px;
     }
 
-
-    /* =====================================================
-       WORKFLOW
-       ===================================================== */
-
     .workflow-card {
         background: #091725;
         border: 1px solid #1a3a50;
@@ -1560,7 +1409,6 @@ st.markdown(
         padding: 18px;
         height: 100%;
         min-height: 155px;
-
         box-shadow:
             0 10px 26px rgba(0,0,0,0.15);
     }
@@ -1586,11 +1434,6 @@ st.markdown(
         margin-top: 7px;
     }
 
-
-    /* =====================================================
-       SYMPTOM BOX
-       ===================================================== */
-
     .symptom-box {
         background: rgba(14,116,144,0.12);
         border: 1px solid rgba(56,189,248,0.25);
@@ -1602,11 +1445,6 @@ st.markdown(
         font-size: 13px;
     }
 
-
-    /* =====================================================
-       REPORT
-       ===================================================== */
-
     .report-box {
         background: #081522;
         border: 1px solid #1c4058;
@@ -1614,32 +1452,22 @@ st.markdown(
         padding: 24px;
         color: #dbeafe;
         line-height: 1.75;
-
         box-shadow:
             0 15px 35px rgba(0,0,0,0.18);
     }
 
-
-    /* =====================================================
-       BUTTONS
-       ===================================================== */
-
     .stButton > button {
         border-radius: 10px !important;
         border: 1px solid #245b7c !important;
-
         background:
             linear-gradient(
                 135deg,
                 #0e4566,
                 #0b314b
             ) !important;
-
         color: #f8fafc !important;
         font-weight: 750 !important;
-
         min-height: 44px;
-
         transition:
             transform 0.15s ease,
             border-color 0.15s ease,
@@ -1652,11 +1480,6 @@ st.markdown(
             0 0 20px rgba(56,189,248,0.15);
         transform: translateY(-1px);
     }
-
-
-    /* =====================================================
-       INPUTS
-       ===================================================== */
 
     div[data-baseweb="select"] > div {
         background-color: #0b1928 !important;
@@ -1686,30 +1509,15 @@ st.markdown(
         font-weight: 600 !important;
     }
 
-
-    /* =====================================================
-       MULTISELECT
-       ===================================================== */
-
     [data-baseweb="tag"] {
         background-color: #12405e !important;
         color: #dbeafe !important;
     }
 
-
-    /* =====================================================
-       CHECKBOX
-       ===================================================== */
-
     [data-testid="stCheckbox"] label {
         color: #cbd5e1 !important;
         font-size: 13px !important;
     }
-
-
-    /* =====================================================
-       EXPANDERS / STATUS
-       ===================================================== */
 
     [data-testid="stExpander"] {
         background: #0b1928;
@@ -1721,21 +1529,11 @@ st.markdown(
         border-radius: 14px;
     }
 
-
-    /* =====================================================
-       DIVIDER
-       ===================================================== */
-
     hr {
         border-color: #17354a !important;
         margin-top: 25px !important;
         margin-bottom: 25px !important;
     }
-
-
-    /* =====================================================
-       RESPONSIVE
-       ===================================================== */
 
     @media (max-width: 1100px) {
 
@@ -1800,7 +1598,7 @@ st.markdown(
 
 with st.sidebar:
 
-    st.markdown(
+    st.html(
         """
         <div class="sidebar-brand">
             <div class="sidebar-brand-title">
@@ -1811,13 +1609,11 @@ with st.sidebar:
                 Engineering Intelligence
             </div>
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
-    st.markdown(
-        '<div class="sidebar-section">Navigation</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="sidebar-section">Navigation</div>'
     )
 
     navigation = st.radio(
@@ -1831,9 +1627,8 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
-    st.markdown(
-        '<div class="sidebar-section">Machine Category</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="sidebar-section">Machine Category</div>'
     )
 
     machine_category_filter = st.selectbox(
@@ -1852,9 +1647,8 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
-    st.markdown(
-        '<div class="sidebar-section">Quick System Links</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="sidebar-section">Quick System Links</div>'
     )
 
     st.button(
@@ -1872,12 +1666,11 @@ with st.sidebar:
         use_container_width=True
     )
 
-    st.markdown(
-        '<div class="sidebar-section">Current Machine</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="sidebar-section">Current Machine</div>'
     )
 
-    st.markdown(
+    st.html(
         """
         <div class="sidebar-machine">
 
@@ -1894,8 +1687,7 @@ with st.sidebar:
             </span>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
     st.markdown("")
@@ -1913,7 +1705,7 @@ with st.sidebar:
 # TOP HEADER
 # =========================================================
 
-st.markdown(
+st.html(
     """
     <div class="top-header">
 
@@ -1933,8 +1725,7 @@ st.markdown(
         </div>
 
     </div>
-    """,
-    unsafe_allow_html=True
+    """
 )
 
 
@@ -1942,7 +1733,7 @@ st.markdown(
 # HERO
 # =========================================================
 
-st.markdown(
+st.html(
     """
     <div class="hero">
 
@@ -1961,8 +1752,7 @@ st.markdown(
         </p>
 
     </div>
-    """,
-    unsafe_allow_html=True
+    """
 )
 
 
@@ -1982,17 +1772,15 @@ main_column, right_column = st.columns(
 
 with right_column:
 
-    st.markdown(
-        '<div class="section-title">⚡ Quick Intelligence</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-title">⚡ Quick Intelligence</div>'
     )
 
-    st.markdown(
-        '<div class="section-description">System information and quick diagnostic context.</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-description">System information and quick diagnostic context.</div>'
     )
 
-    st.markdown(
+    st.html(
         """
         <div class="ui-card">
 
@@ -2009,11 +1797,10 @@ with right_column:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
-    st.markdown(
+    st.html(
         """
         <div class="ui-card">
 
@@ -2030,11 +1817,10 @@ with right_column:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
-    st.markdown(
+    st.html(
         """
         <div class="ui-card">
 
@@ -2051,11 +1837,10 @@ with right_column:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
-    st.markdown(
+    st.html(
         """
         <div class="ui-card">
 
@@ -2075,8 +1860,7 @@ with right_column:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
 
@@ -2090,16 +1874,13 @@ with main_column:
     # WORKFLOW
     # =====================================================
 
-    st.markdown(
-        '<div class="section-title">🤖 Multi-Agent Engineering Workflow</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-title">🤖 Multi-Agent Engineering Workflow</div>'
     )
 
-    st.markdown(
-        '<div class="section-description">Your machine problem is processed through four specialized engineering agents.</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-description">Your machine problem is processed through four specialized engineering agents.</div>'
     )
-
 
     workflow = [
         (
@@ -2124,9 +1905,7 @@ with main_column:
         )
     ]
 
-
     workflow_columns = st.columns(4, gap="small")
-
 
     for column, agent in zip(workflow_columns, workflow):
 
@@ -2134,7 +1913,7 @@ with main_column:
 
         with column:
 
-            st.markdown(
+            st.html(
                 f"""
                 <div class="workflow-card">
 
@@ -2151,10 +1930,8 @@ with main_column:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
-
 
     st.divider()
 
@@ -2163,14 +1940,12 @@ with main_column:
     # MACHINE PROFILE
     # =====================================================
 
-    st.markdown(
-        '<div class="section-title">🏭 Machine Profile</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-title">🏭 Machine Profile</div>'
     )
 
-    st.markdown(
-        '<div class="section-description">Provide the machine context used by the AI diagnostic workflow.</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-description">Provide the machine context used by the AI diagnostic workflow.</div>'
     )
 
 
@@ -2233,12 +2008,7 @@ with main_column:
     }
 
 
-    # =====================================================
-    # MACHINE INFORMATION
-    # =====================================================
-
     col1, col2, col3 = st.columns(3)
-
 
     with col1:
 
@@ -2255,7 +2025,6 @@ with main_column:
                 "Other"
             ]
         )
-
 
     with col2:
 
@@ -2274,7 +2043,6 @@ with main_column:
             ]
         )
 
-
     with col3:
 
         manufacturer = st.selectbox(
@@ -2292,9 +2060,7 @@ with main_column:
             ]
         )
 
-
     col4, col5, col6 = st.columns(3)
-
 
     with col4:
 
@@ -2302,7 +2068,6 @@ with main_column:
             "🔧 Model",
             MACHINE_MODELS[machine_type]
         )
-
 
     with col5:
 
@@ -2317,7 +2082,6 @@ with main_column:
                 "Unknown"
             ]
         )
-
 
     with col6:
 
@@ -2334,9 +2098,7 @@ with main_column:
             ]
         )
 
-
     col7, col8, col9 = st.columns(3)
-
 
     with col7:
 
@@ -2353,7 +2115,6 @@ with main_column:
             ]
         )
 
-
     with col8:
 
         load_condition = st.selectbox(
@@ -2367,7 +2128,6 @@ with main_column:
                 "Variable Load"
             ]
         )
-
 
     with col9:
 
@@ -2383,7 +2143,6 @@ with main_column:
             ]
         )
 
-
     st.divider()
 
 
@@ -2391,16 +2150,13 @@ with main_column:
     # SYMPTOMS
     # =====================================================
 
-    st.markdown(
-        '<div class="section-title">🔍 Observed Symptoms</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-title">🔍 Observed Symptoms</div>'
     )
 
-    st.markdown(
-        '<div class="section-description">Select all symptoms currently observed in the machine.</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-description">Select all symptoms currently observed in the machine.</div>'
     )
-
 
     symptom_options = [
         "🔊 Unusual Noise",
@@ -2417,23 +2173,19 @@ with main_column:
         "⚠️ Other"
     ]
 
-
     selected_symptoms = st.multiselect(
         "Select observed symptoms",
         symptom_options,
         placeholder="Choose one or more symptoms..."
     )
 
-
     if selected_symptoms:
 
-        st.markdown(
+        st.html(
             '<div class="symptom-box"><b>Selected Symptoms:</b> '
             + "  •  ".join(selected_symptoms)
-            + "</div>",
-            unsafe_allow_html=True
+            + "</div>"
         )
-
 
     st.divider()
 
@@ -2442,16 +2194,13 @@ with main_column:
     # PROBLEM INFORMATION
     # =====================================================
 
-    st.markdown(
-        '<div class="section-title">🚨 Problem Information</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-title">🚨 Problem Information</div>'
     )
 
-    st.markdown(
-        '<div class="section-description">Describe what is happening. More useful information gives the AI better engineering context.</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-description">Describe what is happening. More useful information gives the AI better engineering context.</div>'
     )
-
 
     problem_description = st.text_area(
         "Problem Description",
@@ -2462,7 +2211,6 @@ with main_column:
         height=130
     )
 
-
     operating_condition = st.text_area(
         "Operating Condition",
         placeholder=(
@@ -2471,7 +2219,6 @@ with main_column:
         ),
         height=110
     )
-
 
     additional_observations = st.text_area(
         "Additional Observations",
@@ -2482,13 +2229,7 @@ with main_column:
         height=110
     )
 
-
-    # =====================================================
-    # ANALYZE BUTTON
-    # =====================================================
-
     st.write("")
-
 
     analyze_button = st.button(
         "🔍 Analyze Machine Problem",
@@ -2515,11 +2256,6 @@ with main_column:
                 if selected_symptoms
                 else "No specific symptoms selected"
             )
-
-
-            # -------------------------------------------------
-            # CREATE MACHINE INFORMATION FOR THE AI
-            # -------------------------------------------------
 
             machine_problem = f"""
 
@@ -2569,11 +2305,6 @@ Additional Observations:
 
 """
 
-
-            # -------------------------------------------------
-            # RUN FOUR AGENTS
-            # -------------------------------------------------
-
             with st.status(
                 "⚙️ MechCare AI is analyzing your machine...",
                 expanded=True
@@ -2607,10 +2338,7 @@ Additional Observations:
                         expanded=False
                     )
 
-                    # SAVE THE AI RESULT
                     st.session_state.analysis_result = result
-
-                    # MARK ALL AGENTS AS COMPLETED
                     st.session_state.agents_completed = True
 
                     st.success(
@@ -2646,11 +2374,6 @@ Additional Observations:
 
         result = st.session_state.analysis_result
 
-
-        # -------------------------------------------------
-        # GET PROBLEM ANALYSIS, DIAGNOSIS AND FINAL REPORT
-        # -------------------------------------------------
-
         problem_analysis = result["problem_analysis"]
         diagnosis_result = result["diagnosis"]
         final_report = result["final_report"]
@@ -2662,26 +2385,17 @@ Additional Observations:
 
         st.divider()
 
-        st.markdown(
-            '<div class="section-title">📊 Machine Health Dashboard</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-title">📊 Machine Health Dashboard</div>'
         )
 
-        st.markdown(
-            '<div class="section-description">AI-generated health and maintenance overview based on the current engineering analysis.</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-description">AI-generated health and maintenance overview based on the current engineering analysis.</div>'
         )
-
 
         report_text = final_report
 
-
-        # -------------------------------------------------
-        # EXTRACT PRIORITY FROM AI REPORT
-        # -------------------------------------------------
-
         priority = "Not specified"
-
 
         if "## Priority" in report_text:
 
@@ -2689,7 +2403,6 @@ Additional Observations:
                 "## Priority",
                 1
             )[1]
-
 
             if "##" in priority_section:
 
@@ -2702,13 +2415,7 @@ Additional Observations:
 
                 priority = priority_section.strip()
 
-
-        # -------------------------------------------------
-        # DETERMINE HEALTH STATUS
-        # -------------------------------------------------
-
         priority_lower = priority.lower()
-
 
         if (
             "critical" in priority_lower
@@ -2737,16 +2444,11 @@ Additional Observations:
             maintenance_status = "Follow Recommended Checks"
 
 
-        # -------------------------------------------------
-        # DASHBOARD CARDS
-        # -------------------------------------------------
-
         dash1, dash2, dash3, dash4 = st.columns(4, gap="small")
-
 
         with dash1:
 
-            st.markdown(
+            st.html(
                 f"""
                 <div class="status-card">
 
@@ -2763,14 +2465,12 @@ Additional Observations:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
-
 
         with dash2:
 
-            st.markdown(
+            st.html(
                 f"""
                 <div class="status-card">
 
@@ -2787,14 +2487,12 @@ Additional Observations:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
-
 
         with dash3:
 
-            st.markdown(
+            st.html(
                 f"""
                 <div class="status-card">
 
@@ -2811,14 +2509,12 @@ Additional Observations:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
-
 
         with dash4:
 
-            st.markdown(
+            st.html(
                 f"""
                 <div class="status-card">
 
@@ -2835,8 +2531,7 @@ Additional Observations:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
 
 
@@ -2847,7 +2542,7 @@ Additional Observations:
         # ACTIVE MACHINE CARD
         # =================================================
 
-        st.markdown(
+        st.html(
             f"""
             <div class="ui-card">
 
@@ -2870,8 +2565,7 @@ Additional Observations:
                 </div>
 
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
 
 
@@ -2879,74 +2573,43 @@ Additional Observations:
         # ADDITIONAL DATA RECOMMENDED
         # =================================================
 
-        st.markdown(
-            '<div class="section-title">📈 Additional Data Recommended</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-title">📈 Additional Data Recommended</div>'
         )
 
-        st.markdown(
-            '<div class="section-description">Collecting these measurements or observations can help confirm the possible machine fault.</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-description">Collecting these measurements or observations can help confirm the possible machine fault.</div>'
         )
 
-        st.markdown(
-            '<div class="report-box">',
-            unsafe_allow_html=True
-        )
-
-        st.markdown(
-            problem_analysis
-        )
-
-        st.markdown(
-            '</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown(problem_analysis)
 
 
         # =================================================
         # SMART DIAGNOSIS
         # =================================================
 
-        st.markdown(
-            '<div class="section-title" style="margin-top:25px;">🧠 Possible Faults & Diagnostic Checks</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-title" style="margin-top:25px;">🧠 Possible Faults & Diagnostic Checks</div>'
         )
 
-        st.markdown(
-            '<div class="section-description">Possible causes, their relationship with the symptoms, and suggested confirmation checks.</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-description">Possible causes, their relationship with the symptoms, and suggested confirmation checks.</div>'
         )
 
-        st.markdown(
-            '<div class="report-box">',
-            unsafe_allow_html=True
-        )
-
-        st.markdown(
-            diagnosis_result
-        )
-
-        st.markdown(
-            '</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown(diagnosis_result)
 
 
         # =================================================
         # MAINTENANCE CHECKLIST
         # =================================================
 
-        st.markdown(
-            '<div class="section-title" style="margin-top:25px;">🔧 Maintenance Checklist</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-title" style="margin-top:25px;">🔧 Maintenance Checklist</div>'
         )
 
-        st.markdown(
-            '<div class="section-description">Tick each inspection when it has been completed.</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-description">Tick each inspection when it has been completed.</div>'
         )
-
 
         completed_count = sum(
             1
@@ -2954,20 +2617,16 @@ Additional Observations:
             if st.session_state[item]
         )
 
-
         progress_value = (
             completed_count / len(checklist_items)
         )
-
 
         st.progress(
             progress_value,
             text=f"{completed_count} of {len(checklist_items)} checks completed"
         )
 
-
         check1, check2 = st.columns(2)
-
 
         with check1:
 
@@ -2990,7 +2649,6 @@ Additional Observations:
                 "Check for leakage",
                 key="Check for leakage"
             )
-
 
         with check2:
 
@@ -3019,48 +2677,29 @@ Additional Observations:
         # FINAL REPORT
         # =================================================
 
-        st.markdown(
-            '<div class="section-title" style="margin-top:25px;">📋 Engineering Analysis Report</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-title" style="margin-top:25px;">📋 Engineering Analysis Report</div>'
         )
 
-        st.markdown(
-            '<div class="section-description">Generated by the MechCare AI multi-agent engineering workflow.</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-description">Generated by the MechCare AI multi-agent engineering workflow.</div>'
         )
 
-        st.markdown(
-            '<div class="report-box">',
-            unsafe_allow_html=True
-        )
-
-        st.markdown(
-            final_report
-        )
-
-        st.markdown(
-            '</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown(final_report)
 
 
         # =================================================
         # VOICE READER
         # =================================================
 
-        st.markdown(
-            '<div class="section-title" style="margin-top:25px;">🔊 Listen to AI Results</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-title" style="margin-top:25px;">🔊 Listen to AI Results</div>'
         )
 
-        st.markdown(
-            '<div class="section-description">Listen to the complete AI analysis, diagnosis, and final engineering report.</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-description">Listen to the complete AI analysis, diagnosis, and final engineering report.</div>'
         )
 
-
-        # Combine all AI-generated results
-        # so the voice reads the complete output.
 
         complete_voice_text = f"""
 MechCare AI Engineering Analysis.
@@ -3088,14 +2727,12 @@ Final Engineering Analysis Report.
         # PDF REPORT DOWNLOAD
         # =================================================
 
-        st.markdown(
-            '<div class="section-title" style="margin-top:25px;">📄 Engineering Report Export</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-title" style="margin-top:25px;">📄 Engineering Report Export</div>'
         )
 
-        st.markdown(
-            '<div class="section-description">Generate and download the final engineering report as a PDF.</div>',
-            unsafe_allow_html=True
+        st.html(
+            '<div class="section-description">Generate and download the final engineering report as a PDF.</div>'
         )
 
 
