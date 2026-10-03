@@ -3713,11 +3713,13 @@ Additional Observations:
             '<div class="section-description">AI assessment of the machine health, abnormal behavior, early warning signs, predictive condition, and recommended next action.</div>'
         )
 
+        st.markdown(
+            condition_monitoring_result
+        )
+
         # =================================================
-        # MACHINE HEALTH DASHBOARD
-        # Read each dashboard field directly from Agent 1.
-        # The raw Agent 1 output is intentionally NOT displayed here,
-        # so Recommended Next Action cannot appear inside the dashboard.
+        # MACHINE HEALTH DASHBOARD FIX
+        # Read dashboard values directly from Agent 1
         # =================================================
 
         monitoring_text = str(
@@ -3731,7 +3733,8 @@ Additional Observations:
         health_score = "Not available"
 
         health_score_match = re.search(
-            r"(?im)^\s*[-*]?\s*Health\s*Score\s*:\s*(\d{1,3})\s*(?:/\s*100)?\s*$",
+            r"(?i)(?:health\s*score|machine\s*health)"
+            r"\s*[:\-]?\s*(\d{1,3})\s*(?:/100)?",
             monitoring_text
         )
 
@@ -3749,14 +3752,34 @@ Additional Observations:
 
         health_status_text = "Assessment Available"
 
-        status_match = re.search(
-            r"(?im)^\s*[-*]?\s*Health\s*Status\s*:\s*(.*?)\s*$",
+        health_section_match = re.search(
+            r"(?is)(?:##\s*)?(?:Asset Health|Current Health|Health Status)"
+            r".*?"
+            r"(.*?)(?=\n\s*##|\Z)",
             monitoring_text
         )
 
-        if status_match:
+        if health_section_match:
 
-            health_status_text = status_match.group(1).strip()
+            health_section = (
+                health_section_match
+                .group(1)
+                .strip()
+            )
+
+            health_section = re.sub(
+                r"^\s*[-*]\s*",
+                "",
+                health_section
+            ).strip()
+
+            if health_section:
+
+                health_status_text = (
+                    health_section
+                    .split("\n")[0]
+                    .strip()
+                )
 
         # -------------------------------------------------
         # ALERT SEVERITY / PRIORITY
@@ -3765,50 +3788,62 @@ Additional Observations:
         alert_severity = "Not specified"
 
         severity_match = re.search(
-            r"(?im)^\s*[-*]?\s*Severity\s*:\s*(Critical|High|Medium|Low)\s*$",
+            r"(?is)(?:Alert Severity Level|Severity Level|Alert Severity)"
+            r"\s*[:\-]?\s*(.*?)(?=\n\s*##|\Z)",
             monitoring_text
         )
 
         if severity_match:
 
-            alert_severity = (
+            severity_section = (
                 severity_match
                 .group(1)
-                .capitalize()
+                .strip()
             )
+
+            severity_value_match = re.search(
+                r"\b(Critical|High|Medium|Low)\b",
+                severity_section,
+                re.IGNORECASE
+            )
+
+            if severity_value_match:
+
+                alert_severity = (
+                    severity_value_match
+                    .group(1)
+                    .capitalize()
+                )
 
         # -------------------------------------------------
         # RECOMMENDED NEXT ACTION
-        # This is kept completely separate from the dashboard cards.
         # -------------------------------------------------
 
         next_action = "Review AI recommendations"
 
         action_match = re.search(
-            r"(?is)^\s*##\s*Recommended\s+Next\s+Action\s*$\n(.*?)(?=^\s*##\s+|\Z)",
+            r"(?is)(?:Recommended Next Action|Next Action)"
+            r"\s*[:\-]?\s*(.*?)(?=\n\s*##|\Z)",
             monitoring_text
         )
 
         if action_match:
 
-            action_section = action_match.group(1).strip()
+            action_section = (
+                action_match
+                .group(1)
+                .strip()
+            )
 
-            action_lines = []
+            action_section = re.sub(
+                r"^\s*[-*]\s*",
+                "",
+                action_section
+            ).strip()
 
-            for line in action_section.splitlines():
+            if action_section:
 
-                cleaned_line = re.sub(
-                    r"^\s*[-*+]\s*",
-                    "",
-                    line
-                ).strip()
-
-                if cleaned_line:
-                    action_lines.append(cleaned_line)
-
-            if action_lines:
-
-                next_action = "<br>".join(action_lines)
+                next_action = action_section
 
         # -------------------------------------------------
         # DASHBOARD HEALTH / MAINTENANCE STATUS
