@@ -1,8 +1,240 @@
 import streamlit as st
 import asyncio
+import json
+import streamlit.components.v1 as components
 
 from crew import run_mechcare
 from pdf_report import create_pdf_report
+
+
+# =========================================================
+# VOICE READER
+# =========================================================
+
+def speak_text(text):
+
+    # Convert the report into safe JavaScript text
+    report_json = json.dumps(str(text))
+
+    components.html(
+        f"""
+        <div style="
+            background:#0b1928;
+            border:1px solid #245276;
+            border-radius:18px;
+            padding:20px;
+            color:#dbeafe;
+            font-family:Arial, sans-serif;
+        ">
+
+            <h3 style="
+                margin-top:0;
+                color:#f8fafc;
+            ">
+                🔊 Listen to MechCare AI Results
+            </h3>
+
+            <p style="
+                color:#94a3b8;
+                margin-bottom:15px;
+            ">
+                Listen to the complete AI analysis and change the
+                speaking speed according to your preference.
+            </p>
+
+            <div style="
+                display:flex;
+                flex-wrap:wrap;
+                gap:10px;
+                align-items:center;
+            ">
+
+                <button
+                    onclick="playSpeech()"
+                    style="
+                        padding:9px 18px;
+                        border:none;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-size:14px;
+                    "
+                >
+                    ▶️ Play
+                </button>
+
+                <button
+                    onclick="stopSpeech()"
+                    style="
+                        padding:9px 18px;
+                        border:none;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-size:14px;
+                    "
+                >
+                    ⏹️ Stop
+                </button>
+
+                <label style="
+                    color:#cbd5e1;
+                    font-size:14px;
+                ">
+                    Speed:
+                </label>
+
+                <select
+                    id="speed"
+                    onchange="changeSpeed()"
+                    style="
+                        padding:8px 12px;
+                        border-radius:7px;
+                        border:1px solid #475569;
+                        background:#172b40;
+                        color:#f8fafc;
+                        font-size:14px;
+                    "
+                >
+                    <option value="0.25">0.25×</option>
+                    <option value="0.5">0.5×</option>
+                    <option value="0.75">0.75×</option>
+                    <option value="1" selected>1×</option>
+                    <option value="1.25">1.25×</option>
+                    <option value="1.5">1.5×</option>
+                    <option value="1.75">1.75×</option>
+                    <option value="2">2×</option>
+                </select>
+
+            </div>
+
+            <div
+                id="voiceStatus"
+                style="
+                    margin-top:15px;
+                    color:#7dd3fc;
+                    font-size:14px;
+                "
+            >
+                Ready to play
+            </div>
+
+        </div>
+
+
+        <script>
+
+        const reportText = {report_json};
+
+        let speech = null;
+        let currentSpeed = 1;
+
+
+        // -------------------------------------------------
+        // PLAY
+        // -------------------------------------------------
+
+        function playSpeech() {{
+
+            if (!("speechSynthesis" in window)) {{
+
+                document.getElementById("voiceStatus").innerText =
+                    "❌ Text-to-speech is not supported by this browser.";
+
+                return;
+            }}
+
+
+            // Stop anything currently playing
+            window.speechSynthesis.cancel();
+
+
+            speech = new SpeechSynthesisUtterance(
+                reportText
+            );
+
+
+            speech.rate = currentSpeed;
+
+            speech.pitch = 1;
+
+            speech.volume = 1;
+
+
+            speech.onstart = function() {{
+
+                document.getElementById("voiceStatus").innerText =
+                    "🔊 Speaking...";
+            }};
+
+
+            speech.onend = function() {{
+
+                document.getElementById("voiceStatus").innerText =
+                    "✅ Finished";
+            }};
+
+
+            speech.onerror = function() {{
+
+                document.getElementById("voiceStatus").innerText =
+                    "❌ Voice playback error.";
+            }};
+
+
+            window.speechSynthesis.speak(
+                speech
+            );
+        }}
+
+
+        // -------------------------------------------------
+        // STOP
+        // -------------------------------------------------
+
+        function stopSpeech() {{
+
+            if ("speechSynthesis" in window) {{
+
+                window.speechSynthesis.cancel();
+
+                document.getElementById("voiceStatus").innerText =
+                    "⏹️ Stopped";
+            }}
+        }}
+
+
+        // -------------------------------------------------
+        // CHANGE SPEED
+        // -------------------------------------------------
+
+        function changeSpeed() {{
+
+            currentSpeed = parseFloat(
+                document.getElementById("speed").value
+            );
+
+
+            // If speech is currently playing,
+            // restart it using the new speed.
+
+            if (
+                "speechSynthesis" in window &&
+                window.speechSynthesis.speaking
+            ) {{
+
+                window.speechSynthesis.cancel();
+
+                setTimeout(function() {{
+
+                    playSpeech();
+
+                }}, 100);
+            }}
+        }}
+
+        </script>
+        """,
+        height=190
+    )
 
 
 # =========================================================
@@ -897,6 +1129,44 @@ if st.session_state.analysis_result is not None:
 
     st.markdown(
         final_report
+    )
+
+
+    # =================================================
+    # VOICE READER
+    # =================================================
+
+    st.subheader(
+        "🔊 Listen to AI Results"
+    )
+
+    st.caption(
+        "Listen to the complete AI analysis, diagnosis, and final engineering report."
+    )
+
+
+    # Combine all AI-generated results
+    # so the voice reads the complete output.
+
+    complete_voice_text = f"""
+MechCare AI Engineering Analysis.
+
+Additional Data Recommended.
+
+{problem_analysis}
+
+Possible Faults and Diagnostic Checks.
+
+{diagnosis_result}
+
+Final Engineering Analysis Report.
+
+{final_report}
+"""
+
+
+    speak_text(
+        complete_voice_text
     )
 
 
