@@ -1,3 +1,6 @@
+from crewai import Agent
+
+
 def create_condition_monitoring_agent(llm):
 
     return Agent(
