@@ -23,25 +23,31 @@ def speak_text(text):
     # Python f-string syntax errors.
     voice_html = r"""
         <div style="
-            background:#0d1021;
-            border:1px solid #34345f;
-            border-radius:18px;
+            background:#162235;
+            border:1px solid #2A3A52;
+            border-radius:14px;
             padding:20px;
-            color:#e5e7eb;
+            color:#F1F5F9;
             font-family:Arial, sans-serif;
-            box-shadow:0 0 25px rgba(124,58,237,0.10);
+            box-shadow:
+                0 12px 30px rgba(0,0,0,0.20),
+                0 0 24px rgba(25,195,216,0.04);
         ">
 
             <h3 style="
                 margin-top:0;
-                color:#f8fafc;
+                color:#F1F5F9;
+                font-size:18px;
+                font-weight:800;
             ">
                 🔊 Listen to MechCare AI Results
             </h3>
 
             <p style="
-                color:#cbd5e1;
-                margin-bottom:15px;
+                color:#CBD5E1;
+                margin-bottom:17px;
+                font-size:13px;
+                line-height:1.6;
             ">
                 Listen to the complete AI analysis and change the
                 speaking speed according to your preference.
@@ -58,10 +64,13 @@ def speak_text(text):
                     onclick="playSpeech()"
                     style="
                         padding:9px 18px;
-                        border:none;
+                        border:1px solid #1687D9;
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        font-weight:700;
+                        color:#ffffff;
+                        background:#1687D9;
                     "
                 >
                     ▶️ Play
@@ -71,10 +80,13 @@ def speak_text(text):
                     onclick="pauseSpeech()"
                     style="
                         padding:9px 18px;
-                        border:none;
+                        border:1px solid #6B7280;
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        font-weight:700;
+                        color:#F1F5F9;
+                        background:#24344D;
                     "
                 >
                     ⏸️ Pause
@@ -84,18 +96,22 @@ def speak_text(text):
                     onclick="stopSpeech()"
                     style="
                         padding:9px 18px;
-                        border:none;
+                        border:1px solid #EF5350;
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        font-weight:700;
+                        color:#ffffff;
+                        background:#EF5350;
                     "
                 >
                     ⏹️ Stop
                 </button>
 
                 <label style="
-                    color:#e2e8f0;
+                    color:#CBD5E1;
                     font-size:14px;
+                    font-weight:600;
                 ">
                     Speed:
                 </label>
@@ -106,10 +122,11 @@ def speak_text(text):
                     style="
                         padding:8px 12px;
                         border-radius:7px;
-                        border:1px solid #475569;
-                        background:#17172f;
-                        color:#f8fafc;
+                        border:1px solid #2A3A52;
+                        background:#0B1220;
+                        color:#F1F5F9;
                         font-size:14px;
+                        outline:none;
                     "
                 >
                     <option value="0.25">0.25×</option>
@@ -127,13 +144,13 @@ def speak_text(text):
             <div
                 id="voiceStatus"
                 style="
-                    margin-top:15px;
-                    color:#67e8f9;
-                    font-size:14px;
-                    font-weight:600;
+                    margin-top:16px;
+                    color:#20C997;
+                    font-size:13px;
+                    font-weight:700;
                 "
             >
-                Ready to play
+                ● Ready to play
             </div>
 
         </div>
@@ -1128,45 +1145,89 @@ st.markdown(
     <style>
 
     /* =====================================================
+       MECHCARE AI COLOR SYSTEM
+       ===================================================== */
+
+    :root {
+        --bg-main: #0B1220;
+        --bg-sidebar: #111A2B;
+        --bg-card: #162235;
+
+        --border: #2A3A52;
+        --border-soft: #24344D;
+
+        --primary: #1687D9;
+        --accent: #19C3D8;
+
+        --success: #20C997;
+        --warning: #F5A623;
+        --danger: #EF5350;
+        --info: #1687D9;
+        --offline: #64748B;
+
+        --text-primary: #F1F5F9;
+        --text-secondary: #CBD5E1;
+        --text-muted: #94A3B8;
+        --text-disabled: #64748B;
+    }
+
+
+    /* =====================================================
        GLOBAL
        ===================================================== */
 
     .stApp {
         background:
             radial-gradient(
-                circle at 10% 5%,
-                rgba(124, 58, 237, 0.18),
+                circle at 80% 0%,
+                rgba(25,195,216,0.045),
                 transparent 28%
             ),
             radial-gradient(
-                circle at 90% 12%,
-                rgba(34, 211, 238, 0.13),
-                transparent 25%
-            ),
-            radial-gradient(
-                circle at 50% 80%,
-                rgba(168, 85, 247, 0.07),
+                circle at 15% 20%,
+                rgba(22,135,217,0.045),
                 transparent 30%
             ),
-            linear-gradient(
-                135deg,
-                #070817 0%,
-                #0b0d1c 45%,
-                #0d1024 100%
-            );
+            #0B1220;
+        color: #F1F5F9;
     }
 
     .block-container {
         max-width: 1550px;
-        padding-top: 1.3rem;
+        padding-top: 1.25rem;
         padding-bottom: 3rem;
         padding-left: 2rem;
         padding-right: 2rem;
     }
 
     ::selection {
-        background: rgba(34,211,238,0.30);
-        color: white;
+        background: rgba(25,195,216,0.28);
+        color: #F1F5F9;
+    }
+
+
+    /* =====================================================
+       GENERAL STREAMLIT TEXT
+       ===================================================== */
+
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] li {
+        color: #CBD5E1 !important;
+    }
+
+    [data-testid="stMarkdownContainer"] strong {
+        color: #F1F5F9 !important;
+    }
+
+    [data-testid="stMarkdownContainer"] h1,
+    [data-testid="stMarkdownContainer"] h2,
+    [data-testid="stMarkdownContainer"] h3,
+    [data-testid="stMarkdownContainer"] h4 {
+        color: #F1F5F9 !important;
+    }
+
+    h1, h2, h3, h4 {
+        color: #F1F5F9 !important;
     }
 
 
@@ -1175,18 +1236,12 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stSidebar"] {
-        background:
-            linear-gradient(
-                180deg,
-                #08091a 0%,
-                #0b0d20 50%,
-                #070817 100%
-            );
+        background: #111A2B;
 
-        border-right: 1px solid rgba(124,58,237,0.28);
+        border-right: 1px solid #2A3A52;
 
         box-shadow:
-            10px 0 45px rgba(0,0,0,0.25);
+            8px 0 35px rgba(0,0,0,0.18);
     }
 
     [data-testid="stSidebar"] > div:first-child {
@@ -1194,7 +1249,7 @@ st.markdown(
     }
 
     [data-testid="stSidebar"] .stMarkdown {
-        color: #cbd5e1;
+        color: #CBD5E1;
     }
 
 
@@ -1202,21 +1257,17 @@ st.markdown(
 
     .sidebar-brand {
         padding: 19px;
-        border: 1px solid rgba(124,58,237,0.42);
-        border-radius: 18px;
 
-        background:
-            linear-gradient(
-                135deg,
-                rgba(42,27,76,0.95),
-                rgba(13,17,38,0.96)
-            );
+        border: 1px solid #2A3A52;
+        border-radius: 12px;
+
+        background: #162235;
 
         margin-bottom: 20px;
 
         box-shadow:
-            0 0 25px rgba(124,58,237,0.12),
-            0 15px 35px rgba(0,0,0,0.25);
+            0 10px 28px rgba(0,0,0,0.18),
+            0 0 22px rgba(25,195,216,0.04);
 
         position: relative;
         overflow: hidden;
@@ -1224,84 +1275,172 @@ st.markdown(
 
     .sidebar-brand:after {
         content: "";
+
         position: absolute;
-        width: 100px;
-        height: 100px;
+
+        width: 120px;
+        height: 120px;
+
         border-radius: 50%;
-        right: -50px;
-        top: -50px;
-        background: rgba(34,211,238,0.10);
+
+        right: -65px;
+        top: -65px;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(25,195,216,0.12),
+                transparent 70%
+            );
     }
 
     .sidebar-brand-title {
-        color: #f8fafc;
+        color: #F1F5F9;
         font-size: 22px;
         font-weight: 800;
         margin-bottom: 3px;
     }
 
     .sidebar-brand-subtitle {
-        color: #67e8f9;
-        font-size: 11px;
-        letter-spacing: 1.5px;
+        color: #19C3D8;
+        font-size: 10px;
+        letter-spacing: 1.6px;
         text-transform: uppercase;
+        font-weight: 700;
     }
 
     .sidebar-section {
-        color: #7176a0;
+        color: #94A3B8;
+
         font-size: 10px;
         font-weight: 800;
-        letter-spacing: 1.7px;
+
+        letter-spacing: 1.6px;
+
         text-transform: uppercase;
+
         margin-top: 22px;
         margin-bottom: 8px;
     }
 
-    .sidebar-machine {
-        background:
-            linear-gradient(
-                135deg,
-                #11132b,
-                #0b0d1e
-            );
 
-        border: 1px solid rgba(34,211,238,0.18);
-        border-radius: 15px;
+    /* SIDEBAR NAVIGATION */
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] label {
+        color: #CBD5E1 !important;
+
+        border-radius: 8px;
+
+        padding: 7px 10px;
+
+        margin-bottom: 2px;
+
+        transition:
+            background 0.2s ease,
+            color 0.2s ease;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+        background: rgba(22,135,217,0.10);
+        color: #F1F5F9 !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"] {
+        background: rgba(22,135,217,0.16);
+        color: #F1F5F9 !important;
+        border-left: 3px solid #1687D9;
+    }
+
+
+    /* SIDEBAR MACHINE */
+
+    .sidebar-machine {
+        background: #162235;
+
+        border: 1px solid #2A3A52;
+        border-radius: 10px;
 
         padding: 14px;
         margin-top: 15px;
 
         box-shadow:
-            0 0 22px rgba(34,211,238,0.06);
+            0 8px 22px rgba(0,0,0,0.16);
     }
 
     .sidebar-machine-label {
-        color: #7176a0;
+        color: #94A3B8;
+
         font-size: 10px;
+
         text-transform: uppercase;
+
         letter-spacing: 1px;
     }
 
     .sidebar-machine-name {
-        color: #f8fafc;
-        font-size: 15px;
+        color: #F1F5F9;
+
+        font-size: 14px;
+
         font-weight: 700;
+
         margin-top: 4px;
     }
 
     .sidebar-status {
         display: inline-block;
+
         margin-top: 9px;
+
         padding: 5px 9px;
+
         border-radius: 999px;
 
-        background: rgba(52,211,153,0.09);
-        color: #6ee7b7;
+        background: rgba(32,201,151,0.09);
 
-        border: 1px solid rgba(52,211,153,0.25);
+        color: #20C997;
+
+        border: 1px solid rgba(32,201,151,0.28);
 
         font-size: 10px;
+
         font-weight: 700;
+    }
+
+
+    /* =====================================================
+       SIDEBAR BUTTONS
+       ===================================================== */
+
+    [data-testid="stSidebar"] .stButton > button {
+        background: transparent !important;
+
+        border: 1px solid transparent !important;
+
+        color: #CBD5E1 !important;
+
+        text-align: left !important;
+
+        justify-content: flex-start !important;
+
+        box-shadow: none !important;
+
+        min-height: 40px;
+
+        font-weight: 600 !important;
+    }
+
+    [data-testid="stSidebar"] .stButton > button:hover {
+        background: rgba(22,135,217,0.10) !important;
+
+        border-color: #2A3A52 !important;
+
+        color: #F1F5F9 !important;
+
+        box-shadow:
+            0 0 16px rgba(22,135,217,0.06) !important;
+
+        transform: none;
     }
 
 
@@ -1309,103 +1448,225 @@ st.markdown(
        HEADERS
        ===================================================== */
 
-    h1, h2, h3 {
-        color: #f8fafc !important;
-    }
-
     .section-title {
-        color: #f8fafc;
+        color: #F1F5F9;
+
         font-size: 21px;
+
         font-weight: 800;
-        margin-bottom: 3px;
+
+        margin-bottom: 4px;
     }
 
     .section-description {
-        color: #9298b5;
+        color: #CBD5E1;
+
         font-size: 13px;
-        line-height: 1.6;
+
+        line-height: 1.65;
+
         margin-bottom: 14px;
     }
 
 
     /* =====================================================
-       TOP HEADER
+       TOP COMMAND HEADER
        ===================================================== */
 
     .top-header {
         display: flex;
+
         justify-content: space-between;
+
         align-items: center;
+
         gap: 20px;
 
         padding: 20px 23px;
-        margin-bottom: 20px;
 
-        background:
-            linear-gradient(
-                135deg,
-                rgba(27,21,55,0.96),
-                rgba(11,14,31,0.96)
-            );
+        margin-bottom: 18px;
 
-        border: 1px solid rgba(124,58,237,0.34);
-        border-radius: 20px;
+        background: #162235;
+
+        border: 1px solid #2A3A52;
+
+        border-radius: 12px;
 
         box-shadow:
-            0 0 35px rgba(124,58,237,0.08),
-            0 18px 45px rgba(0,0,0,0.25);
+            0 12px 30px rgba(0,0,0,0.18),
+            0 0 25px rgba(25,195,216,0.035);
 
         position: relative;
+
         overflow: hidden;
     }
 
     .top-header:before {
         content: "";
+
         position: absolute;
-        width: 320px;
+
+        width: 240px;
+
         height: 2px;
+
         left: 0;
+
         bottom: 0;
 
         background:
             linear-gradient(
                 90deg,
-                transparent,
-                #7c3aed,
-                #22d3ee,
+                #1687D9,
+                #19C3D8,
                 transparent
             );
-
-        opacity: 0.9;
     }
 
     .top-title {
-        color: #f8fafc;
-        font-size: 28px;
-        font-weight: 850;
+        color: #F1F5F9;
+
+        font-size: 25px;
+
+        font-weight: 800;
+
         margin: 0;
     }
 
     .top-subtitle {
-        color: #9298b5;
+        color: #CBD5E1;
+
         font-size: 13px;
-        margin-top: 4px;
+
+        margin-top: 5px;
+    }
+
+    .top-actions {
+        display: flex;
+
+        align-items: center;
+
+        gap: 9px;
+    }
+
+    .top-action {
+        width: 34px;
+
+        height: 34px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 8px;
+
+        background: #111A2B;
+
+        border: 1px solid #2A3A52;
+
+        color: #CBD5E1;
+
+        font-size: 15px;
+    }
+
+    .top-action:hover {
+        border-color: #1687D9;
+
+        color: #19C3D8;
+
+        box-shadow:
+            0 0 14px rgba(25,195,216,0.08);
     }
 
     .online-badge {
-        background: rgba(34,211,238,0.08);
-        color: #67e8f9;
-        border: 1px solid rgba(34,211,238,0.28);
+        background: rgba(32,201,151,0.08);
+
+        color: #20C997;
+
+        border: 1px solid rgba(32,201,151,0.28);
+
         border-radius: 999px;
 
         padding: 8px 13px;
 
-        font-size: 11px;
-        font-weight: 700;
+        font-size: 10px;
+
+        font-weight: 800;
+
         white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       INFORMATION CARD
+       ===================================================== */
+
+    .info-card {
+        display: flex;
+
+        align-items: center;
+
+        gap: 15px;
+
+        background: #162235;
+
+        border: 1px solid #2A3A52;
+
+        border-left: 3px solid #19C3D8;
+
+        border-radius: 11px;
+
+        padding: 15px 18px;
+
+        margin-bottom: 20px;
 
         box-shadow:
-            0 0 18px rgba(34,211,238,0.08);
+            0 10px 25px rgba(0,0,0,0.16),
+            0 0 20px rgba(25,195,216,0.035);
+    }
+
+    .info-icon {
+        width: 40px;
+
+        height: 40px;
+
+        min-width: 40px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 9px;
+
+        background: rgba(25,195,216,0.09);
+
+        border: 1px solid rgba(25,195,216,0.20);
+
+        color: #19C3D8;
+
+        font-size: 19px;
+    }
+
+    .info-title {
+        color: #F1F5F9;
+
+        font-size: 12px;
+
+        font-weight: 800;
+
+        margin-bottom: 3px;
+    }
+
+    .info-text {
+        color: #CBD5E1;
+
+        font-size: 12px;
+
+        line-height: 1.5;
     }
 
 
@@ -1415,84 +1676,74 @@ st.markdown(
 
     .hero {
         position: relative;
+
         overflow: hidden;
 
-        background:
-            linear-gradient(
-                135deg,
-                #171538 0%,
-                #11142c 48%,
-                #10182c 100%
-            );
+        background: #162235;
 
-        border: 1px solid rgba(124,58,237,0.40);
-        border-radius: 22px;
+        border: 1px solid #2A3A52;
 
-        padding: 30px;
+        border-radius: 14px;
+
+        padding: 27px;
 
         margin-bottom: 22px;
 
         box-shadow:
-            0 0 45px rgba(124,58,237,0.10),
-            0 22px 55px rgba(0,0,0,0.28);
+            0 14px 35px rgba(0,0,0,0.18),
+            0 0 28px rgba(22,135,217,0.035);
     }
 
     .hero:before {
         content: "";
+
         position: absolute;
-        width: 350px;
-        height: 350px;
+
+        width: 260px;
+
+        height: 260px;
+
         border-radius: 50%;
 
-        right: -140px;
-        top: -160px;
+        right: -110px;
+
+        top: -130px;
 
         background:
             radial-gradient(
                 circle,
-                rgba(34,211,238,0.15),
-                transparent 65%
-            );
-    }
-
-    .hero:after {
-        content: "";
-        position: absolute;
-
-        width: 170px;
-        height: 170px;
-
-        border-radius: 50%;
-
-        right: 80px;
-        bottom: -120px;
-
-        background:
-            radial-gradient(
-                circle,
-                rgba(168,85,247,0.13),
-                transparent 70%
+                rgba(25,195,216,0.10),
+                transparent 68%
             );
     }
 
     .hero h1 {
-        color: #ffffff;
-        font-size: 40px;
+        color: #F1F5F9;
+
+        font-size: 38px;
+
         margin: 0;
-        letter-spacing: -1px;
+
+        letter-spacing: -0.7px;
     }
 
     .hero h3 {
-        color: #67e8f9 !important;
-        font-size: 16px;
-        margin-top: 6px;
+        color: #19C3D8 !important;
+
+        font-size: 15px;
+
+        margin-top: 7px;
     }
 
     .hero p {
-        color: #b7bdd2;
+        color: #CBD5E1;
+
         font-size: 14px;
+
         line-height: 1.75;
-        max-width: 850px;
+
+        max-width: 900px;
+
         margin-bottom: 0;
     }
 
@@ -1502,22 +1753,19 @@ st.markdown(
        ===================================================== */
 
     .ui-card {
-        background:
-            linear-gradient(
-                145deg,
-                rgba(17,20,43,0.96),
-                rgba(10,12,27,0.98)
-            );
+        background: #162235;
 
-        border: 1px solid rgba(92,96,143,0.28);
-        border-radius: 17px;
+        border: 1px solid #2A3A52;
+
+        border-radius: 11px;
 
         padding: 18px;
+
         margin-bottom: 15px;
 
         box-shadow:
-            0 12px 30px rgba(0,0,0,0.18),
-            inset 0 1px 0 rgba(255,255,255,0.025);
+            0 10px 27px rgba(0,0,0,0.16),
+            inset 0 1px 0 rgba(255,255,255,0.015);
 
         transition:
             border-color 0.2s ease,
@@ -1526,33 +1774,44 @@ st.markdown(
     }
 
     .ui-card:hover {
-        border-color: rgba(34,211,238,0.35);
+        border-color: #1687D9;
 
         box-shadow:
-            0 0 25px rgba(34,211,238,0.07),
-            0 15px 35px rgba(0,0,0,0.22);
+            0 0 20px rgba(22,135,217,0.06),
+            0 13px 30px rgba(0,0,0,0.20);
 
         transform: translateY(-1px);
     }
 
     .card-label {
-        color: #6f759c;
+        color: #94A3B8;
+
         font-size: 10px;
+
         font-weight: 800;
+
         text-transform: uppercase;
-        letter-spacing: 1.4px;
+
+        letter-spacing: 1.3px;
+
         margin-bottom: 6px;
     }
 
     .card-value {
-        color: #f8fafc;
-        font-size: 19px;
+        color: #F1F5F9;
+
+        font-size: 18px;
+
         font-weight: 750;
     }
 
     .card-small {
-        color: #9298b5;
+        color: #CBD5E1;
+
         font-size: 12px;
+
+        line-height: 1.5;
+
         margin-top: 5px;
     }
 
@@ -1562,66 +1821,76 @@ st.markdown(
        ===================================================== */
 
     .status-card {
-        background:
-            linear-gradient(
-                145deg,
-                rgba(17,20,43,0.98),
-                rgba(10,12,27,0.98)
-            );
+        background: #162235;
 
-        border: 1px solid rgba(92,96,143,0.30);
-        border-radius: 17px;
+        border: 1px solid #2A3A52;
+
+        border-radius: 11px;
 
         padding: 17px;
 
         min-height: 112px;
 
         box-shadow:
-            0 12px 30px rgba(0,0,0,0.18);
+            0 10px 25px rgba(0,0,0,0.16);
 
         position: relative;
+
         overflow: hidden;
     }
 
     .status-card:after {
         content: "";
+
         position: absolute;
 
-        width: 90px;
-        height: 90px;
+        width: 100px;
 
-        right: -45px;
-        bottom: -45px;
+        height: 100px;
+
+        right: -50px;
+
+        bottom: -50px;
 
         border-radius: 50%;
 
         background:
             radial-gradient(
                 circle,
-                rgba(124,58,237,0.13),
+                rgba(25,195,216,0.08),
                 transparent 70%
             );
     }
 
     .status-title {
-        color: #6f759c;
+        color: #94A3B8;
+
         font-size: 10px;
+
         font-weight: 800;
+
         text-transform: uppercase;
+
         letter-spacing: 1.2px;
     }
 
     .status-main {
-        color: #f8fafc;
-        font-size: 17px;
+        color: #F1F5F9;
+
+        font-size: 16px;
+
         font-weight: 750;
+
         margin-top: 9px;
-        line-height: 1.3;
+
+        line-height: 1.35;
     }
 
     .status-sub {
-        color: #858ba8;
+        color: #CBD5E1;
+
         font-size: 11px;
+
         margin-top: 5px;
     }
 
@@ -1631,25 +1900,23 @@ st.markdown(
        ===================================================== */
 
     .workflow-card {
-        background:
-            linear-gradient(
-                145deg,
-                #11142b,
-                #0b0d1e
-            );
+        background: #162235;
 
-        border: 1px solid rgba(124,58,237,0.25);
-        border-radius: 17px;
+        border: 1px solid #2A3A52;
+
+        border-radius: 11px;
 
         padding: 18px;
 
         height: 100%;
+
         min-height: 155px;
 
         box-shadow:
-            0 10px 28px rgba(0,0,0,0.18);
+            0 9px 25px rgba(0,0,0,0.16);
 
         position: relative;
+
         overflow: hidden;
 
         transition:
@@ -1660,50 +1927,62 @@ st.markdown(
 
     .workflow-card:before {
         content: "";
+
         position: absolute;
 
         left: 0;
+
         top: 0;
 
         width: 3px;
+
         height: 100%;
 
         background:
             linear-gradient(
                 180deg,
-                #22d3ee,
-                #7c3aed
+                #19C3D8,
+                #1687D9
             );
     }
 
     .workflow-card:hover {
-        transform: translateY(-3px);
+        transform: translateY(-2px);
 
-        border-color: rgba(34,211,238,0.45);
+        border-color: #1687D9;
 
         box-shadow:
-            0 0 30px rgba(124,58,237,0.10),
-            0 15px 32px rgba(0,0,0,0.25);
+            0 0 24px rgba(22,135,217,0.07),
+            0 14px 30px rgba(0,0,0,0.22);
     }
 
     .workflow-number {
-        color: #67e8f9;
+        color: #19C3D8;
+
         font-size: 10px;
+
         font-weight: 900;
+
         letter-spacing: 1.3px;
     }
 
     .workflow-title {
-        color: #f8fafc;
+        color: #F1F5F9;
+
         font-size: 14px;
+
         font-weight: 750;
+
         margin-top: 8px;
     }
 
     .workflow-description {
-        color: #858ba8;
+        color: #CBD5E1;
+
         font-size: 12px;
+
         line-height: 1.6;
+
         margin-top: 7px;
     }
 
@@ -1713,20 +1992,17 @@ st.markdown(
        ===================================================== */
 
     .symptom-box {
-        background:
-            linear-gradient(
-                135deg,
-                rgba(34,211,238,0.08),
-                rgba(124,58,237,0.08)
-            );
+        background: rgba(25,195,216,0.055);
 
-        border: 1px solid rgba(34,211,238,0.25);
+        border: 1px solid rgba(25,195,216,0.22);
 
-        border-radius: 13px;
+        border-left: 3px solid #19C3D8;
+
+        border-radius: 9px;
 
         padding: 13px 15px;
 
-        color: #a5f3fc;
+        color: #CBD5E1;
 
         margin-top: 10px;
 
@@ -1735,7 +2011,7 @@ st.markdown(
         font-size: 13px;
 
         box-shadow:
-            0 0 20px rgba(34,211,238,0.05);
+            0 0 18px rgba(25,195,216,0.035);
     }
 
 
@@ -1744,46 +2020,53 @@ st.markdown(
        ===================================================== */
 
     .question-card {
-        background:
-            linear-gradient(
-                145deg,
-                rgba(20,18,45,0.96),
-                rgba(10,12,27,0.98)
-            );
+        background: #162235;
 
-        border: 1px solid rgba(124,58,237,0.24);
+        border: 1px solid #2A3A52;
 
-        border-radius: 15px;
+        border-radius: 10px;
 
         padding: 14px 15px;
 
-        margin-bottom: 11px;
+        margin-bottom: 10px;
 
         box-shadow:
-            0 8px 22px rgba(0,0,0,0.16);
+            0 7px 20px rgba(0,0,0,0.14);
 
         transition:
             border-color 0.2s ease,
-            transform 0.2s ease;
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
     .question-card:hover {
-        border-color: rgba(34,211,238,0.38);
+        border-color: #1687D9;
+
         transform: translateX(2px);
+
+        box-shadow:
+            0 0 18px rgba(22,135,217,0.055);
     }
 
     .question-number {
-        color: #67e8f9;
+        color: #19C3D8;
+
         font-size: 9px;
+
         font-weight: 900;
+
         letter-spacing: 1px;
+
         text-transform: uppercase;
     }
 
     .question-text {
-        color: #dfe3f2;
+        color: #CBD5E1;
+
         font-size: 12px;
+
         line-height: 1.5;
+
         margin-top: 5px;
     }
 
@@ -1793,26 +2076,20 @@ st.markdown(
        ===================================================== */
 
     .report-box {
-        background:
-            linear-gradient(
-                145deg,
-                #0e1022,
-                #090b18
-            );
+        background: #162235;
 
-        border: 1px solid rgba(124,58,237,0.24);
+        border: 1px solid #2A3A52;
 
-        border-radius: 17px;
+        border-radius: 11px;
 
         padding: 24px;
 
-        color: #dbe4f5;
+        color: #CBD5E1;
 
         line-height: 1.75;
 
         box-shadow:
-            0 15px 35px rgba(0,0,0,0.20),
-            0 0 25px rgba(124,58,237,0.04);
+            0 13px 32px rgba(0,0,0,0.17);
     }
 
 
@@ -1821,18 +2098,13 @@ st.markdown(
        ===================================================== */
 
     .stButton > button {
-        border-radius: 10px !important;
+        border-radius: 8px !important;
 
-        border: 1px solid rgba(124,58,237,0.40) !important;
+        border: 1px solid #1687D9 !important;
 
-        background:
-            linear-gradient(
-                135deg,
-                #33206b,
-                #182b58
-            ) !important;
+        background: #1687D9 !important;
 
-        color: #f8fafc !important;
+        color: #FFFFFF !important;
 
         font-weight: 750 !important;
 
@@ -1846,18 +2118,13 @@ st.markdown(
     }
 
     .stButton > button:hover {
-        border-color: #22d3ee !important;
+        border-color: #19C3D8 !important;
 
-        background:
-            linear-gradient(
-                135deg,
-                #45268c,
-                #173d68
-            ) !important;
+        background: #1687D9 !important;
 
         box-shadow:
-            0 0 22px rgba(34,211,238,0.14),
-            0 0 35px rgba(124,58,237,0.10);
+            0 0 18px rgba(25,195,216,0.15),
+            0 7px 20px rgba(0,0,0,0.18);
 
         transform: translateY(-1px);
     }
@@ -1868,11 +2135,13 @@ st.markdown(
        ===================================================== */
 
     div[data-baseweb="select"] > div {
-        background-color: #0d1021 !important;
+        background-color: #162235 !important;
 
-        border-color: #303454 !important;
+        border: 1px solid #2A3A52 !important;
 
-        border-radius: 10px !important;
+        border-radius: 8px !important;
+
+        color: #F1F5F9 !important;
 
         transition:
             border-color 0.2s ease,
@@ -1880,33 +2149,54 @@ st.markdown(
     }
 
     div[data-baseweb="select"] > div:hover {
-        border-color: #7c3aed !important;
+        border-color: #1687D9 !important;
 
         box-shadow:
-            0 0 14px rgba(124,58,237,0.10);
+            0 0 13px rgba(22,135,217,0.07);
+    }
+
+    div[data-baseweb="select"] span {
+        color: #F1F5F9 !important;
     }
 
     textarea {
-        background-color: #0d1021 !important;
+        background-color: #162235 !important;
 
-        border: 1px solid #303454 !important;
+        border: 1px solid #2A3A52 !important;
 
-        color: #f8fafc !important;
+        color: #F1F5F9 !important;
 
-        border-radius: 10px !important;
+        border-radius: 8px !important;
+    }
+
+    textarea::placeholder {
+        color: #94A3B8 !important;
     }
 
     textarea:focus {
-        border-color: #22d3ee !important;
+        border-color: #19C3D8 !important;
 
         box-shadow:
-            0 0 0 1px rgba(34,211,238,0.25),
-            0 0 18px rgba(34,211,238,0.07) !important;
+            0 0 0 1px rgba(25,195,216,0.22),
+            0 0 18px rgba(25,195,216,0.06) !important;
+    }
+
+    input {
+        background-color: #162235 !important;
+
+        color: #F1F5F9 !important;
+
+        border-color: #2A3A52 !important;
+    }
+
+    input::placeholder {
+        color: #94A3B8 !important;
     }
 
     label {
-        color: #cdd3e4 !important;
-        font-weight: 600 !important;
+        color: #CBD5E1 !important;
+
+        font-weight: 650 !important;
     }
 
 
@@ -1915,16 +2205,11 @@ st.markdown(
        ===================================================== */
 
     [data-baseweb="tag"] {
-        background:
-            linear-gradient(
-                135deg,
-                #35206f,
-                #173b61
-            ) !important;
+        background: #1687D9 !important;
 
-        color: #e0f2fe !important;
+        color: #FFFFFF !important;
 
-        border: 1px solid rgba(34,211,238,0.20);
+        border: 1px solid #19C3D8 !important;
     }
 
 
@@ -1933,7 +2218,8 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stCheckbox"] label {
-        color: #cbd5e1 !important;
+        color: #CBD5E1 !important;
+
         font-size: 13px !important;
     }
 
@@ -1943,11 +2229,17 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stExpander"] {
-        background: #0d1021;
+        background: #162235;
 
-        border: 1px solid #303454;
+        border: 1px solid #2A3A52;
 
-        border-radius: 12px;
+        border-radius: 9px;
+
+        color: #CBD5E1;
+    }
+
+    [data-testid="stExpander"] summary {
+        color: #F1F5F9 !important;
     }
 
 
@@ -1956,9 +2248,13 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stStatusWidget"] {
-        border-radius: 14px;
-        background: #0d1021;
-        border-color: #34345f;
+        border-radius: 10px;
+
+        background: #162235;
+
+        border: 1px solid #2A3A52;
+
+        color: #CBD5E1;
     }
 
 
@@ -1966,16 +2262,20 @@ st.markdown(
        PROGRESS BAR
        ===================================================== */
 
+    [data-testid="stProgressBar"] > div {
+        background: #24344D !important;
+    }
+
     [data-testid="stProgressBar"] > div > div {
         background:
             linear-gradient(
                 90deg,
-                #7c3aed,
-                #22d3ee
+                #1687D9,
+                #19C3D8
             ) !important;
 
         box-shadow:
-            0 0 14px rgba(34,211,238,0.18);
+            0 0 12px rgba(25,195,216,0.16);
     }
 
 
@@ -1984,9 +2284,10 @@ st.markdown(
        ===================================================== */
 
     hr {
-        border-color: rgba(91,96,142,0.28) !important;
+        border-color: #24344D !important;
 
         margin-top: 25px !important;
+
         margin-bottom: 25px !important;
     }
 
@@ -1996,23 +2297,49 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stDownloadButton"] button {
-        border-radius: 11px !important;
+        border-radius: 9px !important;
 
         background:
             linear-gradient(
-                135deg,
-                #372078,
-                #174667
+                90deg,
+                #1687D9,
+                #19C3D8
             ) !important;
 
-        border: 1px solid rgba(34,211,238,0.30) !important;
+        border: 1px solid #19C3D8 !important;
 
-        color: white !important;
+        color: #FFFFFF !important;
 
-        font-weight: 750 !important;
+        font-weight: 800 !important;
+
+        min-height: 46px;
 
         box-shadow:
-            0 0 22px rgba(34,211,238,0.07);
+            0 0 20px rgba(25,195,216,0.08);
+    }
+
+    [data-testid="stDownloadButton"] button:hover {
+        box-shadow:
+            0 0 25px rgba(25,195,216,0.16),
+            0 8px 20px rgba(0,0,0,0.18);
+    }
+
+
+    /* =====================================================
+       ALERTS
+       ===================================================== */
+
+    [data-testid="stAlert"] {
+        border-radius: 9px;
+    }
+
+
+    /* =====================================================
+       CAPTION
+       ===================================================== */
+
+    [data-testid="stCaptionContainer"] {
+        color: #94A3B8 !important;
     }
 
 
@@ -2028,7 +2355,7 @@ st.markdown(
         }
 
         .top-title {
-            font-size: 23px;
+            font-size: 22px;
         }
 
         .hero h1 {
@@ -2037,11 +2364,13 @@ st.markdown(
 
     }
 
+
     @media (max-width: 700px) {
 
         .block-container {
             padding-left: 0.7rem;
             padding-right: 0.7rem;
+
             padding-top: 0.8rem;
         }
 
@@ -2065,6 +2394,10 @@ st.markdown(
             font-size: 20px;
         }
 
+        .top-actions {
+            display: none;
+        }
+
         .online-badge {
             display: none;
         }
@@ -2086,6 +2419,7 @@ with st.sidebar:
     st.html(
         """
         <div class="sidebar-brand">
+
             <div class="sidebar-brand-title">
                 ⚙️ MechCare AI
             </div>
@@ -2093,13 +2427,16 @@ with st.sidebar:
             <div class="sidebar-brand-subtitle">
                 Engineering Intelligence
             </div>
+
         </div>
         """
     )
 
+
     st.html(
         '<div class="sidebar-section">Navigation</div>'
     )
+
 
     navigation = st.radio(
         "Navigation",
@@ -2112,9 +2449,11 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
+
     st.html(
         '<div class="sidebar-section">Machine Category</div>'
     )
+
 
     machine_category_filter = st.selectbox(
         "Machine Category",
@@ -2132,28 +2471,34 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
+
     st.html(
         '<div class="sidebar-section">Quick System Links</div>'
     )
 
+
     st.button(
-        "📋 Active Machine Profiles",
+        "📋  Active Machine Profiles",
         use_container_width=True
     )
 
+
     st.button(
-        "🛠️ Maintenance Logs",
+        "🛠️  Maintenance Logs",
         use_container_width=True
     )
 
+
     st.button(
-        "📄 Generated Reports",
+        "📄  Generated Reports",
         use_container_width=True
     )
+
 
     st.html(
         '<div class="sidebar-section">Current Machine</div>'
     )
+
 
     st.html(
         """
@@ -2175,10 +2520,15 @@ with st.sidebar:
         """
     )
 
+
     st.markdown("")
 
+
     st.caption("MechCare AI v1.0")
-    st.caption("Engineering decision support system")
+
+    st.caption(
+        "Engineering decision support system"
+    )
 
 
 # =========================================================
@@ -2190,18 +2540,72 @@ st.html(
     <div class="top-header">
 
         <div>
+
             <div class="top-title">
-                Engineering Command Center
+                AI-Powered Machine Monitoring
             </div>
 
             <div class="top-subtitle">
-                AI-powered machine diagnostics, maintenance planning
-                and engineering reporting.
+                Smarter Diagnostics &nbsp;|&nbsp;
+                Safer Operations &nbsp;|&nbsp;
+                Engineering Intelligence
             </div>
+
         </div>
 
-        <div class="online-badge">
-            ● AI SYSTEM READY
+
+        <div class="top-actions">
+
+            <div class="top-action">
+                🔔
+            </div>
+
+            <div class="top-action">
+                ☀️
+            </div>
+
+            <div class="top-action">
+                👤
+            </div>
+
+            <div class="top-action">
+                ⋮
+            </div>
+
+            <div class="online-badge">
+                ● AI SYSTEM READY
+            </div>
+
+        </div>
+
+    </div>
+    """
+)
+
+
+# =========================================================
+# ENGINEERING INFORMATION CARD
+# =========================================================
+
+st.html(
+    """
+    <div class="info-card">
+
+        <div class="info-icon">
+            ⚙️
+        </div>
+
+        <div>
+
+            <div class="info-title">
+                Preventive Maintenance Reminder
+            </div>
+
+            <div class="info-text">
+                Follow ABB's quarterly alignment and lubrication
+                schedule to keep the pump operating safely.
+            </div>
+
         </div>
 
     </div>
@@ -2217,7 +2621,9 @@ st.html(
     """
     <div class="hero">
 
-        <h1>⚙️ MechCare AI</h1>
+        <h1>
+            ⚙️ MechCare AI
+        </h1>
 
         <h3>
             AI-Powered Machine Maintenance & Troubleshooting Assistant
@@ -2260,6 +2666,7 @@ with right_column:
         '<div class="section-description">System information and quick diagnostic context.</div>'
     )
 
+
     st.html(
         """
         <div class="ui-card">
@@ -2279,6 +2686,7 @@ with right_column:
         </div>
         """
     )
+
 
     st.html(
         """
@@ -2300,6 +2708,7 @@ with right_column:
         """
     )
 
+
     st.html(
         """
         <div class="ui-card">
@@ -2319,6 +2728,7 @@ with right_column:
         </div>
         """
     )
+
 
     st.html(
         """
@@ -2352,52 +2762,66 @@ with right_column:
         '<div class="section-title" style="margin-top:22px;">💡 Engineering Questions</div>'
     )
 
+
     st.html(
         '<div class="section-description">Useful questions to consider during machine inspection.</div>'
     )
 
+
     engineering_questions = [
+
         (
             "01",
             "What changed before the problem started?"
         ),
+
         (
             "02",
             "Does the symptom increase with machine speed?"
         ),
+
         (
             "03",
             "Does the problem appear under heavy load?"
         ),
+
         (
             "04",
             "Is the machine temperature higher than normal?"
         ),
+
         (
             "05",
             "Has the machine recently been repaired or adjusted?"
         ),
+
         (
             "06",
             "Is the vibration coming from a specific component?"
         ),
+
         (
             "07",
             "When was the machine last lubricated?"
         ),
+
         (
             "08",
             "Are there any unusual sounds, smells or leaks?"
         ),
+
         (
             "09",
             "Has machine performance gradually decreased?"
         ),
+
         (
             "10",
             "Could operating conditions have changed?"
         )
+
     ]
+
 
     for number, question in engineering_questions:
 
@@ -2432,41 +2856,54 @@ with main_column:
         '<div class="section-title">🤖 Multi-Agent Engineering Workflow</div>'
     )
 
+
     st.html(
         '<div class="section-description">Your machine problem is processed through four specialized engineering agents.</div>'
     )
 
 
     workflow = [
+
         (
             "01",
             "🔍 Problem Analysis",
             "Analyzes machine information, symptoms, observations and missing information."
         ),
+
         (
             "02",
             "🧠 Fault Diagnosis",
             "Examines symptoms and identifies possible mechanical and operational causes."
         ),
+
         (
             "03",
             "🛠️ Maintenance Planning",
             "Converts possible causes into practical inspection and maintenance actions."
         ),
+
         (
             "04",
             "🛡️ Safety & Report",
             "Reviews previous results and creates the final safety-focused engineering report."
         )
+
     ]
 
 
-    workflow_columns = st.columns(4, gap="small")
+    workflow_columns = st.columns(
+        4,
+        gap="small"
+    )
 
 
-    for column, agent in zip(workflow_columns, workflow):
+    for column, agent in zip(
+        workflow_columns,
+        workflow
+    ):
 
         number, title, description = agent
+
 
         with column:
 
@@ -2501,6 +2938,7 @@ with main_column:
     st.html(
         '<div class="section-title">🏭 Machine Profile</div>'
     )
+
 
     st.html(
         '<div class="section-description">Provide the machine context used by the AI diagnostic workflow.</div>'
@@ -2563,6 +3001,7 @@ with main_column:
             "Custom Equipment",
             "Unknown"
         ]
+
     }
 
 
@@ -2728,12 +3167,14 @@ with main_column:
         '<div class="section-title">🔍 Observed Symptoms</div>'
     )
 
+
     st.html(
         '<div class="section-description">Select all symptoms currently observed in the machine.</div>'
     )
 
 
     symptom_options = [
+
         "🔊 Unusual Noise",
         "📳 Excessive Vibration",
         "🌡️ Overheating",
@@ -2746,6 +3187,7 @@ with main_column:
         "🛢️ Lubrication Problem",
         "🔥 Burning Smell",
         "⚠️ Other"
+
     ]
 
 
@@ -2775,6 +3217,7 @@ with main_column:
     st.html(
         '<div class="section-title">🚨 Problem Information</div>'
     )
+
 
     st.html(
         '<div class="section-description">Describe what is happening. More useful information gives the AI better engineering context.</div>'
@@ -2830,7 +3273,10 @@ with main_column:
 
     if analyze_button:
 
-        if not problem_description.strip() and not selected_symptoms:
+        if (
+            not problem_description.strip()
+            and not selected_symptoms
+        ):
 
             st.warning(
                 "Please provide a problem description or select at least one symptom."
@@ -2839,9 +3285,13 @@ with main_column:
         else:
 
             selected_symptoms_text = (
+
                 ", ".join(selected_symptoms)
+
                 if selected_symptoms
+
                 else "No specific symptoms selected"
+
             )
 
 
@@ -2925,9 +3375,11 @@ Additional Observations:
                         "🛡️ Safety & Final Report Agent — preparing final report..."
                     )
 
+
                     result = asyncio.run(
                         run_mechcare(machine_problem)
                     )
+
 
                     analysis_status.update(
                         label="✅ Analysis Complete",
@@ -2935,13 +3387,16 @@ Additional Observations:
                         expanded=False
                     )
 
+
                     st.session_state.analysis_result = result
 
                     st.session_state.agents_completed = True
 
+
                     st.success(
                         "✅ Machine analysis completed successfully."
                     )
+
 
                 except Exception as e:
 
@@ -2951,13 +3406,16 @@ Additional Observations:
                         expanded=True
                     )
 
+
                     st.error(
                         "❌ An error occurred while analyzing the machine."
                     )
 
+
                     st.warning(
                         "Please check your Groq API key and Streamlit deployment logs."
                     )
+
 
                     st.code(
                         str(e)
@@ -2978,7 +3436,9 @@ Additional Observations:
         # -------------------------------------------------
 
         problem_analysis = result["problem_analysis"]
+
         diagnosis_result = result["diagnosis"]
+
         final_report = result["final_report"]
 
 
@@ -2988,9 +3448,11 @@ Additional Observations:
 
         st.divider()
 
+
         st.html(
             '<div class="section-title">📊 Machine Health Dashboard</div>'
         )
+
 
         st.html(
             '<div class="section-description">AI-generated health and maintenance overview based on the current engineering analysis.</div>'
@@ -3040,12 +3502,16 @@ Additional Observations:
         ):
 
             health_status = "🔴 Critical"
+
             maintenance_status = "Immediate Inspection"
+
 
         elif "high" in priority_lower:
 
             health_status = "🟠 Attention Required"
+
             maintenance_status = "Inspection Recommended"
+
 
         elif (
             "medium" in priority_lower
@@ -3053,11 +3519,14 @@ Additional Observations:
         ):
 
             health_status = "🟡 Monitor"
+
             maintenance_status = "Further Inspection"
+
 
         else:
 
             health_status = "🟢 Review Required"
+
             maintenance_status = "Follow Recommended Checks"
 
 
@@ -3065,7 +3534,10 @@ Additional Observations:
         # DASHBOARD CARDS
         # -------------------------------------------------
 
-        dash1, dash2, dash3, dash4 = st.columns(4, gap="small")
+        dash1, dash2, dash3, dash4 = st.columns(
+            4,
+            gap="small"
+        )
 
 
         with dash1:
@@ -3129,7 +3601,7 @@ Additional Observations:
                     </div>
 
                     <div class="status-sub">
-                        Extracted from final report
+                        Primary AI priority
                     </div>
 
                 </div>
@@ -3202,9 +3674,11 @@ Additional Observations:
             '<div class="section-title">📈 Additional Data Recommended</div>'
         )
 
+
         st.html(
             '<div class="section-description">Collecting these measurements or observations can help confirm the possible machine fault.</div>'
         )
+
 
         st.markdown(
             problem_analysis
@@ -3219,9 +3693,11 @@ Additional Observations:
             '<div class="section-title" style="margin-top:25px;">🧠 Possible Faults & Diagnostic Checks</div>'
         )
 
+
         st.html(
             '<div class="section-description">Possible causes, their relationship with the symptoms, and suggested confirmation checks.</div>'
         )
+
 
         st.markdown(
             diagnosis_result
@@ -3236,6 +3712,7 @@ Additional Observations:
             '<div class="section-title" style="margin-top:25px;">🔧 Maintenance Checklist</div>'
         )
 
+
         st.html(
             '<div class="section-description">Tick each inspection when it has been completed.</div>'
         )
@@ -3249,13 +3726,18 @@ Additional Observations:
 
 
         progress_value = (
-            completed_count / len(checklist_items)
+            completed_count /
+            len(checklist_items)
         )
 
 
         st.progress(
             progress_value,
-            text=f"{completed_count} of {len(checklist_items)} checks completed"
+
+            text=(
+                f"{completed_count} of "
+                f"{len(checklist_items)} checks completed"
+            )
         )
 
 
@@ -3316,9 +3798,11 @@ Additional Observations:
             '<div class="section-title" style="margin-top:25px;">📋 Engineering Analysis Report</div>'
         )
 
+
         st.html(
             '<div class="section-description">Generated by the MechCare AI multi-agent engineering workflow.</div>'
         )
+
 
         st.markdown(
             final_report
@@ -3332,6 +3816,7 @@ Additional Observations:
         st.html(
             '<div class="section-title" style="margin-top:25px;">🔊 Listen to AI Results</div>'
         )
+
 
         st.html(
             '<div class="section-description">Listen to the complete AI analysis, diagnosis, and final engineering report.</div>'
@@ -3371,8 +3856,31 @@ Final Engineering Analysis Report.
             '<div class="section-title" style="margin-top:25px;">📄 Engineering Report Export</div>'
         )
 
+
         st.html(
             '<div class="section-description">Generate and download the final engineering report as a PDF.</div>'
+        )
+
+
+        st.html(
+            """
+            <div class="ui-card">
+
+                <div class="card-label">
+                    ENGINEERING REPORT EXPORT
+                </div>
+
+                <div class="card-value">
+                    📄 Final Engineering Report
+                </div>
+
+                <div class="card-small">
+                    Generate and download the final engineering report
+                    as a PDF for documentation and engineering review.
+                </div>
+
+            </div>
+            """
         )
 
 
@@ -3388,7 +3896,10 @@ Final Engineering Analysis Report.
         )
 
 
-        with open(pdf_filename, "rb") as pdf_file:
+        with open(
+            pdf_filename,
+            "rb"
+        ) as pdf_file:
 
             st.download_button(
                 label="📄 Download PDF Report",
