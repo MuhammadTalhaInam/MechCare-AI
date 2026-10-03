@@ -3090,36 +3090,35 @@ with main_column:
         '<div class="section-description">Your machine problem is processed through five specialized engineering agents.</div>'
     )
 
+    # =====================================================
+    # WORKFLOW — AGENT NAME ONLY
+    # =====================================================
+
     workflow = [
 
         (
             "01",
-            "📈 Condition Monitoring",
-            "Monitors machine health, detects anomalies, identifies early warnings and provides predictive intelligence."
+            "📈 Condition Monitoring"
         ),
 
         (
             "02",
-            "🔍 Problem Analysis",
-            "Analyzes machine information, symptoms, observations and missing information."
+            "🔍 Problem Analysis"
         ),
 
         (
             "03",
-            "🧠 Fault Diagnosis",
-            "Examines symptoms and identifies possible mechanical and operational causes."
+            "🧠 Fault Diagnosis"
         ),
 
         (
             "04",
-            "🛠️ Maintenance Planning",
-            "Converts possible causes into practical inspection and maintenance actions."
+            "🛠️ Maintenance Planning"
         ),
 
         (
             "05",
-            "🛡️ Safety & Report",
-            "Reviews previous results and creates the final safety-focused engineering report."
+            "🛡️ Safety & Final Report"
         )
 
     ]
@@ -3134,7 +3133,7 @@ with main_column:
         workflow
     ):
 
-        number, title, description = agent
+        number, title = agent
 
         with column:
 
@@ -3148,10 +3147,6 @@ with main_column:
 
                     <div class="workflow-title">
                         {title}
-                    </div>
-
-                    <div class="workflow-description">
-                        {description}
                     </div>
 
                 </div>
