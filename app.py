@@ -122,7 +122,38 @@ def speak_text(text):
 
         <script>
 
-        const reportText = {report_json};
+        const rawReportText = {report_json};
+
+        // Clean Markdown formatting ONLY for voice output.
+        // The original report shown in Streamlit remains unchanged.
+
+        const reportText = rawReportText
+            // Remove Markdown headings: #, ##, ###, etc.
+            .replace(/^#{1,6}\\s*/gm, "")
+
+            // Remove bold Markdown: **text**
+            .replace(/\\*\\*(.*?)\\*\\*/g, "$1")
+
+            // Remove italic Markdown: *text*
+            .replace(/\\*(.*?)\\*/g, "$1")
+
+            // Remove inline code formatting: `text`
+            .replace(/`(.*?)`/g, "$1")
+
+            // Remove Markdown horizontal lines
+            .replace(/^[-*_]{3,}\\s*$/gm, "")
+
+            // Remove Markdown bullet symbols
+            .replace(/^\\s*[-*+]\\s+/gm, "")
+
+            // Remove extra spaces
+            .replace(/[ \\t]+/g, " ")
+
+            // Remove excessive blank lines
+            .replace(/\\n{3,}/g, "\\n\\n")
+
+            .trim();
+
 
         let speech = null;
         let currentSpeed = 1;
