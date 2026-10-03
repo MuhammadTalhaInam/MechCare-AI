@@ -148,19 +148,15 @@ def speak_text(text):
         const reportText = rawReportText
 
             // Remove Markdown heading symbols
-            // Example: ## Priority -> Priority
             .replace(/^#+\\s*/gm, "")
 
             // Remove bold Markdown
-            // Example: **Important** -> Important
             .replace(/\\*\\*(.*?)\\*\\*/g, "$1")
 
             // Remove italic Markdown
-            // Example: *Important* -> Important
             .replace(/\\*(.*?)\\*/g, "$1")
 
             // Remove inline code formatting
-            // Example: `RPM` -> RPM
             .replace(/`(.*?)`/g, "$1")
 
             // Remove Markdown horizontal lines
@@ -170,7 +166,6 @@ def speak_text(text):
             .replace(/^\\s*[-*+]\\s+/gm, "")
 
             // Remove numbered-list Markdown formatting
-            // Example: 1. Check bearing -> Check bearing
             .replace(/^\\s*\\d+[.)]\\s+/gm, "")
 
             // Remove remaining Markdown characters
@@ -186,14 +181,12 @@ def speak_text(text):
 
 
         // =================================================
-        // SPEECH VARIABLES
+        // MOBILE-FRIENDLY SPEECH SYSTEM
         // =================================================
 
         let speech = null;
 
         let currentSpeed = 1;
-
-        let currentPosition = 0;
 
         let isPaused = false;
 
@@ -201,57 +194,288 @@ def speak_text(text):
 
         let speechSession = 0;
 
+        let currentChunkIndex = 0;
+
+        let currentChunkPosition = 0;
+
+        let isChangingSpeed = false;
+
+        let availableVoice = null;
+
 
         // =================================================
-        // START SPEECH FROM CURRENT POSITION
+        // SPLIT REPORT INTO SMALLER SPEECH CHUNKS
+        // =================================================
+        // Mobile browsers handle several small utterances
+        // more reliably than one extremely large utterance.
+
+        function createSpeechChunks(text) {{
+
+            const normalizedText =
+                text.replace(/\\s+/g, " ").trim();
+
+
+            if (!normalizedText) {{
+                return [];
+            }}
+
+
+            // First split into sentences.
+
+            const sentences =
+                normalizedText.match(
+                    /[^.!?]+[.!?]+|[^.!?]+$/g
+                ) || [normalizedText];
+
+
+            const chunks = [];
+
+            let currentChunk = "";
+
+
+            sentences.forEach(function(sentence) {{
+
+                const cleanSentence =
+                    sentence.trim();
+
+
+                if (!cleanSentence) {{
+                    return;
+                }}
+
+
+                // Keep chunks reasonably small for mobile TTS.
+
+                if (
+                    (currentChunk + " " + cleanSentence).length
+                    <= 450
+                ) {{
+
+                    currentChunk =
+                        currentChunk
+                            ? currentChunk + " " + cleanSentence
+                            : cleanSentence;
+
+                }} else {{
+
+                    if (currentChunk) {{
+                        chunks.push(currentChunk);
+                    }}
+
+                    currentChunk = cleanSentence;
+                }}
+
+            }});
+
+
+            if (currentChunk) {{
+                chunks.push(currentChunk);
+            }}
+
+
+            return chunks;
+        }}
+
+
+        const speechChunks =
+            createSpeechChunks(reportText);
+
+
+        // =================================================
+        // FIND A MOBILE-COMPATIBLE VOICE
         // =================================================
 
-        function startSpeechFromPosition() {{
+        function loadAvailableVoice() {{
+
+            if (!("speechSynthesis" in window)) {{
+                return;
+            }}
+
+
+            const voices =
+                window.speechSynthesis.getVoices();
+
+
+            if (!voices || voices.length === 0) {{
+                return;
+            }}
+
+
+            // Prefer English voices.
+
+            availableVoice =
+                voices.find(function(voice) {{
+
+                    return voice.lang === "en-US";
+
+                }});
+
+
+            if (!availableVoice) {{
+
+                availableVoice =
+                    voices.find(function(voice) {{
+
+                        return voice.lang === "en-GB";
+
+                    }});
+
+            }}
+
+
+            if (!availableVoice) {{
+
+                availableVoice =
+                    voices.find(function(voice) {{
+
+                        return voice.lang &&
+                            voice.lang.toLowerCase().startsWith("en");
+
+                    }});
+
+            }}
+
+
+            // If no English voice exists,
+            // use the first available system voice.
+
+            if (!availableVoice && voices.length > 0) {{
+
+                availableVoice = voices[0];
+
+            }}
+
+        }}
+
+
+        // Mobile browsers may load voices asynchronously.
+
+        if ("speechSynthesis" in window) {{
+
+            loadAvailableVoice();
+
+            window.speechSynthesis.onvoiceschanged =
+                function() {{
+
+                    loadAvailableVoice();
+
+                }};
+
+        }}
+
+
+        // =================================================
+        // UPDATE STATUS
+        // =================================================
+
+        function updateStatus(message) {{
+
+            const status =
+                document.getElementById("voiceStatus");
+
+
+            if (status) {{
+
+                status.innerText = message;
+
+            }}
+
+        }}
+
+
+        // =================================================
+        // SPEAK CURRENT CHUNK
+        // =================================================
+
+        function speakCurrentChunk() {{
 
             if (!("speechSynthesis" in window)) {{
 
-                document.getElementById("voiceStatus").innerText =
-                    "❌ Text-to-speech is not supported by this browser.";
+                updateStatus(
+                    "❌ Text-to-speech is not supported by this browser."
+                );
 
                 return;
             }}
 
 
-            // If the complete report has finished,
-            // start again from the beginning.
+            if (currentChunkIndex >= speechChunks.length) {{
 
-            if (currentPosition >= reportText.length) {{
+                currentChunkIndex = 0;
 
-                currentPosition = 0;
+                currentChunkPosition = 0;
+
+                speech = null;
+
+                isPaused = false;
+
+                isStopped = false;
+
+                updateStatus("✅ Finished");
+
+                return;
+            }}
+
+
+            const chunk =
+                speechChunks[currentChunkIndex];
+
+
+            if (!chunk) {{
+
+                currentChunkIndex++;
+
+                currentChunkPosition = 0;
+
+                speakCurrentChunk();
+
+                return;
+            }}
+
+
+            speechSession++;
+
+            const thisSession =
+                speechSession;
+
+
+            speech =
+                new SpeechSynthesisUtterance(chunk);
+
+
+            speech.rate =
+                currentSpeed;
+
+            speech.pitch =
+                1;
+
+            speech.volume =
+                1;
+
+
+            // Use the available system voice.
+
+            if (availableVoice) {{
+
+                speech.voice =
+                    availableVoice;
 
             }}
 
 
-            // Get only the remaining part of the report.
+            // Explicit language helps some mobile browsers.
 
-            const remainingText =
-                reportText.substring(currentPosition);
+            if (availableVoice && availableVoice.lang) {{
 
+                speech.lang =
+                    availableVoice.lang;
 
-            // Create a unique session number.
-            // This prevents old cancelled speech events
-            // from interfering with the new speech.
+            }} else {{
 
-            speechSession++;
+                speech.lang =
+                    "en-US";
 
-            const thisSession = speechSession;
-
-
-            speech = new SpeechSynthesisUtterance(
-                remainingText
-            );
-
-
-            speech.rate = currentSpeed;
-
-            speech.pitch = 1;
-
-            speech.volume = 1;
+            }}
 
 
             isStopped = false;
@@ -260,7 +484,7 @@ def speak_text(text):
 
 
             // -------------------------------------------------
-            // SPEECH START
+            // START
             // -------------------------------------------------
 
             speech.onstart = function() {{
@@ -269,13 +493,18 @@ def speak_text(text):
                     return;
                 }}
 
-                document.getElementById("voiceStatus").innerText =
-                    "🔊 Speaking at " + currentSpeed + "×...";
+
+                updateStatus(
+                    "🔊 Speaking at " +
+                    currentSpeed +
+                    "×..."
+                );
+
             }};
 
 
             // -------------------------------------------------
-            // TRACK CURRENT READING POSITION
+            // TRACK POSITION INSIDE CURRENT CHUNK
             // -------------------------------------------------
 
             speech.onboundary = function(event) {{
@@ -289,8 +518,8 @@ def speak_text(text):
                     typeof event.charIndex === "number"
                 ) {{
 
-                    currentPosition =
-                        currentPosition + event.charIndex;
+                    currentChunkPosition =
+                        event.charIndex;
 
                 }}
 
@@ -298,7 +527,7 @@ def speak_text(text):
 
 
             // -------------------------------------------------
-            // PAUSE EVENT
+            // PAUSE
             // -------------------------------------------------
 
             speech.onpause = function() {{
@@ -311,13 +540,17 @@ def speak_text(text):
                 isPaused = true;
 
 
-                document.getElementById("voiceStatus").innerText =
-                    "⏸️ Paused at " + currentSpeed + "×";
+                updateStatus(
+                    "⏸️ Paused at " +
+                    currentSpeed +
+                    "×"
+                );
+
             }};
 
 
             // -------------------------------------------------
-            // RESUME EVENT
+            // RESUME
             // -------------------------------------------------
 
             speech.onresume = function() {{
@@ -330,13 +563,17 @@ def speak_text(text):
                 isPaused = false;
 
 
-                document.getElementById("voiceStatus").innerText =
-                    "🔊 Speaking at " + currentSpeed + "×...";
+                updateStatus(
+                    "🔊 Speaking at " +
+                    currentSpeed +
+                    "×..."
+                );
+
             }};
 
 
             // -------------------------------------------------
-            // FINISHED
+            // CURRENT CHUNK FINISHED
             // -------------------------------------------------
 
             speech.onend = function() {{
@@ -346,17 +583,47 @@ def speak_text(text):
                 }}
 
 
-                currentPosition = 0;
-
                 speech = null;
 
-                isPaused = false;
+                currentChunkIndex++;
 
-                isStopped = false;
+                currentChunkPosition = 0;
 
 
-                document.getElementById("voiceStatus").innerText =
-                    "✅ Finished";
+                // If the user stopped while the
+                // utterance was ending, do not continue.
+
+                if (isStopped) {{
+                    return;
+                }}
+
+
+                // If speed is being changed,
+                // the new function will handle playback.
+
+                if (isChangingSpeed) {{
+                    return;
+                }}
+
+
+                // Small delay between chunks.
+                // This is more reliable on mobile browsers.
+
+                setTimeout(function() {{
+
+                    if (
+                        thisSession !== speechSession ||
+                        isStopped ||
+                        isPaused
+                    ) {{
+                        return;
+                    }}
+
+
+                    speakCurrentChunk();
+
+                }}, 30);
+
             }};
 
 
@@ -371,24 +638,26 @@ def speak_text(text):
                 }}
 
 
-                // Ignore normal cancellation/interruption.
-
                 if (
                     event.error === "canceled" ||
                     event.error === "interrupted"
                 ) {{
-
                     return;
-
                 }}
 
 
-                document.getElementById("voiceStatus").innerText =
-                    "❌ Voice playback error.";
+                updateStatus(
+                    "❌ Voice playback error. Please press Play again."
+                );
+
+                speech = null;
+
             }};
 
 
-            // Start the new utterance.
+            // -------------------------------------------------
+            // START SPEECH
+            // -------------------------------------------------
 
             window.speechSynthesis.speak(
                 speech
@@ -405,15 +674,21 @@ def speak_text(text):
 
             if (!("speechSynthesis" in window)) {{
 
-                document.getElementById("voiceStatus").innerText =
-                    "❌ Text-to-speech is not supported by this browser.";
+                updateStatus(
+                    "❌ Text-to-speech is not supported by this browser."
+                );
 
                 return;
             }}
 
 
-            // If speech is paused, resume from the
-            // exact paused position.
+            // Make sure voices are loaded.
+
+            loadAvailableVoice();
+
+
+            // If speech is paused,
+            // resume the existing utterance.
 
             if (
                 speech &&
@@ -427,15 +702,17 @@ def speak_text(text):
                 isStopped = false;
 
 
-                document.getElementById("voiceStatus").innerText =
-                    "🔊 Speaking at " + currentSpeed + "×...";
+                updateStatus(
+                    "🔊 Speaking at " +
+                    currentSpeed +
+                    "×..."
+                );
 
                 return;
             }}
 
 
-            // If speech is already speaking,
-            // do nothing.
+            // If already speaking, do nothing.
 
             if (
                 speech &&
@@ -447,9 +724,44 @@ def speak_text(text):
             }}
 
 
-            // Start from the current position.
+            // If the report was completed,
+            // start again from the beginning.
 
-            startSpeechFromPosition();
+            if (
+                currentChunkIndex >= speechChunks.length
+            ) {{
+
+                currentChunkIndex = 0;
+
+                currentChunkPosition = 0;
+
+            }}
+
+
+            isStopped = false;
+
+            isPaused = false;
+
+            isChangingSpeed = false;
+
+
+            // Cancel any stale speech.
+
+            window.speechSynthesis.cancel();
+
+
+            // Mobile browsers sometimes need a very
+            // small delay after cancel().
+
+            setTimeout(function() {{
+
+                if (!isStopped) {{
+
+                    speakCurrentChunk();
+
+                }}
+
+            }}, 50);
 
         }}
 
@@ -471,8 +783,12 @@ def speak_text(text):
                 isPaused = true;
 
 
-                document.getElementById("voiceStatus").innerText =
-                    "⏸️ Paused at " + currentSpeed + "×";
+                updateStatus(
+                    "⏸️ Paused at " +
+                    currentSpeed +
+                    "×"
+                );
+
             }}
 
         }}
@@ -488,33 +804,40 @@ def speak_text(text):
 
                 speechSession++;
 
+                isChangingSpeed = false;
+
                 window.speechSynthesis.cancel();
 
                 speech = null;
 
-                currentPosition = 0;
+                currentChunkIndex = 0;
+
+                currentChunkPosition = 0;
 
                 isPaused = false;
 
                 isStopped = true;
 
 
-                document.getElementById("voiceStatus").innerText =
-                    "⏹️ Stopped — press Play to start again";
+                updateStatus(
+                    "⏹️ Stopped — press Play to start again"
+                );
+
             }}
 
         }}
 
 
         // =================================================
-        // CHANGE SPEED WHILE PLAYING
+        // CHANGE SPEED
         // =================================================
 
         function changeSpeed() {{
 
-            currentSpeed = parseFloat(
-                document.getElementById("speed").value
-            );
+            currentSpeed =
+                parseFloat(
+                    document.getElementById("speed").value
+                );
 
 
             if (!("speechSynthesis" in window)) {{
@@ -531,46 +854,316 @@ def speak_text(text):
                 window.speechSynthesis.speaking
             ) {{
 
-                // Pause the current utterance first.
-                // This allows the browser to process the
-                // latest speech boundary.
-
-                const wasPaused =
-                    window.speechSynthesis.paused;
+                isChangingSpeed = true;
 
 
-                if (!wasPaused) {{
+                const currentSpeech =
+                    speech;
 
-                    window.speechSynthesis.pause();
 
+                // Pause first so the browser can register
+                // the current position.
+
+                window.speechSynthesis.pause();
+
+
+                // Save the current position reported by
+                // the browser.
+
+                let savedPosition =
+                    currentChunkPosition;
+
+
+                // Keep the saved position within the chunk.
+
+                if (savedPosition < 0) {{
+                    savedPosition = 0;
                 }}
 
 
-                // Give the browser a moment to update
-                // the current speech position.
+                if (
+                    savedPosition >=
+                    speechChunks[currentChunkIndex].length
+                ) {{
+                    savedPosition = 0;
+                }}
+
 
                 setTimeout(function() {{
 
-                    // Invalidate the old speech session.
+                    // Invalidate old speech.
 
                     speechSession++;
 
 
-                    // Cancel the old utterance.
+                    // Cancel old utterance.
 
                     window.speechSynthesis.cancel();
 
 
-                    // Start a NEW utterance from the current
-                    // position using the NEW speed.
+                    speech = null;
 
-                    setTimeout(function() {{
 
-                        startSpeechFromPosition();
+                    // Restart the same chunk.
 
-                    }}, 50);
+                    // We use the saved character position
+                    // instead of starting the entire report again.
 
-                }}, 80);
+                    const oldChunk =
+                        speechChunks[currentChunkIndex];
+
+
+                    if (oldChunk) {{
+
+                        const remainingText =
+                            oldChunk.substring(
+                                savedPosition
+                            );
+
+
+                        if (remainingText.trim()) {{
+
+                            speechSession++;
+
+                            const thisSession =
+                                speechSession;
+
+
+                            speech =
+                                new SpeechSynthesisUtterance(
+                                    remainingText
+                                );
+
+
+                            speech.rate =
+                                currentSpeed;
+
+                            speech.pitch =
+                                1;
+
+                            speech.volume =
+                                1;
+
+
+                            if (availableVoice) {{
+
+                                speech.voice =
+                                    availableVoice;
+
+                            }}
+
+
+                            if (
+                                availableVoice &&
+                                availableVoice.lang
+                            ) {{
+
+                                speech.lang =
+                                    availableVoice.lang;
+
+                            }} else {{
+
+                                speech.lang =
+                                    "en-US";
+
+                            }}
+
+
+                            isStopped = false;
+
+                            isPaused = false;
+
+
+                            speech.onstart =
+                                function() {{
+
+                                    if (
+                                        thisSession !==
+                                        speechSession
+                                    ) {{
+                                        return;
+                                    }}
+
+
+                                    updateStatus(
+                                        "🔊 Speaking at " +
+                                        currentSpeed +
+                                        "×..."
+                                    );
+
+                                }};
+
+
+                            speech.onboundary =
+                                function(event) {{
+
+                                    if (
+                                        thisSession !==
+                                        speechSession
+                                    ) {{
+                                        return;
+                                    }}
+
+
+                                    if (
+                                        typeof event.charIndex ===
+                                        "number"
+                                    ) {{
+
+                                        currentChunkPosition =
+                                            savedPosition +
+                                            event.charIndex;
+
+                                    }}
+
+                                }};
+
+
+                            speech.onpause =
+                                function() {{
+
+                                    if (
+                                        thisSession !==
+                                        speechSession
+                                    ) {{
+                                        return;
+                                    }}
+
+
+                                    isPaused = true;
+
+
+                                    updateStatus(
+                                        "⏸️ Paused at " +
+                                        currentSpeed +
+                                        "×"
+                                    );
+
+                                }};
+
+
+                            speech.onresume =
+                                function() {{
+
+                                    if (
+                                        thisSession !==
+                                        speechSession
+                                    ) {{
+                                        return;
+                                    }}
+
+
+                                    isPaused = false;
+
+
+                                    updateStatus(
+                                        "🔊 Speaking at " +
+                                        currentSpeed +
+                                        "×..."
+                                    );
+
+                                }};
+
+
+                            speech.onend =
+                                function() {{
+
+                                    if (
+                                        thisSession !==
+                                        speechSession
+                                    ) {{
+                                        return;
+                                    }}
+
+
+                                    speech = null;
+
+                                    currentChunkIndex++;
+
+                                    currentChunkPosition = 0;
+
+                                    isChangingSpeed = false;
+
+
+                                    if (
+                                        !isStopped &&
+                                        !isPaused
+                                    ) {{
+
+                                        setTimeout(
+                                            function() {{
+
+                                                speakCurrentChunk();
+
+                                            }},
+                                            30
+                                        );
+
+                                    }}
+
+                                }};
+
+
+                            speech.onerror =
+                                function(event) {{
+
+                                    if (
+                                        thisSession !==
+                                        speechSession
+                                    ) {{
+                                        return;
+                                    }}
+
+
+                                    if (
+                                        event.error ===
+                                        "canceled" ||
+                                        event.error ===
+                                        "interrupted"
+                                    ) {{
+                                        return;
+                                    }}
+
+
+                                    isChangingSpeed = false;
+
+                                    updateStatus(
+                                        "❌ Voice playback error. Please press Play again."
+                                    );
+
+                                }};
+
+
+                            window.speechSynthesis.speak(
+                                speech
+                            );
+
+
+                        }} else {{
+
+                            currentChunkIndex++;
+
+                            currentChunkPosition = 0;
+
+                            isChangingSpeed = false;
+
+
+                            speakCurrentChunk();
+
+                        }}
+
+                    }} else {{
+
+                        isChangingSpeed = false;
+
+                        speakCurrentChunk();
+
+                    }}
+
+                }}, 100);
+
+
+                return;
 
             }}
 
@@ -579,13 +1172,16 @@ def speak_text(text):
             // CURRENTLY PAUSED
             // -------------------------------------------------
 
-            else if (
+            if (
                 speech &&
                 isPaused
             ) {{
 
-                document.getElementById("voiceStatus").innerText =
-                    "⏸️ Paused — " + currentSpeed + "× selected";
+                updateStatus(
+                    "⏸️ Paused — " +
+                    currentSpeed +
+                    "× selected"
+                );
 
             }}
 
