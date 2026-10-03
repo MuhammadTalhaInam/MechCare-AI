@@ -3717,60 +3717,170 @@ Additional Observations:
             condition_monitoring_result
         )
 
-        report_text = final_report
+        # =================================================
+        # MACHINE HEALTH DASHBOARD FIX
+        # Read dashboard values directly from Agent 1
+        # =================================================
 
-        priority = "Not specified"
-
-        priority_match = re.search(
-            r"(?im)^\s*##\s*Priority\s*$([\s\S]*?)(?=^\s*##\s+|\Z)",
-            report_text
+        monitoring_text = str(
+            condition_monitoring_result
         )
 
-        if priority_match:
+        # -------------------------------------------------
+        # HEALTH SCORE
+        # -------------------------------------------------
 
-            priority_section = priority_match.group(1).strip()
+        health_score = "Not available"
 
-            severity_match = re.search(
-                r"\b(Critical|Urgent|High|Medium|Moderate|Low)\b",
-                priority_section,
+        health_score_match = re.search(
+            r"(?i)(?:health\s*score|machine\s*health)"
+            r"\s*[:\-]?\s*(\d{1,3})\s*(?:/100)?",
+            monitoring_text
+        )
+
+        if health_score_match:
+
+            health_score = (
+                health_score_match
+                .group(1)
+                + "/100"
+            )
+
+        # -------------------------------------------------
+        # HEALTH STATUS
+        # -------------------------------------------------
+
+        health_status_text = "Assessment Available"
+
+        health_section_match = re.search(
+            r"(?is)(?:##\s*)?(?:Asset Health|Current Health|Health Status)"
+            r".*?"
+            r"(.*?)(?=\n\s*##|\Z)",
+            monitoring_text
+        )
+
+        if health_section_match:
+
+            health_section = (
+                health_section_match
+                .group(1)
+                .strip()
+            )
+
+            health_section = re.sub(
+                r"^\s*[-*]\s*",
+                "",
+                health_section
+            ).strip()
+
+            if health_section:
+
+                health_status_text = (
+                    health_section
+                    .split("\n")[0]
+                    .strip()
+                )
+
+        # -------------------------------------------------
+        # ALERT SEVERITY / PRIORITY
+        # -------------------------------------------------
+
+        alert_severity = "Not specified"
+
+        severity_match = re.search(
+            r"(?is)(?:Alert Severity Level|Severity Level|Alert Severity)"
+            r"\s*[:\-]?\s*(.*?)(?=\n\s*##|\Z)",
+            monitoring_text
+        )
+
+        if severity_match:
+
+            severity_section = (
+                severity_match
+                .group(1)
+                .strip()
+            )
+
+            severity_value_match = re.search(
+                r"\b(Critical|High|Medium|Low)\b",
+                severity_section,
                 re.IGNORECASE
             )
 
-            if severity_match:
+            if severity_value_match:
 
-                priority = (
-                    severity_match
+                alert_severity = (
+                    severity_value_match
                     .group(1)
                     .capitalize()
                 )
 
-        priority_lower = priority.lower()
+        # -------------------------------------------------
+        # RECOMMENDED NEXT ACTION
+        # -------------------------------------------------
 
-        if (
-            "critical" in priority_lower
-            or "urgent" in priority_lower
-        ):
+        next_action = "Review AI recommendations"
 
-            health_status = "🔴 Critical"
+        action_match = re.search(
+            r"(?is)(?:Recommended Next Action|Next Action)"
+            r"\s*[:\-]?\s*(.*?)(?=\n\s*##|\Z)",
+            monitoring_text
+        )
+
+        if action_match:
+
+            action_section = (
+                action_match
+                .group(1)
+                .strip()
+            )
+
+            action_section = re.sub(
+                r"^\s*[-*]\s*",
+                "",
+                action_section
+            ).strip()
+
+            if action_section:
+
+                next_action = action_section
+
+        # -------------------------------------------------
+        # DASHBOARD HEALTH / MAINTENANCE STATUS
+        # -------------------------------------------------
+
+        severity_lower = (
+            alert_severity.lower()
+        )
+
+        if severity_lower == "critical":
+
+            dashboard_health = "🔴 Critical"
             maintenance_status = "Immediate Inspection"
 
-        elif "high" in priority_lower:
+        elif severity_lower == "high":
 
-            health_status = "🟠 Attention Required"
+            dashboard_health = "🟠 Attention Required"
+            maintenance_status = "Priority Inspection"
+
+        elif severity_lower == "medium":
+
+            dashboard_health = "🟡 Monitor"
             maintenance_status = "Inspection Recommended"
 
-        elif (
-            "medium" in priority_lower
-            or "moderate" in priority_lower
-        ):
+        elif severity_lower == "low":
 
-            health_status = "🟡 Monitor"
-            maintenance_status = "Further Inspection"
+            dashboard_health = "🟢 Stable"
+            maintenance_status = "Routine Monitoring"
 
         else:
 
-            health_status = "🟢 Review Required"
-            maintenance_status = "Follow Recommended Checks"
+            dashboard_health = "🔵 Assessment Available"
+            maintenance_status = "Review AI Recommendations"
+
+        # =================================================
+        # DASHBOARD CARDS
+        # =================================================
 
         dash1, dash2, dash3, dash4 = st.columns(
             4,
@@ -3784,15 +3894,15 @@ Additional Observations:
                 <div class="status-card">
 
                     <div class="status-label">
-                        MACHINE
+                        MACHINE HEALTH
                     </div>
 
                     <div class="status-value">
-                        🏭 {machine_type}
+                        {dashboard_health}
                     </div>
 
                     <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
-                        {machine_id}
+                        Health Score: {health_score}
                     </div>
 
                 </div>
@@ -3810,11 +3920,11 @@ Additional Observations:
                     </div>
 
                     <div class="status-value">
-                        {health_status}
+                        {health_status_text}
                     </div>
 
                     <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
-                        AI assessment
+                        Condition monitoring assessment
                     </div>
 
                 </div>
@@ -3832,11 +3942,11 @@ Additional Observations:
                     </div>
 
                     <div class="status-value">
-                        ⚠️ {priority}
+                        ⚠️ {alert_severity}
                     </div>
 
                     <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
-                        Primary AI priority
+                        Alert severity from Agent 1
                     </div>
 
                 </div>
@@ -3858,12 +3968,37 @@ Additional Observations:
                     </div>
 
                     <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
-                        Recommended action
+                        Based on current machine condition
                     </div>
 
                 </div>
                 """
             )
+
+        # -------------------------------------------------
+        # RECOMMENDED NEXT ACTION
+        # Kept separate from the four dashboard parameters
+        # -------------------------------------------------
+
+        st.html(
+            f"""
+            <div class="ui-card">
+
+                <div class="card-label">
+                    RECOMMENDED NEXT ACTION
+                </div>
+
+                <div class="card-value">
+                    🔧 Engineering Action
+                </div>
+
+                <div class="card-small">
+                    {next_action}
+                </div>
+
+            </div>
+            """
+        )
 
         st.markdown("")
 
