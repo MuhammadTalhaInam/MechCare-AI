@@ -2976,11 +2976,11 @@ with right_column:
             </div>
 
             <div class="card-value">
-                4 AI Agents
+                5 AI Agents
             </div>
 
             <div class="card-small">
-                Analysis → Diagnosis → Maintenance → Safety
+                Monitoring → Analysis → Diagnosis → Maintenance → Safety
             </div>
 
         </div>
@@ -3083,31 +3083,37 @@ with main_column:
     )
 
     st.html(
-        '<div class="section-description">Your machine problem is processed through four specialized engineering agents.</div>'
+        '<div class="section-description">Your machine problem is processed through five specialized engineering agents.</div>'
     )
 
     workflow = [
 
         (
             "01",
+            "📈 Condition Monitoring",
+            "Monitors machine health, detects anomalies, identifies early warnings and provides predictive intelligence."
+        ),
+
+        (
+            "02",
             "🔍 Problem Analysis",
             "Analyzes machine information, symptoms, observations and missing information."
         ),
 
         (
-            "02",
+            "03",
             "🧠 Fault Diagnosis",
             "Examines symptoms and identifies possible mechanical and operational causes."
         ),
 
         (
-            "03",
+            "04",
             "🛠️ Maintenance Planning",
             "Converts possible causes into practical inspection and maintenance actions."
         ),
 
         (
-            "04",
+            "05",
             "🛡️ Safety & Report",
             "Reviews previous results and creates the final safety-focused engineering report."
         )
@@ -3115,7 +3121,7 @@ with main_column:
     ]
 
     workflow_columns = st.columns(
-        4,
+        5,
         gap="small"
     )
 
@@ -3516,6 +3522,10 @@ Additional Observations:
                 try:
 
                     st.write(
+                        "📈 Condition Monitoring Agent — assessing machine health and anomalies..."
+                    )
+
+                    st.write(
                         "🔍 Problem Analysis Agent — analyzing symptoms..."
                     )
 
@@ -3577,6 +3587,7 @@ Additional Observations:
 
         result = st.session_state.analysis_result
 
+        condition_monitoring_result = result["condition_monitoring"]
         problem_analysis = result["problem_analysis"]
         diagnosis_result = result["diagnosis"]
         final_report = result["final_report"]
@@ -3589,6 +3600,18 @@ Additional Observations:
 
         st.html(
             '<div class="section-description">AI-generated health and maintenance overview based on the current engineering analysis.</div>'
+        )
+
+        st.html(
+            '<div class="section-title" style="margin-top:25px;">📈 Condition Monitoring & Predictive Intelligence</div>'
+        )
+
+        st.html(
+            '<div class="section-description">AI assessment of the machine health, abnormal behavior, early warning signs, predictive condition, and recommended next action.</div>'
+        )
+
+        st.markdown(
+            condition_monitoring_result
         )
 
         report_text = final_report
@@ -3886,6 +3909,10 @@ Additional Observations:
 
         complete_voice_text = f"""
 MechCare AI Engineering Analysis.
+
+Condition Monitoring and Predictive Intelligence.
+
+{condition_monitoring_result}
 
 Additional Data Recommended.
 
