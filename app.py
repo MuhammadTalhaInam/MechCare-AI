@@ -3697,282 +3697,25 @@ Additional Observations:
 
         st.divider()
 
-        st.html(
-            '<div class="section-title">📊 Machine Health Dashboard</div>'
-        )
+        # =================================================
+        # CONDITION MONITORING
+        # =================================================
 
         st.html(
-            '<div class="section-description">AI-generated health and maintenance overview based on the current engineering analysis.</div>'
-        )
-
-        st.html(
-            '<div class="section-title" style="margin-top:25px;">📈 Condition Monitoring & Predictive Intelligence</div>'
+            '<div class="section-title">📈 Condition Monitoring & Predictive Intelligence</div>'
         )
 
         st.html(
             '<div class="section-description">AI assessment of the machine health, abnormal behavior, early warning signs, predictive condition, and recommended next action.</div>'
         )
 
-        # Show the complete Agent 1 condition monitoring result first.
-        # The separate dashboard cards are displayed after this full result.
         st.markdown(
             condition_monitoring_result
         )
 
         # =================================================
-        # MACHINE HEALTH DASHBOARD
-        # Read each dashboard field directly from Agent 1.
-        # The raw Agent 1 output is intentionally NOT displayed here,
-        # so Recommended Next Action cannot appear inside the dashboard.
+        # ADDITIONAL DATA RECOMMENDED
         # =================================================
-
-        monitoring_text = str(
-            condition_monitoring_result
-        )
-
-        # -------------------------------------------------
-        # HEALTH SCORE
-        # -------------------------------------------------
-
-        health_score = "Not available"
-
-        health_score_match = re.search(
-            r"(?im)^\s*[-*]?\s*Health\s*Score\s*:\s*(\d{1,3})\s*(?:/\s*100)?\s*$",
-            monitoring_text
-        )
-
-        if health_score_match:
-
-            health_score = (
-                health_score_match
-                .group(1)
-                + "/100"
-            )
-
-        # -------------------------------------------------
-        # HEALTH STATUS
-        # -------------------------------------------------
-
-        health_status_text = "Assessment Available"
-
-        status_match = re.search(
-            r"(?im)^\s*[-*]?\s*Health\s*Status\s*:\s*(.*?)\s*$",
-            monitoring_text
-        )
-
-        if status_match:
-
-            health_status_text = status_match.group(1).strip()
-
-        # -------------------------------------------------
-        # ALERT SEVERITY / PRIORITY
-        # -------------------------------------------------
-
-        alert_severity = "Not specified"
-
-        severity_match = re.search(
-            r"(?im)^\s*[-*]?\s*Severity\s*:\s*(Critical|High|Medium|Low)\s*$",
-            monitoring_text
-        )
-
-        if severity_match:
-
-            alert_severity = (
-                severity_match
-                .group(1)
-                .capitalize()
-            )
-
-        # -------------------------------------------------
-        # RECOMMENDED NEXT ACTION
-        # This is kept completely separate from the dashboard cards.
-        # -------------------------------------------------
-
-        next_action = "Review AI recommendations"
-
-        action_match = re.search(
-            r"(?is)^\s*##\s*Recommended\s+Next\s+Action\s*$\n(.*?)(?=^\s*##\s+|\Z)",
-            monitoring_text
-        )
-
-        if action_match:
-
-            action_section = action_match.group(1).strip()
-
-            action_lines = []
-
-            for line in action_section.splitlines():
-
-                cleaned_line = re.sub(
-                    r"^\s*[-*+]\s*",
-                    "",
-                    line
-                ).strip()
-
-                if cleaned_line:
-                    action_lines.append(cleaned_line)
-
-            if action_lines:
-
-                next_action = "<br>".join(action_lines)
-
-        # -------------------------------------------------
-        # DASHBOARD HEALTH / MAINTENANCE STATUS
-        # -------------------------------------------------
-
-        severity_lower = (
-            alert_severity.lower()
-        )
-
-        if severity_lower == "critical":
-
-            dashboard_health = "🔴 Critical"
-            maintenance_status = "Immediate Inspection"
-
-        elif severity_lower == "high":
-
-            dashboard_health = "🟠 Attention Required"
-            maintenance_status = "Priority Inspection"
-
-        elif severity_lower == "medium":
-
-            dashboard_health = "🟡 Monitor"
-            maintenance_status = "Inspection Recommended"
-
-        elif severity_lower == "low":
-
-            dashboard_health = "🟢 Stable"
-            maintenance_status = "Routine Monitoring"
-
-        else:
-
-            dashboard_health = "🔵 Assessment Available"
-            maintenance_status = "Review AI Recommendations"
-
-        # =================================================
-        # DASHBOARD CARDS
-        # =================================================
-
-        dash1, dash2, dash3, dash4 = st.columns(
-            4,
-            gap="small"
-        )
-
-        with dash1:
-
-            st.html(
-                f"""
-                <div class="status-card">
-
-                    <div class="status-label">
-                        MACHINE HEALTH
-                    </div>
-
-                    <div class="status-value">
-                        {dashboard_health}
-                    </div>
-
-                    <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
-                        Health Score: {health_score}
-                    </div>
-
-                </div>
-                """
-            )
-
-        with dash2:
-
-            st.html(
-                f"""
-                <div class="status-card">
-
-                    <div class="status-label">
-                        HEALTH STATUS
-                    </div>
-
-                    <div class="status-value">
-                        {health_status_text}
-                    </div>
-
-                    <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
-                        Condition monitoring assessment
-                    </div>
-
-                </div>
-                """
-            )
-
-        with dash3:
-
-            st.html(
-                f"""
-                <div class="status-card">
-
-                    <div class="status-label">
-                        PRIORITY
-                    </div>
-
-                    <div class="status-value">
-                        ⚠️ {alert_severity}
-                    </div>
-
-                    <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
-                        Alert severity from Agent 1
-                    </div>
-
-                </div>
-                """
-            )
-
-        with dash4:
-
-            st.html(
-                f"""
-                <div class="status-card">
-
-                    <div class="status-label">
-                        MAINTENANCE
-                    </div>
-
-                    <div class="status-value">
-                        🔧 {maintenance_status}
-                    </div>
-
-                    <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
-                        Based on current machine condition
-                    </div>
-
-                </div>
-                """
-            )
-
-        st.markdown("")
-
-        st.html(
-            f"""
-            <div class="ui-card">
-
-                <div class="card-label">
-                    ACTIVE MACHINE PROFILE
-                </div>
-
-                <div class="card-value">
-                    {machine_type} · {machine_id}
-                </div>
-
-                <div class="card-small">
-                    Manufacturer: {manufacturer}
-                    &nbsp;&nbsp;|&nbsp;&nbsp;
-                    Model: {model}
-                    &nbsp;&nbsp;|&nbsp;&nbsp;
-                    Speed: {operating_speed}
-                    &nbsp;&nbsp;|&nbsp;&nbsp;
-                    Load: {load_condition}
-                </div>
-
-            </div>
-            """
-        )
 
         st.html(
             '<div class="section-title">📈 Additional Data Recommended</div>'
@@ -3986,6 +3729,10 @@ Additional Observations:
             problem_analysis
         )
 
+        # =================================================
+        # POSSIBLE FAULTS & DIAGNOSTIC CHECKS
+        # =================================================
+
         st.html(
             '<div class="section-title" style="margin-top:25px;">🧠 Possible Faults & Diagnostic Checks</div>'
         )
@@ -3997,6 +3744,10 @@ Additional Observations:
         st.markdown(
             diagnosis_result
         )
+
+        # =================================================
+        # MAINTENANCE CHECKLIST
+        # =================================================
 
         st.html(
             '<div class="section-title" style="margin-top:25px;">🔧 Maintenance Checklist</div>'
@@ -4071,6 +3822,10 @@ Additional Observations:
                 key="Check operating conditions"
             )
 
+        # =================================================
+        # ENGINEERING ANALYSIS REPORT
+        # =================================================
+
         st.html(
             '<div class="section-title" style="margin-top:25px;">📋 Engineering Analysis Report</div>'
         )
@@ -4082,6 +3837,10 @@ Additional Observations:
         st.markdown(
             final_report
         )
+
+        # =================================================
+        # VOICE
+        # =================================================
 
         st.html(
             '<div class="section-title" style="margin-top:25px;">🔊 Listen to AI Results</div>'
@@ -4114,6 +3873,10 @@ Final Engineering Analysis Report.
         speak_text(
             complete_voice_text
         )
+
+        # =================================================
+        # PDF EXPORT
+        # =================================================
 
         st.html(
             '<div class="section-title" style="margin-top:25px;">📄 Engineering Report Export</div>'
