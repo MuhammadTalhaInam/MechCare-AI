@@ -4,7 +4,6 @@ import json
 import re
 import streamlit.components.v1 as components
 
-
 from crew import run_mechcare
 from pdf_report import create_pdf_report
 
@@ -15,13 +14,8 @@ from pdf_report import create_pdf_report
 
 def speak_text(text):
 
-    # Convert the report into safe JavaScript text
     report_json = json.dumps(str(text))
 
-    # IMPORTANT:
-    # This HTML is intentionally NOT an f-string.
-    # This prevents JavaScript { } braces from causing
-    # Python f-string syntax errors.
     voice_html = r"""
         <div style="
             background:#162235;
@@ -61,51 +55,42 @@ def speak_text(text):
                 align-items:center;
             ">
 
-                <button
-                    onclick="playSpeech()"
-                    style="
-                        padding:9px 18px;
-                        border:1px solid #1687D9;
-                        border-radius:8px;
-                        cursor:pointer;
-                        font-size:14px;
-                        font-weight:700;
-                        color:#ffffff;
-                        background:#1687D9;
-                    "
-                >
+                <button onclick="playSpeech()" style="
+                    padding:9px 18px;
+                    border:1px solid #1687D9;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-size:14px;
+                    font-weight:700;
+                    color:#ffffff;
+                    background:#1687D9;
+                ">
                     ▶️ Play
                 </button>
 
-                <button
-                    onclick="pauseSpeech()"
-                    style="
-                        padding:9px 18px;
-                        border:1px solid #64748B;
-                        border-radius:8px;
-                        cursor:pointer;
-                        font-size:14px;
-                        font-weight:700;
-                        color:#F1F5F9;
-                        background:#24344D;
-                    "
-                >
+                <button onclick="pauseSpeech()" style="
+                    padding:9px 18px;
+                    border:1px solid #64748B;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-size:14px;
+                    font-weight:700;
+                    color:#F1F5F9;
+                    background:#24344D;
+                ">
                     ⏸️ Pause
                 </button>
 
-                <button
-                    onclick="stopSpeech()"
-                    style="
-                        padding:9px 18px;
-                        border:1px solid #EF5350;
-                        border-radius:8px;
-                        cursor:pointer;
-                        font-size:14px;
-                        font-weight:700;
-                        color:#ffffff;
-                        background:#EF5350;
-                    "
-                >
+                <button onclick="stopSpeech()" style="
+                    padding:9px 18px;
+                    border:1px solid #EF5350;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-size:14px;
+                    font-weight:700;
+                    color:#ffffff;
+                    background:#EF5350;
+                ">
                     ⏹️ Stop
                 </button>
 
@@ -117,19 +102,15 @@ def speak_text(text):
                     Speed:
                 </label>
 
-                <select
-                    id="speed"
-                    onchange="changeSpeed()"
-                    style="
-                        padding:8px 12px;
-                        border-radius:7px;
-                        border:1px solid #2A3A52;
-                        background:#0B1220;
-                        color:#F1F5F9;
-                        font-size:14px;
-                        outline:none;
-                    "
-                >
+                <select id="speed" onchange="changeSpeed()" style="
+                    padding:8px 12px;
+                    border-radius:7px;
+                    border:1px solid #2A3A52;
+                    background:#0B1220;
+                    color:#F1F5F9;
+                    font-size:14px;
+                    outline:none;
+                ">
                     <option value="0.25">0.25×</option>
                     <option value="0.5">0.5×</option>
                     <option value="0.75">0.75×</option>
@@ -142,116 +123,70 @@ def speak_text(text):
 
             </div>
 
-            <div
-                id="voiceStatus"
-                style="
-                    margin-top:16px;
-                    color:#20C997;
-                    font-size:13px;
-                    font-weight:700;
-                "
-            >
+            <div id="voiceStatus" style="
+                margin-top:16px;
+                color:#20C997;
+                font-size:13px;
+                font-weight:700;
+            ">
                 ● Ready to play
             </div>
 
         </div>
 
-
         <script>
 
         const rawReportText = __REPORT_JSON__;
 
-
-        // -------------------------------------------------
-        // CLEAN TEXT FOR VOICE
-        // -------------------------------------------------
-
         const reportText = rawReportText
-
             .replace(/^#+\s*/gm, "")
-
             .replace(/\*\*(.*?)\*\*/g, "$1")
-
             .replace(/\*(.*?)\*/g, "$1")
-
             .replace(/`(.*?)`/g, "$1")
-
             .replace(/^(---+|___+|\*\*\*+)\s*$/gm, "")
-
             .replace(/^\s*[-*+]\s+/gm, "")
-
             .replace(/^\s*\d+[.)]\s+/gm, "")
-
             .replace(/^\s*[#*_]+\s*/gm, "")
-
             .replace(/[ \t]+/g, " ")
-
             .replace(/\n\n+/g, "\n\n")
-
             .trim();
 
-
-        // =================================================
-        // SPEECH SYSTEM
-        // =================================================
-
         let speech = null;
-
         let currentSpeed = 1;
-
         let isPaused = false;
-
         let isStopped = true;
-
         let speechSession = 0;
-
         let currentChunkIndex = 0;
-
         let currentChunkPosition = 0;
-
         let speechStartPosition = 0;
-
         let isChangingSpeed = false;
-
         let availableVoice = null;
-
-
-        // =================================================
-        // SPLIT REPORT INTO SMALLER SPEECH CHUNKS
-        // =================================================
 
         function createSpeechChunks(text) {
 
             const normalizedText =
                 text.replace(/\s+/g, " ").trim();
 
-
             if (!normalizedText) {
                 return [];
             }
-
 
             const sentences =
                 normalizedText.match(
                     /[^.!?]+[.!?]+|[^.!?]+$/g
                 ) || [normalizedText];
 
-
             const chunks = [];
-
             let currentChunk = "";
-
 
             sentences.forEach(function(sentence) {
 
                 const cleanSentence =
                     sentence.trim();
 
-
                 if (!cleanSentence) {
                     return;
                 }
-
 
                 if (
                     (currentChunk + " " + cleanSentence).length
@@ -270,28 +205,18 @@ def speak_text(text):
                     }
 
                     currentChunk = cleanSentence;
-
                 }
-
             });
-
 
             if (currentChunk) {
                 chunks.push(currentChunk);
             }
 
-
             return chunks;
         }
 
-
         const speechChunks =
             createSpeechChunks(reportText);
-
-
-        // =================================================
-        // FIND MOBILE-COMPATIBLE VOICE
-        // =================================================
 
         function loadAvailableVoice() {
 
@@ -299,57 +224,37 @@ def speak_text(text):
                 return;
             }
 
-
             const voices =
                 window.speechSynthesis.getVoices();
-
 
             if (!voices || voices.length === 0) {
                 return;
             }
 
-
             availableVoice =
                 voices.find(function(voice) {
-
                     return voice.lang === "en-US";
-
                 });
 
-
             if (!availableVoice) {
-
                 availableVoice =
                     voices.find(function(voice) {
-
                         return voice.lang === "en-GB";
-
                     });
-
             }
 
-
             if (!availableVoice) {
-
                 availableVoice =
                     voices.find(function(voice) {
-
                         return voice.lang &&
                             voice.lang.toLowerCase().startsWith("en");
-
                     });
-
             }
-
 
             if (!availableVoice && voices.length > 0) {
-
                 availableVoice = voices[0];
-
             }
-
         }
-
 
         if ("speechSynthesis" in window) {
 
@@ -357,36 +262,19 @@ def speak_text(text):
 
             window.speechSynthesis.onvoiceschanged =
                 function() {
-
                     loadAvailableVoice();
-
                 };
-
         }
-
-
-        // =================================================
-        // UPDATE STATUS
-        // =================================================
 
         function updateStatus(message) {
 
             const status =
                 document.getElementById("voiceStatus");
 
-
             if (status) {
-
                 status.innerText = message;
-
             }
-
         }
-
-
-        // =================================================
-        // CREATE AND START CURRENT CHUNK
-        // =================================================
 
         function speakCurrentChunk(startPosition) {
 
@@ -399,21 +287,14 @@ def speak_text(text):
                 return;
             }
 
-
             if (currentChunkIndex >= speechChunks.length) {
 
                 currentChunkIndex = 0;
-
                 currentChunkPosition = 0;
-
                 speechStartPosition = 0;
-
                 speech = null;
-
                 isPaused = false;
-
                 isStopped = false;
-
                 isChangingSpeed = false;
 
                 updateStatus("✅ Finished");
@@ -421,105 +302,74 @@ def speak_text(text):
                 return;
             }
 
-
             const chunk =
                 speechChunks[currentChunkIndex];
-
 
             if (!chunk) {
 
                 currentChunkIndex++;
-
                 currentChunkPosition = 0;
-
                 speechStartPosition = 0;
 
                 speakCurrentChunk(0);
 
                 return;
-
             }
-
 
             let position =
                 typeof startPosition === "number"
                     ? startPosition
                     : currentChunkPosition;
 
-
             if (position < 0) {
                 position = 0;
             }
 
-
             if (position >= chunk.length) {
 
                 currentChunkIndex++;
-
                 currentChunkPosition = 0;
-
                 speechStartPosition = 0;
 
                 speakCurrentChunk(0);
 
                 return;
-
             }
-
 
             const remainingText =
                 chunk.substring(position);
 
-
             if (!remainingText.trim()) {
 
                 currentChunkIndex++;
-
                 currentChunkPosition = 0;
-
                 speechStartPosition = 0;
 
                 speakCurrentChunk(0);
 
                 return;
-
             }
 
-
             currentChunkPosition = position;
-
             speechStartPosition = position;
-
 
             speechSession++;
 
             const thisSession =
                 speechSession;
 
-
             speech =
                 new SpeechSynthesisUtterance(
                     remainingText
                 );
 
-
-            speech.rate =
-                currentSpeed;
-
-            speech.pitch =
-                1;
-
-            speech.volume =
-                1;
-
+            speech.rate = currentSpeed;
+            speech.pitch = 1;
+            speech.volume = 1;
 
             if (availableVoice) {
-
-                speech.voice =
-                    availableVoice;
-
+                speech.voice = availableVoice;
             }
-
 
             if (
                 availableVoice &&
@@ -533,12 +383,9 @@ def speak_text(text):
 
                 speech.lang =
                     "en-US";
-
             }
 
-
             isStopped = false;
-
 
             speech.onstart = function(){
 
@@ -546,25 +393,20 @@ def speak_text(text):
                     return;
                 }
 
-
                 isPaused = false;
-
 
                 updateStatus(
                     "🔊 Speaking at " +
                     currentSpeed +
                     "×..."
                 );
-
             };
-
 
             speech.onboundary = function(event) {
 
                 if (thisSession !== speechSession) {
                     return;
                 }
-
 
                 if (
                     typeof event.charIndex === "number"
@@ -573,18 +415,14 @@ def speak_text(text):
                     currentChunkPosition =
                         speechStartPosition +
                         event.charIndex;
-
                 }
-
             };
-
 
             speech.onpause = function(event) {
 
                 if (thisSession !== speechSession) {
                     return;
                 }
-
 
                 if (
                     event &&
@@ -594,12 +432,9 @@ def speak_text(text):
                     currentChunkPosition =
                         speechStartPosition +
                         event.charIndex;
-
                 }
 
-
                 isPaused = true;
-
 
                 if (isChangingSpeed) {
 
@@ -612,11 +447,8 @@ def speak_text(text):
                     updateStatus(
                         "⏸️ Paused — press Play to continue"
                     );
-
                 }
-
             };
-
 
             speech.onresume = function() {
 
@@ -624,18 +456,14 @@ def speak_text(text):
                     return;
                 }
 
-
                 isPaused = false;
-
 
                 updateStatus(
                     "🔊 Speaking at " +
                     currentSpeed +
                     "×..."
                 );
-
             };
-
 
             speech.onend = function() {
 
@@ -643,31 +471,23 @@ def speak_text(text):
                     return;
                 }
 
-
                 speech = null;
-
 
                 if (isPaused) {
                     return;
                 }
 
-
                 if (isChangingSpeed) {
                     return;
                 }
 
-
                 currentChunkIndex++;
-
                 currentChunkPosition = 0;
-
                 speechStartPosition = 0;
-
 
                 if (isStopped) {
                     return;
                 }
-
 
                 setTimeout(function() {
 
@@ -680,20 +500,16 @@ def speak_text(text):
                         return;
                     }
 
-
                     speakCurrentChunk(0);
 
                 }, 40);
-
             };
-
 
             speech.onerror = function(event) {
 
                 if (thisSession !== speechSession) {
                     return;
                 }
-
 
                 if (
                     event.error === "canceled" ||
@@ -702,27 +518,17 @@ def speak_text(text):
                     return;
                 }
 
-
                 speech = null;
-
 
                 updateStatus(
                     "❌ Voice playback error. Please press Play again."
                 );
-
             };
-
 
             window.speechSynthesis.speak(
                 speech
             );
-
         }
-
-
-        // =================================================
-        // PLAY / RESUME
-        // =================================================
 
         function playSpeech() {
 
@@ -735,32 +541,24 @@ def speak_text(text):
                 return;
             }
 
-
             loadAvailableVoice();
-
 
             if (isPaused) {
 
                 const savedChunk =
                     currentChunkIndex;
 
-
                 const savedPosition =
                     currentChunkPosition;
 
-
                 isChangingSpeed = false;
-
                 isStopped = false;
 
-
                 speechSession++;
-
 
                 window.speechSynthesis.cancel();
 
                 speech = null;
-
 
                 currentChunkIndex =
                     savedChunk;
@@ -773,13 +571,11 @@ def speak_text(text):
 
                 isPaused = false;
 
-
                 updateStatus(
                     "▶️ Continuing from saved position at " +
                     currentSpeed +
                     "×..."
                 );
-
 
                 setTimeout(function() {
 
@@ -791,26 +587,19 @@ def speak_text(text):
                         speakCurrentChunk(
                             savedPosition
                         );
-
                     }
 
                 }, 200);
 
-
                 return;
-
             }
-
 
             if (
                 speech &&
                 window.speechSynthesis.speaking
             ) {
-
                 return;
-
             }
-
 
             if (
                 currentChunkIndex >=
@@ -818,23 +607,15 @@ def speak_text(text):
             ) {
 
                 currentChunkIndex = 0;
-
                 currentChunkPosition = 0;
-
                 speechStartPosition = 0;
-
             }
 
-
             isStopped = false;
-
             isPaused = false;
-
             isChangingSpeed = false;
 
-
             window.speechSynthesis.cancel();
-
 
             setTimeout(function() {
 
@@ -843,26 +624,16 @@ def speak_text(text):
                     speakCurrentChunk(
                         currentChunkPosition
                     );
-
                 }
 
             }, 150);
-
         }
-
-
-        // =================================================
-        // PAUSE
-        // =================================================
 
         function pauseSpeech() {
 
-            if (
-                !("speechSynthesis" in window)
-            ) {
+            if (!("speechSynthesis" in window)) {
                 return;
             }
-
 
             if (
                 !speech ||
@@ -872,27 +643,20 @@ def speak_text(text):
                 return;
             }
 
-
             const savedPosition =
                 currentChunkPosition;
 
-
             isPaused = true;
-
             isChangingSpeed = false;
-
 
             currentChunkPosition =
                 savedPosition;
-
 
             updateStatus(
                 "⏸️ Pausing..."
             );
 
-
             window.speechSynthesis.pause();
-
 
             setTimeout(function() {
 
@@ -901,24 +665,16 @@ def speak_text(text):
                     updateStatus(
                         "⏸️ Paused — press Play to continue"
                     );
-
                 }
 
             }, 250);
-
         }
-
-
-        // =================================================
-        // STOP
-        // =================================================
 
         function stopSpeech() {
 
             if ("speechSynthesis" in window) {
 
                 speechSession++;
-
                 isChangingSpeed = false;
 
                 window.speechSynthesis.cancel();
@@ -926,28 +682,17 @@ def speak_text(text):
                 speech = null;
 
                 currentChunkIndex = 0;
-
                 currentChunkPosition = 0;
-
                 speechStartPosition = 0;
 
                 isPaused = false;
-
                 isStopped = true;
-
 
                 updateStatus(
                     "⏹️ Stopped — press Play to start again"
                 );
-
             }
-
         }
-
-
-        // =================================================
-        // CHANGE SPEED
-        // =================================================
 
         function changeSpeed() {
 
@@ -956,20 +701,16 @@ def speak_text(text):
                     document.getElementById("speed").value
                 );
 
-
             if (isNaN(selectedSpeed)) {
                 return;
             }
 
-
             currentSpeed =
                 selectedSpeed;
-
 
             if (!("speechSynthesis" in window)) {
                 return;
             }
-
 
             if (
                 speech &&
@@ -980,15 +721,11 @@ def speak_text(text):
                 const savedChunk =
                     currentChunkIndex;
 
-
                 const savedPosition =
                     currentChunkPosition;
 
-
                 isChangingSpeed = true;
-
                 isPaused = true;
-
 
                 updateStatus(
                     "🔄 Changing speed to " +
@@ -996,9 +733,7 @@ def speak_text(text):
                     "×..."
                 );
 
-
                 window.speechSynthesis.pause();
-
 
                 setTimeout(function() {
 
@@ -1006,14 +741,11 @@ def speak_text(text):
                         return;
                     }
 
-
                     speechSession++;
-
 
                     window.speechSynthesis.cancel();
 
                     speech = null;
-
 
                     currentChunkIndex =
                         savedChunk;
@@ -1024,9 +756,7 @@ def speak_text(text):
                     speechStartPosition =
                         savedPosition;
 
-
                     isPaused = false;
-
 
                     updateStatus(
                         "🔊 Speaking at " +
@@ -1034,30 +764,23 @@ def speak_text(text):
                         "×..."
                     );
 
-
                     setTimeout(function() {
 
                         if (!isStopped) {
 
                             isChangingSpeed = false;
 
-
                             speakCurrentChunk(
                                 savedPosition
                             );
-
                         }
 
                     }, 200);
 
-
                 }, 250);
 
-
                 return;
-
             }
-
 
             if (isPaused) {
 
@@ -1068,16 +791,12 @@ def speak_text(text):
                 );
 
                 return;
-
             }
-
         }
 
         </script>
     """
 
-    # Safely insert the JSON after Python has finished
-    # interpreting the HTML/JavaScript.
     voice_html = voice_html.replace(
         "__REPORT_JSON__",
         report_json
@@ -1138,1532 +857,1318 @@ if "agents_completed" not in st.session_state:
 
 
 # =========================================================
-# CUSTOM CSS
+# CUSTOM CSS — EXACT BLUE / NAVY THEME
 # =========================================================
 
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<style>
 
-    /* =====================================================
-       MECHCARE AI COLOR SYSTEM
-       ===================================================== */
+/* =========================================================
+   MECHCARE AI — EXACT SCREENSHOT BLUE / NAVY THEME
+   ========================================================= */
 
-    :root {
-        --bg-main: #0B1220;
-        --bg-sidebar: #111A2B;
-        --bg-card: #162235;
+:root {
 
-        --border: #2A3A52;
-        --border-soft: #24344D;
+    --bg-main: #031A39;
+    --bg-main-dark: #02152D;
 
-        --primary: #1687D9;
-        --accent: #19C3D8;
+    --bg-sidebar: #032D5F;
+    --bg-sidebar-dark: #031F43;
 
-        --success: #20C997;
-        --warning: #F5A623;
-        --danger: #EF5350;
-        --info: #1687D9;
-        --offline: #64748B;
+    --bg-card: #061B38;
+    --bg-card-light: #102948;
+    --bg-card-hover: #0A2342;
 
-        --text-primary: #F1F5F9;
-        --text-secondary: #CBD5E1;
-        --text-muted: #94A3B8;
-        --text-disabled: #64748B;
-    }
+    --border: #124A78;
+    --border-soft: #0D355C;
+    --border-bright: #1A5F91;
 
+    --primary: #0066C6;
+    --primary-dark: #0055A8;
 
-    /* =====================================================
-       GLOBAL APP
-       ===================================================== */
+    --blue-bright: #008FE0;
+    --accent: #00A9E9;
+    --accent-light: #13C6E8;
 
-    .stApp {
-        background:
-            radial-gradient(
-                circle at 82% 0%,
-                rgba(25,195,216,0.055),
-                transparent 28%
-            ),
-            radial-gradient(
-                circle at 12% 18%,
-                rgba(22,135,217,0.045),
-                transparent 30%
-            ),
-            #0B1220;
+    --success: #00D084;
+    --warning: #F5B942;
+    --danger: #B82F38;
 
-        color: #F1F5F9;
-    }
+    --pause: #335571;
+    --offline: #637C96;
 
+    --text-primary: #E8F1FA;
+    --text-secondary: #B7CBE0;
+    --text-muted: #8FA8C1;
+    --text-disabled: #637C96;
+}
 
-    .block-container {
-        max-width: 1550px;
 
-        padding-top: 1.25rem;
-        padding-bottom: 3rem;
+.stApp {
 
-        padding-left: 2rem;
-        padding-right: 2rem;
-    }
+    background:
 
+        radial-gradient(
+            circle at 91% 4%,
+            rgba(0,169,233,0.08),
+            transparent 23%
+        ),
 
-    ::selection {
-        background: rgba(25,195,216,0.28);
-        color: #F1F5F9;
-    }
+        radial-gradient(
+            circle at 8% 45%,
+            rgba(0,102,198,0.08),
+            transparent 30%
+        ),
 
+        linear-gradient(
+            135deg,
+            #02152D 0%,
+            #031A39 48%,
+            #02182F 100%
+        );
 
-    /* =====================================================
-       GENERAL TEXT
-       ===================================================== */
+    color: var(--text-primary);
+}
 
-    [data-testid="stMarkdownContainer"] p,
-    [data-testid="stMarkdownContainer"] li {
-        color: #CBD5E1 !important;
-    }
 
+.main .block-container {
 
-    [data-testid="stMarkdownContainer"] strong {
-        color: #F1F5F9 !important;
-    }
+    padding-top: 1.2rem;
+    padding-bottom: 2rem;
 
+    max-width: 1500px;
+}
 
-    [data-testid="stMarkdownContainer"] h1,
-    [data-testid="stMarkdownContainer"] h2,
-    [data-testid="stMarkdownContainer"] h3,
-    [data-testid="stMarkdownContainer"] h4 {
-        color: #F1F5F9 !important;
-    }
 
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stMarkdownContainer"] li {
 
-    h1, h2, h3, h4 {
-        color: #F1F5F9 !important;
-    }
+    color: var(--text-secondary) !important;
+}
 
 
-    /* =====================================================
-       SIDEBAR
-       ===================================================== */
+[data-testid="stMarkdownContainer"] strong {
 
-    [data-testid="stSidebar"] {
-        background: #111A2B;
+    color: var(--text-primary) !important;
+}
 
-        border-right: 1px solid #2A3A52;
 
-        box-shadow:
-            8px 0 35px rgba(0,0,0,0.20);
-    }
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3,
+[data-testid="stMarkdownContainer"] h4 {
 
+    color: var(--text-primary) !important;
+}
 
-    [data-testid="stSidebar"] > div:first-child {
-        padding-top: 1rem;
-    }
 
+section[data-testid="stSidebar"] {
 
-    [data-testid="stSidebar"] .stMarkdown {
-        color: #CBD5E1;
-    }
+    background:
 
+        linear-gradient(
+            180deg,
+            #032D5F 0%,
+            #032650 45%,
+            #021F42 100%
+        );
 
-    /* =====================================================
-       SIDEBAR BRAND
-       ===================================================== */
+    border-right: 1px solid #124A78;
+}
 
-    .sidebar-brand {
-        padding: 19px;
 
-        border: 1px solid #2A3A52;
+section[data-testid="stSidebar"] > div {
 
-        border-radius: 12px;
+    background: transparent;
+}
 
-        background:
-            linear-gradient(
-                145deg,
-                #162235,
-                #111A2B
-            );
 
-        margin-bottom: 20px;
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] label,
+section[data-testid="stSidebar"] span {
 
-        box-shadow:
-            0 10px 28px rgba(0,0,0,0.18),
-            0 0 25px rgba(25,195,216,0.045);
+    color: var(--text-secondary);
+}
 
-        position: relative;
 
-        overflow: hidden;
-    }
+.sidebar-brand {
 
+    padding: 10px 7px 20px 7px;
 
-    .sidebar-brand:after {
-        content: "";
+    border-bottom: 1px solid #124A78;
 
-        position: absolute;
+    margin-bottom: 18px;
 
-        width: 130px;
-        height: 130px;
+    background:
 
-        border-radius: 50%;
+        linear-gradient(
+            135deg,
+            rgba(0,102,198,0.18),
+            rgba(0,169,233,0.05)
+        );
 
-        right: -70px;
-        top: -70px;
+    border-radius: 0 0 12px 12px;
+}
 
-        background:
-            radial-gradient(
-                circle,
-                rgba(25,195,216,0.13),
-                transparent 70%
-            );
-    }
 
+.sidebar-brand-top {
 
-    .sidebar-brand-title {
-        color: #F1F5F9;
+    display: flex;
 
-        font-size: 22px;
+    align-items: center;
 
-        font-weight: 800;
+    gap: 11px;
+}
 
-        margin-bottom: 3px;
-    }
 
+.sidebar-gear {
 
-    .sidebar-brand-subtitle {
-        color: #19C3D8;
+    width: 42px;
+    height: 42px;
 
-        font-size: 10px;
+    border-radius: 11px;
 
-        letter-spacing: 1.6px;
+    display: flex;
 
-        text-transform: uppercase;
+    align-items: center;
+    justify-content: center;
 
-        font-weight: 700;
-    }
+    background:
 
+        linear-gradient(
+            135deg,
+            #0066C6,
+            #00A9E9
+        );
 
-    .sidebar-section {
-        color: #94A3B8;
+    color: white;
 
-        font-size: 10px;
+    font-size: 21px;
 
-        font-weight: 800;
+    box-shadow:
+        0 0 24px rgba(0,169,233,0.28);
+}
 
-        letter-spacing: 1.6px;
 
-        text-transform: uppercase;
+.sidebar-brand-title {
 
-        margin-top: 22px;
+    font-size: 20px;
 
-        margin-bottom: 8px;
-    }
+    font-weight: 800;
 
+    color: #F1F7FD;
 
-    /* =====================================================
-       SIDEBAR NAVIGATION
-       ===================================================== */
+    letter-spacing: -0.4px;
+}
 
-    [data-testid="stSidebar"] [data-testid="stRadio"] label {
-        color: #CBD5E1 !important;
 
-        border-radius: 8px;
+.sidebar-brand-subtitle {
 
-        padding: 7px 10px;
+    font-size: 9px;
 
-        margin-bottom: 2px;
+    color: #63D9F4;
 
-        transition:
-            background 0.2s ease,
-            color 0.2s ease,
-            border-color 0.2s ease;
-    }
+    letter-spacing: 1.7px;
 
+    margin-top: 2px;
+}
 
-    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
-        background: rgba(22,135,217,0.10);
 
-        color: #F1F5F9 !important;
-    }
+.sidebar-section-title {
 
+    color: #73CFF1;
 
-    [data-testid="stSidebar"]
-    [data-testid="stRadio"]
-    div[role="radiogroup"]
-    > label[data-checked="true"] {
+    font-size: 10px;
 
-        background: rgba(22,135,217,0.16);
+    font-weight: 800;
 
-        color: #F1F5F9 !important;
+    letter-spacing: 1.5px;
 
-        border-left: 3px solid #1687D9;
+    text-transform: uppercase;
 
-        box-shadow:
-            inset 0 0 18px rgba(22,135,217,0.04);
-    }
+    margin: 18px 4px 9px 4px;
+}
 
 
-    /* =====================================================
-       SIDEBAR BUTTONS
-       ===================================================== */
+section[data-testid="stSidebar"]
+div[data-testid="stRadio"] label {
 
-    [data-testid="stSidebar"] .stButton > button {
-        background: transparent !important;
+    background: transparent;
 
-        border: 1px solid transparent !important;
+    border-radius: 9px;
 
-        color: #CBD5E1 !important;
+    padding: 9px 11px;
 
-        text-align: left !important;
+    margin-bottom: 3px;
 
-        justify-content: flex-start !important;
+    transition: all 0.2s ease;
+}
 
-        box-shadow: none !important;
 
-        min-height: 40px;
+section[data-testid="stSidebar"]
+div[data-testid="stRadio"] label:hover {
 
-        font-weight: 600 !important;
-    }
+    background: rgba(0,102,198,0.22);
 
+    color: white;
+}
 
-    [data-testid="stSidebar"] .stButton > button:hover {
-        background: rgba(22,135,217,0.10) !important;
 
-        border-color: #2A3A52 !important;
+section[data-testid="stSidebar"]
+div[data-testid="stRadio"] label p {
 
-        color: #F1F5F9 !important;
+    color: #D0E0EF !important;
 
-        box-shadow:
-            0 0 16px rgba(22,135,217,0.08) !important;
+    font-weight: 600 !important;
+}
 
-        transform: none;
-    }
 
+section[data-testid="stSidebar"]
+div[data-testid="stRadio"] label:has(input:checked) {
 
-    /* =====================================================
-       SIDEBAR MACHINE
-       ===================================================== */
+    background:
 
-    .sidebar-machine {
-        background: #162235;
+        linear-gradient(
+            90deg,
+            #0072D2,
+            #0060B8
+        ) !important;
 
-        border: 1px solid #2A3A52;
+    border: 1px solid rgba(0,169,233,0.45);
 
-        border-radius: 10px;
+    box-shadow:
+        0 5px 18px rgba(0,102,198,0.28);
+}
 
-        padding: 14px;
 
-        margin-top: 15px;
+section[data-testid="stSidebar"]
+div[data-testid="stRadio"] label:has(input:checked) p {
 
-        box-shadow:
-            0 8px 22px rgba(0,0,0,0.16),
-            0 0 18px rgba(25,195,216,0.025);
-    }
+    color: #FFFFFF !important;
 
+    font-weight: 800 !important;
+}
 
-    .sidebar-machine-label {
-        color: #94A3B8;
 
-        font-size: 10px;
+section[data-testid="stSidebar"] .stButton > button {
 
-        text-transform: uppercase;
+    background:
 
-        letter-spacing: 1px;
-    }
+        linear-gradient(
+            135deg,
+            #0A3B6A,
+            #082E55
+        ) !important;
 
+    border: 1px solid #15517E !important;
 
-    .sidebar-machine-name {
-        color: #F1F5F9;
+    color: #DCEAF6 !important;
 
-        font-size: 14px;
+    border-radius: 9px !important;
 
-        font-weight: 700;
+    font-weight: 650 !important;
 
-        margin-top: 4px;
-    }
+    min-height: 42px;
 
+    box-shadow:
+        0 4px 14px rgba(0,0,0,0.20);
 
-    .sidebar-status {
-        display: inline-block;
+    transition: all 0.2s ease !important;
+}
 
-        margin-top: 9px;
 
-        padding: 5px 9px;
+section[data-testid="stSidebar"] .stButton > button:hover {
 
-        border-radius: 999px;
+    background:
 
-        background: rgba(32,201,151,0.09);
+        linear-gradient(
+            135deg,
+            #006FCF,
+            #008EDB
+        ) !important;
 
-        color: #20C997;
+    border-color: #00A9E9 !important;
 
-        border: 1px solid rgba(32,201,151,0.28);
+    color: white !important;
 
-        font-size: 10px;
+    transform: translateY(-1px);
 
-        font-weight: 700;
+    box-shadow:
+        0 7px 22px rgba(0,122,210,0.30);
+}
 
-        box-shadow:
-            0 0 12px rgba(32,201,151,0.06);
-    }
 
+[data-baseweb="select"] > div {
 
-    /* =====================================================
-       TOP COMMAND HEADER
-       ===================================================== */
+    background: #061F40 !important;
+
+    border: 1px solid #15517E !important;
+
+    color: #E8F1FA !important;
+
+    border-radius: 8px !important;
+}
+
+
+[data-baseweb="select"] span {
+
+    color: #E8F1FA !important;
+}
+
+
+div[data-baseweb="input"] {
+
+    background: #061F40 !important;
+
+    border: 1px solid #15517E !important;
+
+    border-radius: 8px !important;
+}
+
+
+div[data-baseweb="input"] input {
+
+    color: #E8F1FA !important;
+}
+
+
+textarea {
+
+    background: #061F40 !important;
+
+    color: #E8F1FA !important;
+
+    border: 1px solid #15517E !important;
+
+    border-radius: 9px !important;
+}
+
+
+input {
+
+    color: #E8F1FA !important;
+}
+
+
+textarea::placeholder,
+input::placeholder {
+
+    color: #7892AA !important;
+}
+
+
+[data-baseweb="select"] > div:focus-within,
+div[data-baseweb="input"]:focus-within,
+textarea:focus {
+
+    border-color: #00A9E9 !important;
+
+    box-shadow:
+        0 0 0 1px rgba(0,169,233,0.25) !important;
+}
+
+
+.stButton > button {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #0066C6,
+            #0055A8
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border: 1px solid rgba(0,169,233,0.40) !important;
+
+    border-radius: 9px !important;
+
+    font-weight: 700 !important;
+
+    min-height: 42px;
+
+    transition: all 0.2s ease !important;
+
+    box-shadow:
+        0 5px 18px rgba(0,102,198,0.22);
+}
+
+
+.stButton > button:hover {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #00A9E9,
+            #0066C6
+        ) !important;
+
+    border-color: #00C4EF !important;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 25px rgba(0,169,233,0.28);
+}
+
+
+.top-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px 20px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(4,28,57,0.96),
+            rgba(2,23,49,0.96)
+        );
+
+    border: 1px solid #124A78;
+
+    border-radius: 13px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,0.25);
+}
+
+
+.top-title {
+
+    color: #EAF4FC;
+
+    font-size: 18px;
+
+    font-weight: 800;
+}
+
+
+.top-subtitle {
+
+    color: #8EA9C1;
+
+    font-size: 12px;
+
+    margin-top: 3px;
+}
+
+
+.top-icons {
+
+    color: #65CFEF;
+
+    font-size: 18px;
+
+    letter-spacing: 8px;
+}
+
+
+.online-badge {
+
+    color: #00D084;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.8px;
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    background: rgba(0,208,132,0.08);
+
+    border: 1px solid rgba(0,208,132,0.25);
+}
+
+
+.info-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    background: #061B38;
+
+    border: 1px solid #124A78;
+
+    border-left: 3px solid #00A9E9;
+
+    border-radius: 11px;
+
+    padding: 14px 17px;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 5px 22px rgba(0,0,0,0.20);
+}
+
+
+.info-icon {
+
+    font-size: 22px;
+
+    color: #00B9EF;
+}
+
+
+.info-text {
+
+    color: #B7CBE0;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+.info-text strong {
+
+    color: #EDF6FD;
+}
+
+
+.hero {
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(0,102,198,0.18),
+            rgba(0,169,233,0.055)
+        ),
+        #061B38;
+
+    border: 1px solid #124A78;
+
+    border-radius: 16px;
+
+    padding: 26px 28px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.24);
+}
+
+
+.hero::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: -70px;
+    top: -80px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(0,169,233,0.20);
+
+    box-shadow:
+        0 0 60px rgba(0,169,233,0.08);
+}
+
+
+.hero h1 {
+
+    margin: 0 0 6px 0;
+
+    color: #F0F7FD !important;
+
+    font-size: 31px;
+
+    font-weight: 850;
+}
+
+
+.hero h3 {
+
+    margin: 0 0 11px 0;
+
+    color: #00B7EE !important;
+
+    font-size: 16px;
+}
+
+
+.hero p {
+
+    margin: 0;
+
+    color: #B7CBE0 !important;
+
+    max-width: 900px;
+
+    line-height: 1.65;
+
+    font-size: 13px;
+}
+
+
+.section-header {
+
+    color: #EAF3FB;
+
+    font-size: 19px;
+
+    font-weight: 800;
+
+    margin: 8px 0 12px 0;
+}
+
+
+.section-description {
+
+    color: #8EA8C0;
+
+    font-size: 12px;
+
+    margin-bottom: 15px;
+}
+
+
+.ui-card {
+
+    background: #061B38;
+
+    border: 1px solid #124A78;
+
+    border-radius: 13px;
+
+    padding: 17px;
+
+    margin-bottom: 14px;
+
+    box-shadow:
+        0 7px 25px rgba(0,0,0,0.18);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.ui-card:hover {
+
+    border-color: rgba(0,169,233,0.48);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 9px 30px rgba(0,169,233,0.08);
+}
+
+
+.card-title {
+
+    color: #EAF3FB;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    margin-bottom: 6px;
+}
+
+
+.card-description {
+
+    color: #8FA8C1;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+.workflow-card {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #102948,
+            #071F3D
+        );
+
+    border: 1px solid #124A78;
+
+    border-left: 3px solid #0072D2;
+
+    border-radius: 11px;
+
+    padding: 14px;
+
+    min-height: 110px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,0.16);
+
+    transition: all 0.2s ease;
+}
+
+
+.workflow-card:hover {
+
+    border-left-color: #00A9E9;
+
+    border-color: rgba(0,169,233,0.40);
+
+    box-shadow:
+        0 0 22px rgba(0,169,233,0.10);
+
+    transform: translateY(-1px);
+}
+
+
+.workflow-number {
+
+    color: #00B9EF;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.workflow-title {
+
+    color: #EAF3FB;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    margin-top: 5px;
+}
+
+
+.workflow-text {
+
+    color: #8FA8C1;
+
+    font-size: 11px;
+
+    margin-top: 5px;
+
+    line-height: 1.45;
+}
+
+
+.status-card {
+
+    background: #061B38;
+
+    border: 1px solid #124A78;
+
+    border-radius: 11px;
+
+    padding: 14px;
+
+    min-height: 95px;
+}
+
+
+.status-label {
+
+    color: #809AB3;
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+
+.status-value {
+
+    color: #EAF3FB;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    margin-top: 7px;
+}
+
+
+.status-green {
+
+    color: #00D084;
+}
+
+
+.status-yellow {
+
+    color: #F5B942;
+}
+
+
+.status-red {
+
+    color: #FF555D;
+}
+
+
+.quick-card {
+
+    background: #061B38;
+
+    border: 1px solid #124A78;
+
+    border-radius: 13px;
+
+    padding: 15px;
+
+    margin-bottom: 13px;
+
+    box-shadow:
+        0 6px 22px rgba(0,0,0,0.16);
+}
+
+
+.quick-title {
+
+    color: #EAF3FB;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    margin-bottom: 12px;
+}
+
+
+.quick-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 9px 0;
+
+    border-bottom: 1px solid #0D355C;
+}
+
+
+.quick-row:last-child {
+
+    border-bottom: none;
+}
+
+
+.quick-label {
+
+    color: #829CB5;
+
+    font-size: 11px;
+}
+
+
+.quick-value {
+
+    color: #BFD2E4;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+
+.online-dot {
+
+    display: inline-block;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #00D084;
+
+    box-shadow:
+        0 0 9px rgba(0,208,132,0.65);
+
+    margin-right: 5px;
+}
+
+
+.question-card {
+
+    background: #0B2848;
+
+    border: 1px solid #124A78;
+
+    border-radius: 9px;
+
+    padding: 11px 12px;
+
+    margin-bottom: 7px;
+
+    transition: all 0.2s ease;
+}
+
+
+.question-card:hover {
+
+    border-color: rgba(0,169,233,0.45);
+
+    background: #103454;
+}
+
+
+.question-number {
+
+    color: #00B9EF;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    margin-right: 7px;
+}
+
+
+.question-text {
+
+    color: #B7CBE0;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+
+.profile-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+
+.profile-icon {
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background:
+        rgba(0,102,198,0.17);
+
+    color: #00B9EF;
+
+    border: 1px solid rgba(0,169,233,0.25);
+}
+
+
+.profile-title {
+
+    color: #EAF3FB;
+
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+
+.profile-subtitle {
+
+    color: #809AB3;
+
+    font-size: 10px;
+}
+
+
+.result-card {
+
+    background: #061B38;
+
+    border: 1px solid #124A78;
+
+    border-radius: 14px;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        0 8px 28px rgba(0,0,0,0.18);
+}
+
+
+.result-title {
+
+    color: #EAF3FB;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    margin-bottom: 10px;
+}
+
+
+.result-title span {
+
+    color: #00B9EF;
+}
+
+
+.checklist-card {
+
+    background: #061B38;
+
+    border: 1px solid #124A78;
+
+    border-radius: 13px;
+
+    padding: 17px;
+}
+
+
+.progress-label {
+
+    color: #809AB3;
+
+    font-size: 11px;
+
+    margin-bottom: 6px;
+}
+
+
+div[data-testid="stProgressBar"] > div {
+
+    background: #0C3558;
+}
+
+
+div[data-testid="stProgressBar"] > div > div {
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #0066C6,
+            #00A9E9
+        );
+}
+
+
+.stDownloadButton > button {
+
+    width: 100%;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #0066C6 0%,
+            #008DDB 52%,
+            #00B5E8 100%
+        ) !important;
+
+    color: #FFFFFF !important;
+
+    border: none !important;
+
+    border-radius: 9px !important;
+
+    font-weight: 800 !important;
+
+    min-height: 46px;
+
+    box-shadow:
+        0 7px 25px rgba(0,102,198,0.30);
+
+    transition: all 0.2s ease !important;
+}
+
+
+.stDownloadButton > button:hover {
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #008DDB,
+            #00B5E8
+        ) !important;
+
+    box-shadow:
+        0 9px 30px rgba(0,169,233,0.32);
+
+    transform: translateY(-1px);
+}
+
+
+[data-testid="stCheckbox"] label {
+
+    color: #B7CBE0 !important;
+}
+
+
+[data-testid="stCheckbox"] label:hover {
+
+    color: #EAF3FB !important;
+}
+
+
+[data-testid="stMetric"] {
+
+    background: #061B38;
+
+    border: 1px solid #124A78;
+
+    border-radius: 10px;
+
+    padding: 12px;
+}
+
+
+[data-testid="stMetricLabel"] {
+
+    color: #809AB3 !important;
+}
+
+
+[data-testid="stMetricValue"] {
+
+    color: #EAF3FB !important;
+}
+
+
+hr {
+
+    border-color: #0D355C !important;
+}
+
+
+.app-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 35px;
+
+    padding: 14px 4px;
+
+    border-top: 1px solid #0D355C;
+}
+
+
+.footer-left {
+
+    color: #718AA3;
+
+    font-size: 10px;
+}
+
+
+.footer-right {
+
+    color: #B7CBE0;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+
+::-webkit-scrollbar {
+
+    width: 8px;
+}
+
+
+::-webkit-scrollbar-track {
+
+    background: #02152D;
+}
+
+
+::-webkit-scrollbar-thumb {
+
+    background: #15517E;
+
+    border-radius: 10px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+
+    background: #0072D2;
+}
+
+
+@media (max-width: 900px) {
 
     .top-header {
-        display: flex;
 
-        justify-content: space-between;
+        flex-direction: column;
 
-        align-items: center;
+        align-items: flex-start;
 
-        gap: 20px;
-
-        padding: 20px 23px;
-
-        margin-bottom: 18px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #162235,
-                #111A2B
-            );
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 12px;
-
-        box-shadow:
-            0 12px 30px rgba(0,0,0,0.18),
-            0 0 28px rgba(25,195,216,0.04);
-
-        position: relative;
-
-        overflow: hidden;
-    }
-
-
-    .top-header:before {
-        content: "";
-
-        position: absolute;
-
-        width: 300px;
-
-        height: 2px;
-
-        left: 0;
-
-        bottom: 0;
-
-        background:
-            linear-gradient(
-                90deg,
-                #1687D9,
-                #19C3D8,
-                transparent
-            );
-
-        box-shadow:
-            0 0 12px rgba(25,195,216,0.25);
-    }
-
-
-    .top-title {
-        color: #F1F5F9;
-
-        font-size: 25px;
-
-        font-weight: 800;
-
-        margin: 0;
-    }
-
-
-    .top-subtitle {
-        color: #CBD5E1;
-
-        font-size: 13px;
-
-        margin-top: 5px;
-    }
-
-
-    .top-actions {
-        display: flex;
-
-        align-items: center;
-
-        gap: 9px;
-    }
-
-
-    .top-action {
-        width: 34px;
-
-        height: 34px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 8px;
-
-        background: #111A2B;
-
-        border: 1px solid #2A3A52;
-
-        color: #CBD5E1;
-
-        font-size: 15px;
-
-        transition:
-            border-color 0.2s ease,
-            color 0.2s ease,
-            box-shadow 0.2s ease;
-    }
-
-
-    .top-action:hover {
-        border-color: #1687D9;
-
-        color: #19C3D8;
-
-        box-shadow:
-            0 0 14px rgba(25,195,216,0.10);
-    }
-
-
-    .online-badge {
-        background: rgba(32,201,151,0.08);
-
-        color: #20C997;
-
-        border: 1px solid rgba(32,201,151,0.28);
-
-        border-radius: 999px;
-
-        padding: 8px 13px;
-
-        font-size: 10px;
-
-        font-weight: 800;
-
-        white-space: nowrap;
-
-        box-shadow:
-            0 0 14px rgba(32,201,151,0.05);
-    }
-
-
-    /* =====================================================
-       INFORMATION CARD
-       ===================================================== */
-
-    .info-card {
-        display: flex;
-
-        align-items: center;
-
-        gap: 15px;
-
-        background: #162235;
-
-        border: 1px solid #2A3A52;
-
-        border-left: 3px solid #19C3D8;
-
-        border-radius: 11px;
-
-        padding: 15px 18px;
-
-        margin-bottom: 20px;
-
-        box-shadow:
-            0 10px 25px rgba(0,0,0,0.16),
-            0 0 22px rgba(25,195,216,0.04);
-    }
-
-
-    .info-icon {
-        width: 40px;
-
-        height: 40px;
-
-        min-width: 40px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 9px;
-
-        background: rgba(25,195,216,0.09);
-
-        border: 1px solid rgba(25,195,216,0.20);
-
-        color: #19C3D8;
-
-        font-size: 19px;
-
-        box-shadow:
-            0 0 15px rgba(25,195,216,0.06);
-    }
-
-
-    .info-title {
-        color: #F1F5F9;
-
-        font-size: 12px;
-
-        font-weight: 800;
-
-        margin-bottom: 3px;
-    }
-
-
-    .info-text {
-        color: #CBD5E1;
-
-        font-size: 12px;
-
-        line-height: 1.5;
-    }
-
-
-    /* =====================================================
-       HERO
-       ===================================================== */
-
-    .hero {
-        position: relative;
-
-        overflow: hidden;
-
-        background:
-            linear-gradient(
-                135deg,
-                #162235,
-                #111A2B
-            );
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 14px;
-
-        padding: 27px;
-
-        margin-bottom: 22px;
-
-        box-shadow:
-            0 14px 35px rgba(0,0,0,0.18),
-            0 0 32px rgba(22,135,217,0.045);
-    }
-
-
-    .hero:before {
-        content: "";
-
-        position: absolute;
-
-        width: 300px;
-
-        height: 300px;
-
-        border-radius: 50%;
-
-        right: -120px;
-
-        top: -150px;
-
-        background:
-            radial-gradient(
-                circle,
-                rgba(25,195,216,0.11),
-                transparent 68%
-            );
-    }
-
-
-    .hero:after {
-        content: "";
-
-        position: absolute;
-
-        width: 180px;
-
-        height: 180px;
-
-        border-radius: 50%;
-
-        left: -110px;
-
-        bottom: -110px;
-
-        background:
-            radial-gradient(
-                circle,
-                rgba(22,135,217,0.07),
-                transparent 70%
-            );
+        gap: 10px;
     }
 
 
     .hero h1 {
-        color: #F1F5F9;
 
-        font-size: 38px;
-
-        margin: 0;
-
-        letter-spacing: -0.7px;
-
-        position: relative;
-
-        z-index: 1;
+        font-size: 25px;
     }
 
 
-    .hero h3 {
-        color: #19C3D8 !important;
+    .top-icons {
 
-        font-size: 15px;
-
-        margin-top: 7px;
-
-        position: relative;
-
-        z-index: 1;
+        display: none;
     }
 
+}
 
-    .hero p {
-        color: #CBD5E1;
-
-        font-size: 14px;
-
-        line-height: 1.75;
-
-        max-width: 900px;
-
-        margin-bottom: 0;
-
-        position: relative;
-
-        z-index: 1;
-    }
-
-
-    /* =====================================================
-       SECTION HEADINGS
-       ===================================================== */
-
-    .section-title {
-        color: #F1F5F9;
-
-        font-size: 21px;
-
-        font-weight: 800;
-
-        margin-bottom: 4px;
-
-        letter-spacing: -0.2px;
-    }
-
-
-    .section-description {
-        color: #CBD5E1;
-
-        font-size: 13px;
-
-        line-height: 1.65;
-
-        margin-bottom: 14px;
-    }
-
-
-    /* =====================================================
-       CARDS
-       ===================================================== */
-
-    .ui-card {
-        background:
-            linear-gradient(
-                145deg,
-                #162235,
-                #142033
-            );
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 11px;
-
-        padding: 18px;
-
-        margin-bottom: 15px;
-
-        box-shadow:
-            0 10px 27px rgba(0,0,0,0.16),
-            inset 0 1px 0 rgba(255,255,255,0.015);
-
-        transition:
-            border-color 0.2s ease,
-            transform 0.2s ease,
-            box-shadow 0.2s ease;
-    }
-
-
-    .ui-card:hover {
-        border-color: #1687D9;
-
-        box-shadow:
-            0 0 22px rgba(22,135,217,0.07),
-            0 13px 30px rgba(0,0,0,0.20);
-
-        transform: translateY(-1px);
-    }
-
-
-    .card-label {
-        color: #94A3B8;
-
-        font-size: 10px;
-
-        font-weight: 800;
-
-        text-transform: uppercase;
-
-        letter-spacing: 1.3px;
-
-        margin-bottom: 6px;
-    }
-
-
-    .card-value {
-        color: #F1F5F9;
-
-        font-size: 18px;
-
-        font-weight: 750;
-    }
-
-
-    .card-small {
-        color: #CBD5E1;
-
-        font-size: 12px;
-
-        line-height: 1.5;
-
-        margin-top: 5px;
-    }
-
-
-    /* =====================================================
-       STATUS CARDS
-       ===================================================== */
-
-    .status-card {
-        background:
-            linear-gradient(
-                145deg,
-                #162235,
-                #142033
-            );
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 11px;
-
-        padding: 17px;
-
-        min-height: 112px;
-
-        box-shadow:
-            0 10px 25px rgba(0,0,0,0.16);
-
-        position: relative;
-
-        overflow: hidden;
-    }
-
-
-    .status-card:after {
-        content: "";
-
-        position: absolute;
-
-        width: 110px;
-
-        height: 110px;
-
-        right: -55px;
-
-        bottom: -55px;
-
-        border-radius: 50%;
-
-        background:
-            radial-gradient(
-                circle,
-                rgba(25,195,216,0.09),
-                transparent 70%
-            );
-    }
-
-
-    .status-title {
-        color: #94A3B8;
-
-        font-size: 10px;
-
-        font-weight: 800;
-
-        text-transform: uppercase;
-
-        letter-spacing: 1.2px;
-    }
-
-
-    .status-main {
-        color: #F1F5F9;
-
-        font-size: 16px;
-
-        font-weight: 750;
-
-        margin-top: 9px;
-
-        line-height: 1.35;
-    }
-
-
-    .status-sub {
-        color: #CBD5E1;
-
-        font-size: 11px;
-
-        margin-top: 5px;
-    }
-
-
-    /* =====================================================
-       WORKFLOW
-       ===================================================== */
-
-    .workflow-card {
-        background:
-            linear-gradient(
-                145deg,
-                #162235,
-                #142033
-            );
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 11px;
-
-        padding: 18px;
-
-        height: 100%;
-
-        min-height: 155px;
-
-        box-shadow:
-            0 9px 25px rgba(0,0,0,0.16);
-
-        position: relative;
-
-        overflow: hidden;
-
-        transition:
-            transform 0.2s ease,
-            border-color 0.2s ease,
-            box-shadow 0.2s ease;
-    }
-
-
-    .workflow-card:before {
-        content: "";
-
-        position: absolute;
-
-        left: 0;
-
-        top: 0;
-
-        width: 3px;
-
-        height: 100%;
-
-        background:
-            linear-gradient(
-                180deg,
-                #19C3D8,
-                #1687D9
-            );
-
-        box-shadow:
-            0 0 12px rgba(25,195,216,0.22);
-    }
-
-
-    .workflow-card:hover {
-        transform: translateY(-2px);
-
-        border-color: #1687D9;
-
-        box-shadow:
-            0 0 25px rgba(22,135,217,0.08),
-            0 14px 30px rgba(0,0,0,0.22);
-    }
-
-
-    .workflow-number {
-        color: #19C3D8;
-
-        font-size: 10px;
-
-        font-weight: 900;
-
-        letter-spacing: 1.3px;
-    }
-
-
-    .workflow-title {
-        color: #F1F5F9;
-
-        font-size: 14px;
-
-        font-weight: 750;
-
-        margin-top: 8px;
-    }
-
-
-    .workflow-description {
-        color: #CBD5E1;
-
-        font-size: 12px;
-
-        line-height: 1.6;
-
-        margin-top: 7px;
-    }
-
-
-    /* =====================================================
-       SYMPTOM BOX
-       ===================================================== */
-
-    .symptom-box {
-        background: rgba(25,195,216,0.055);
-
-        border: 1px solid rgba(25,195,216,0.22);
-
-        border-left: 3px solid #19C3D8;
-
-        border-radius: 9px;
-
-        padding: 13px 15px;
-
-        color: #CBD5E1;
-
-        margin-top: 10px;
-
-        line-height: 1.6;
-
-        font-size: 13px;
-
-        box-shadow:
-            0 0 20px rgba(25,195,216,0.04);
-    }
-
-
-    /* =====================================================
-       ENGINEERING QUESTIONS
-       ===================================================== */
-
-    .question-card {
-        background:
-            linear-gradient(
-                145deg,
-                #162235,
-                #142033
-            );
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 10px;
-
-        padding: 14px 15px;
-
-        margin-bottom: 10px;
-
-        box-shadow:
-            0 7px 20px rgba(0,0,0,0.14);
-
-        transition:
-            border-color 0.2s ease,
-            transform 0.2s ease,
-            box-shadow 0.2s ease;
-    }
-
-
-    .question-card:hover {
-        border-color: #1687D9;
-
-        transform: translateX(2px);
-
-        box-shadow:
-            0 0 18px rgba(22,135,217,0.06);
-    }
-
-
-    .question-number {
-        color: #19C3D8;
-
-        font-size: 9px;
-
-        font-weight: 900;
-
-        letter-spacing: 1px;
-
-        text-transform: uppercase;
-    }
-
-
-    .question-text {
-        color: #CBD5E1;
-
-        font-size: 12px;
-
-        line-height: 1.5;
-
-        margin-top: 5px;
-    }
-
-
-    /* =====================================================
-       REPORT
-       ===================================================== */
-
-    .report-box {
-        background: #162235;
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 11px;
-
-        padding: 24px;
-
-        color: #CBD5E1;
-
-        line-height: 1.75;
-
-        box-shadow:
-            0 13px 32px rgba(0,0,0,0.17);
-    }
-
-
-    /* =====================================================
-       MARKDOWN REPORT CONTENT
-       ===================================================== */
-
-    [data-testid="stMarkdownContainer"] table {
-        width: 100%;
-
-        border-collapse: collapse;
-
-        background: #162235;
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 8px;
-
-        overflow: hidden;
-    }
-
-
-    [data-testid="stMarkdownContainer"] th {
-        background: #111A2B !important;
-
-        color: #F1F5F9 !important;
-
-        border: 1px solid #2A3A52 !important;
-
-        padding: 9px !important;
-    }
-
-
-    [data-testid="stMarkdownContainer"] td {
-        background: #162235 !important;
-
-        color: #CBD5E1 !important;
-
-        border: 1px solid #2A3A52 !important;
-
-        padding: 9px !important;
-    }
-
-
-    /* =====================================================
-       BUTTONS
-       ===================================================== */
-
-    .stButton > button {
-        border-radius: 8px !important;
-
-        border: 1px solid #1687D9 !important;
-
-        background: #1687D9 !important;
-
-        color: #FFFFFF !important;
-
-        font-weight: 750 !important;
-
-        min-height: 44px;
-
-        transition:
-            transform 0.15s ease,
-            border-color 0.15s ease,
-            box-shadow 0.15s ease,
-            background 0.15s ease;
-    }
-
-
-    .stButton > button:hover {
-        border-color: #19C3D8 !important;
-
-        background: #1687D9 !important;
-
-        box-shadow:
-            0 0 20px rgba(25,195,216,0.15),
-            0 7px 20px rgba(0,0,0,0.18);
-
-        transform: translateY(-1px);
-    }
-
-
-    /* =====================================================
-       INPUTS
-       ===================================================== */
-
-    div[data-baseweb="select"] > div {
-        background-color: #162235 !important;
-
-        border: 1px solid #2A3A52 !important;
-
-        border-radius: 8px !important;
-
-        color: #F1F5F9 !important;
-
-        transition:
-            border-color 0.2s ease,
-            box-shadow 0.2s ease;
-    }
-
-
-    div[data-baseweb="select"] > div:hover {
-        border-color: #1687D9 !important;
-
-        box-shadow:
-            0 0 13px rgba(22,135,217,0.08);
-    }
-
-
-    div[data-baseweb="select"] span {
-        color: #F1F5F9 !important;
-    }
-
-
-    textarea {
-        background-color: #162235 !important;
-
-        border: 1px solid #2A3A52 !important;
-
-        color: #F1F5F9 !important;
-
-        border-radius: 8px !important;
-    }
-
-
-    textarea::placeholder {
-        color: #94A3B8 !important;
-    }
-
-
-    textarea:focus {
-        border-color: #19C3D8 !important;
-
-        box-shadow:
-            0 0 0 1px rgba(25,195,216,0.22),
-            0 0 18px rgba(25,195,216,0.07) !important;
-    }
-
-
-    input {
-        background-color: #162235 !important;
-
-        color: #F1F5F9 !important;
-
-        border-color: #2A3A52 !important;
-    }
-
-
-    input::placeholder {
-        color: #94A3B8 !important;
-    }
-
-
-    label {
-        color: #CBD5E1 !important;
-
-        font-weight: 650 !important;
-    }
-
-
-    /* =====================================================
-       MULTISELECT
-       ===================================================== */
-
-    [data-baseweb="tag"] {
-        background: #1687D9 !important;
-
-        color: #FFFFFF !important;
-
-        border: 1px solid #19C3D8 !important;
-    }
-
-
-    /* =====================================================
-       CHECKBOX
-       ===================================================== */
-
-    [data-testid="stCheckbox"] label {
-        color: #CBD5E1 !important;
-
-        font-size: 13px !important;
-    }
-
-
-    /* =====================================================
-       EXPANDERS
-       ===================================================== */
-
-    [data-testid="stExpander"] {
-        background: #162235;
-
-        border: 1px solid #2A3A52;
-
-        border-radius: 9px;
-
-        color: #CBD5E1;
-    }
-
-
-    [data-testid="stExpander"] summary {
-        color: #F1F5F9 !important;
-    }
-
-
-    /* =====================================================
-       STATUS
-       ===================================================== */
-
-    [data-testid="stStatusWidget"] {
-        border-radius: 10px;
-
-        background: #162235;
-
-        border: 1px solid #2A3A52;
-
-        color: #CBD5E1;
-    }
-
-
-    /* =====================================================
-       PROGRESS BAR
-       ===================================================== */
-
-    [data-testid="stProgressBar"] > div {
-        background: #24344D !important;
-    }
-
-
-    [data-testid="stProgressBar"] > div > div {
-        background:
-            linear-gradient(
-                90deg,
-                #1687D9,
-                #19C3D8
-            ) !important;
-
-        box-shadow:
-            0 0 12px rgba(25,195,216,0.18);
-    }
-
-
-    /* =====================================================
-       DIVIDER
-       ===================================================== */
-
-    hr {
-        border-color: #24344D !important;
-
-        margin-top: 25px !important;
-
-        margin-bottom: 25px !important;
-    }
-
-
-    /* =====================================================
-       DOWNLOAD BUTTON
-       ===================================================== */
-
-    [data-testid="stDownloadButton"] button {
-        border-radius: 9px !important;
-
-        background:
-            linear-gradient(
-                90deg,
-                #1687D9,
-                #19C3D8
-            ) !important;
-
-        border: 1px solid #19C3D8 !important;
-
-        color: #FFFFFF !important;
-
-        font-weight: 800 !important;
-
-        min-height: 46px;
-
-        box-shadow:
-            0 0 20px rgba(25,195,216,0.10);
-    }
-
-
-    [data-testid="stDownloadButton"] button:hover {
-        box-shadow:
-            0 0 27px rgba(25,195,216,0.18),
-            0 8px 20px rgba(0,0,0,0.18);
-    }
-
-
-    /* =====================================================
-       ALERTS
-       ===================================================== */
-
-    [data-testid="stAlert"] {
-        border-radius: 9px;
-    }
-
-
-    /* =====================================================
-       CAPTION
-       ===================================================== */
-
-    [data-testid="stCaptionContainer"] {
-        color: #94A3B8 !important;
-    }
-
-
-    /* =====================================================
-       SCROLLBAR
-       ===================================================== */
-
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-
-
-    ::-webkit-scrollbar-track {
-        background: #0B1220;
-    }
-
-
-    ::-webkit-scrollbar-thumb {
-        background: #2A3A52;
-
-        border-radius: 10px;
-    }
-
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #1687D9;
-    }
-
-
-    /* =====================================================
-       RESPONSIVE
-       ===================================================== */
-
-    @media (max-width: 1100px) {
-
-        .block-container {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-
-        .top-title {
-            font-size: 22px;
-        }
-
-        .hero h1 {
-            font-size: 32px;
-        }
-
-    }
-
-
-    @media (max-width: 700px) {
-
-        .block-container {
-            padding-left: 0.7rem;
-            padding-right: 0.7rem;
-
-            padding-top: 0.8rem;
-        }
-
-        .hero {
-            padding: 21px;
-        }
-
-        .hero h1 {
-            font-size: 28px;
-        }
-
-        .hero h3 {
-            font-size: 14px;
-        }
-
-        .top-header {
-            padding: 16px;
-        }
-
-        .top-title {
-            font-size: 20px;
-        }
-
-        .top-actions {
-            display: none;
-        }
-
-        .online-badge {
-            display: none;
-        }
-
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+</style>
+""", unsafe_allow_html=True)
 
 
 # =========================================================
@@ -2688,11 +2193,9 @@ with st.sidebar:
         """
     )
 
-
     st.html(
         '<div class="sidebar-section">Navigation</div>'
     )
-
 
     navigation = st.radio(
         "Navigation",
@@ -2705,11 +2208,9 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
-
     st.html(
         '<div class="sidebar-section">Machine Category</div>'
     )
-
 
     machine_category_filter = st.selectbox(
         "Machine Category",
@@ -2727,34 +2228,28 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
-
     st.html(
         '<div class="sidebar-section">Quick System Links</div>'
     )
-
 
     st.button(
         "📋  Active Machine Profiles",
         use_container_width=True
     )
 
-
     st.button(
         "🛠️  Maintenance Logs",
         use_container_width=True
     )
-
 
     st.button(
         "📄  Generated Reports",
         use_container_width=True
     )
 
-
     st.html(
         '<div class="sidebar-section">Current Machine</div>'
     )
-
 
     st.html(
         """
@@ -2776,9 +2271,7 @@ with st.sidebar:
         """
     )
 
-
     st.markdown("")
-
 
     st.caption("MechCare AI v1.0")
 
@@ -2808,7 +2301,6 @@ st.html(
             </div>
 
         </div>
-
 
         <div class="top-actions">
 
@@ -2922,7 +2414,6 @@ with right_column:
         '<div class="section-description">System information and quick diagnostic context.</div>'
     )
 
-
     st.html(
         """
         <div class="ui-card">
@@ -2942,7 +2433,6 @@ with right_column:
         </div>
         """
     )
-
 
     st.html(
         """
@@ -2964,7 +2454,6 @@ with right_column:
         """
     )
 
-
     st.html(
         """
         <div class="ui-card">
@@ -2984,7 +2473,6 @@ with right_column:
         </div>
         """
     )
-
 
     st.html(
         """
@@ -3009,75 +2497,28 @@ with right_column:
         """
     )
 
-
-    # =====================================================
-    # ENGINEERING QUESTIONS
-    # =====================================================
-
     st.html(
         '<div class="section-title" style="margin-top:22px;">💡 Engineering Questions</div>'
     )
-
 
     st.html(
         '<div class="section-description">Useful questions to consider during machine inspection.</div>'
     )
 
-
     engineering_questions = [
 
-        (
-            "01",
-            "What changed before the problem started?"
-        ),
-
-        (
-            "02",
-            "Does the symptom increase with machine speed?"
-        ),
-
-        (
-            "03",
-            "Does the problem appear under heavy load?"
-        ),
-
-        (
-            "04",
-            "Is the machine temperature higher than normal?"
-        ),
-
-        (
-            "05",
-            "Has the machine recently been repaired or adjusted?"
-        ),
-
-        (
-            "06",
-            "Is the vibration coming from a specific component?"
-        ),
-
-        (
-            "07",
-            "When was the machine last lubricated?"
-        ),
-
-        (
-            "08",
-            "Are there any unusual sounds, smells or leaks?"
-        ),
-
-        (
-            "09",
-            "Has machine performance gradually decreased?"
-        ),
-
-        (
-            "10",
-            "Could operating conditions have changed?"
-        )
+        ("01", "What changed before the problem started?"),
+        ("02", "Does the symptom increase with machine speed?"),
+        ("03", "Does the problem appear under heavy load?"),
+        ("04", "Is the machine temperature higher than normal?"),
+        ("05", "Has the machine recently been repaired or adjusted?"),
+        ("06", "Is the vibration coming from a specific component?"),
+        ("07", "When was the machine last lubricated?"),
+        ("08", "Are there any unusual sounds, smells or leaks?"),
+        ("09", "Has machine performance gradually decreased?"),
+        ("10", "Could operating conditions have changed?")
 
     ]
-
 
     for number, question in engineering_questions:
 
@@ -3104,19 +2545,13 @@ with right_column:
 
 with main_column:
 
-    # =====================================================
-    # WORKFLOW
-    # =====================================================
-
     st.html(
         '<div class="section-title">🤖 Multi-Agent Engineering Workflow</div>'
     )
 
-
     st.html(
         '<div class="section-description">Your machine problem is processed through four specialized engineering agents.</div>'
     )
-
 
     workflow = [
 
@@ -3146,12 +2581,10 @@ with main_column:
 
     ]
 
-
     workflow_columns = st.columns(
         4,
         gap="small"
     )
-
 
     for column, agent in zip(
         workflow_columns,
@@ -3159,7 +2592,6 @@ with main_column:
     ):
 
         number, title, description = agent
-
 
         with column:
 
@@ -3183,23 +2615,15 @@ with main_column:
                 """
             )
 
-
     st.divider()
-
-
-    # =====================================================
-    # MACHINE PROFILE
-    # =====================================================
 
     st.html(
         '<div class="section-title">🏭 Machine Profile</div>'
     )
 
-
     st.html(
         '<div class="section-description">Provide the machine context used by the AI diagnostic workflow.</div>'
     )
-
 
     MACHINE_MODELS = {
 
@@ -3260,13 +2684,7 @@ with main_column:
 
     }
 
-
-    # =====================================================
-    # MACHINE INFORMATION
-    # =====================================================
-
     col1, col2, col3 = st.columns(3)
-
 
     with col1:
 
@@ -3283,7 +2701,6 @@ with main_column:
                 "Other"
             ]
         )
-
 
     with col2:
 
@@ -3302,7 +2719,6 @@ with main_column:
             ]
         )
 
-
     with col3:
 
         manufacturer = st.selectbox(
@@ -3320,9 +2736,7 @@ with main_column:
             ]
         )
 
-
     col4, col5, col6 = st.columns(3)
-
 
     with col4:
 
@@ -3330,7 +2744,6 @@ with main_column:
             "🔧 Model",
             MACHINE_MODELS[machine_type]
         )
-
 
     with col5:
 
@@ -3345,7 +2758,6 @@ with main_column:
                 "Unknown"
             ]
         )
-
 
     with col6:
 
@@ -3362,9 +2774,7 @@ with main_column:
             ]
         )
 
-
     col7, col8, col9 = st.columns(3)
-
 
     with col7:
 
@@ -3381,7 +2791,6 @@ with main_column:
             ]
         )
 
-
     with col8:
 
         load_condition = st.selectbox(
@@ -3395,7 +2804,6 @@ with main_column:
                 "Variable Load"
             ]
         )
-
 
     with col9:
 
@@ -3411,23 +2819,15 @@ with main_column:
             ]
         )
 
-
     st.divider()
-
-
-    # =====================================================
-    # SYMPTOMS
-    # =====================================================
 
     st.html(
         '<div class="section-title">🔍 Observed Symptoms</div>'
     )
 
-
     st.html(
         '<div class="section-description">Select all symptoms currently observed in the machine.</div>'
     )
-
 
     symptom_options = [
 
@@ -3446,13 +2846,11 @@ with main_column:
 
     ]
 
-
     selected_symptoms = st.multiselect(
         "Select observed symptoms",
         symptom_options,
         placeholder="Choose one or more symptoms..."
     )
-
 
     if selected_symptoms:
 
@@ -3462,23 +2860,15 @@ with main_column:
             + "</div>"
         )
 
-
     st.divider()
-
-
-    # =====================================================
-    # PROBLEM INFORMATION
-    # =====================================================
 
     st.html(
         '<div class="section-title">🚨 Problem Information</div>'
     )
 
-
     st.html(
         '<div class="section-description">Describe what is happening. More useful information gives the AI better engineering context.</div>'
     )
-
 
     problem_description = st.text_area(
         "Problem Description",
@@ -3489,7 +2879,6 @@ with main_column:
         height=130
     )
 
-
     operating_condition = st.text_area(
         "Operating Condition",
         placeholder=(
@@ -3498,7 +2887,6 @@ with main_column:
         ),
         height=110
     )
-
 
     additional_observations = st.text_area(
         "Additional Observations",
@@ -3509,23 +2897,12 @@ with main_column:
         height=110
     )
 
-
-    # =====================================================
-    # ANALYZE BUTTON
-    # =====================================================
-
     st.write("")
-
 
     analyze_button = st.button(
         "🔍 Analyze Machine Problem",
         use_container_width=True
     )
-
-
-    # =====================================================
-    # RUN AI ANALYSIS
-    # =====================================================
 
     if analyze_button:
 
@@ -3549,11 +2926,6 @@ with main_column:
                 else "No specific symptoms selected"
 
             )
-
-
-            # -------------------------------------------------
-            # CREATE MACHINE INFORMATION FOR THE AI
-            # -------------------------------------------------
 
             machine_problem = f"""
 
@@ -3603,11 +2975,6 @@ Additional Observations:
 
 """
 
-
-            # -------------------------------------------------
-            # RUN FOUR AGENTS
-            # -------------------------------------------------
-
             with st.status(
                 "⚙️ MechCare AI is analyzing your machine...",
                 expanded=True
@@ -3631,11 +2998,9 @@ Additional Observations:
                         "🛡️ Safety & Final Report Agent — preparing final report..."
                     )
 
-
                     result = asyncio.run(
                         run_mechcare(machine_problem)
                     )
-
 
                     analysis_status.update(
                         label="✅ Analysis Complete",
@@ -3643,16 +3008,12 @@ Additional Observations:
                         expanded=False
                     )
 
-
                     st.session_state.analysis_result = result
-
                     st.session_state.agents_completed = True
-
 
                     st.success(
                         "✅ Machine analysis completed successfully."
                     )
-
 
                 except Exception as e:
 
@@ -3662,21 +3023,17 @@ Additional Observations:
                         expanded=True
                     )
 
-
                     st.error(
                         "❌ An error occurred while analyzing the machine."
                     )
-
 
                     st.warning(
                         "Please check your Groq API key and Streamlit deployment logs."
                     )
 
-
                     st.code(
                         str(e)
                     )
-
 
     # =====================================================
     # DISPLAY AI ANALYSIS
@@ -3686,62 +3043,38 @@ Additional Observations:
 
         result = st.session_state.analysis_result
 
-
-        # -------------------------------------------------
-        # GET RESULTS
-        # -------------------------------------------------
-
         problem_analysis = result["problem_analysis"]
-
         diagnosis_result = result["diagnosis"]
-
         final_report = result["final_report"]
 
-
-        # =================================================
-        # HEALTH DASHBOARD
-        # =================================================
-
         st.divider()
-
 
         st.html(
             '<div class="section-title">📊 Machine Health Dashboard</div>'
         )
 
-
         st.html(
             '<div class="section-description">AI-generated health and maintenance overview based on the current engineering analysis.</div>'
         )
 
-
         report_text = final_report
 
-
-        # -------------------------------------------------
-        # EXTRACT PRIORITY
-        # -------------------------------------------------
-
         priority = "Not specified"
-
 
         priority_match = re.search(
             r"(?im)^\s*##\s*Priority\s*$([\s\S]*?)(?=^\s*##\s+|\Z)",
             report_text
         )
 
-
         if priority_match:
 
             priority_section = priority_match.group(1).strip()
-
 
             severity_match = re.search(
                 r"\b(Critical|Urgent|High|Medium|Moderate|Low)\b",
                 priority_section,
                 re.IGNORECASE
             )
-
 
             if severity_match:
 
@@ -3751,13 +3084,7 @@ Additional Observations:
                     .capitalize()
                 )
 
-
-        # -------------------------------------------------
-        # DETERMINE HEALTH STATUS
-        # -------------------------------------------------
-
         priority_lower = priority.lower()
-
 
         if (
             "critical" in priority_lower
@@ -3765,16 +3092,12 @@ Additional Observations:
         ):
 
             health_status = "🔴 Critical"
-
             maintenance_status = "Immediate Inspection"
-
 
         elif "high" in priority_lower:
 
             health_status = "🟠 Attention Required"
-
             maintenance_status = "Inspection Recommended"
-
 
         elif (
             "medium" in priority_lower
@@ -3782,26 +3105,17 @@ Additional Observations:
         ):
 
             health_status = "🟡 Monitor"
-
             maintenance_status = "Further Inspection"
-
 
         else:
 
             health_status = "🟢 Review Required"
-
             maintenance_status = "Follow Recommended Checks"
-
-
-        # -------------------------------------------------
-        # DASHBOARD CARDS
-        # -------------------------------------------------
 
         dash1, dash2, dash3, dash4 = st.columns(
             4,
             gap="small"
         )
-
 
         with dash1:
 
@@ -3809,15 +3123,15 @@ Additional Observations:
                 f"""
                 <div class="status-card">
 
-                    <div class="status-title">
+                    <div class="status-label">
                         MACHINE
                     </div>
 
-                    <div class="status-main">
+                    <div class="status-value">
                         🏭 {machine_type}
                     </div>
 
-                    <div class="status-sub">
+                    <div style="color:#809AB3;font-size:11px;margin-top:5px;">
                         {machine_id}
                     </div>
 
@@ -3825,22 +3139,21 @@ Additional Observations:
                 """
             )
 
-
         with dash2:
 
             st.html(
                 f"""
                 <div class="status-card">
 
-                    <div class="status-title">
+                    <div class="status-label">
                         HEALTH STATUS
                     </div>
 
-                    <div class="status-main">
+                    <div class="status-value">
                         {health_status}
                     </div>
 
-                    <div class="status-sub">
+                    <div style="color:#809AB3;font-size:11px;margin-top:5px;">
                         AI assessment
                     </div>
 
@@ -3848,22 +3161,21 @@ Additional Observations:
                 """
             )
 
-
         with dash3:
 
             st.html(
                 f"""
                 <div class="status-card">
 
-                    <div class="status-title">
+                    <div class="status-label">
                         PRIORITY
                     </div>
 
-                    <div class="status-main">
+                    <div class="status-value">
                         ⚠️ {priority}
                     </div>
 
-                    <div class="status-sub">
+                    <div style="color:#809AB3;font-size:11px;margin-top:5px;">
                         Primary AI priority
                     </div>
 
@@ -3871,22 +3183,21 @@ Additional Observations:
                 """
             )
 
-
         with dash4:
 
             st.html(
                 f"""
                 <div class="status-card">
 
-                    <div class="status-title">
+                    <div class="status-label">
                         MAINTENANCE
                     </div>
 
-                    <div class="status-main">
+                    <div class="status-value">
                         🔧 {maintenance_status}
                     </div>
 
-                    <div class="status-sub">
+                    <div style="color:#809AB3;font-size:11px;margin-top:5px;">
                         Recommended action
                     </div>
 
@@ -3894,13 +3205,7 @@ Additional Observations:
                 """
             )
 
-
         st.markdown("")
-
-
-        # =================================================
-        # ACTIVE MACHINE CARD
-        # =================================================
 
         st.html(
             f"""
@@ -3928,58 +3233,37 @@ Additional Observations:
             """
         )
 
-
-        # =================================================
-        # ADDITIONAL DATA RECOMMENDED
-        # =================================================
-
         st.html(
             '<div class="section-title">📈 Additional Data Recommended</div>'
         )
-
 
         st.html(
             '<div class="section-description">Collecting these measurements or observations can help confirm the possible machine fault.</div>'
         )
 
-
         st.markdown(
             problem_analysis
         )
-
-
-        # =================================================
-        # SMART DIAGNOSIS
-        # =================================================
 
         st.html(
             '<div class="section-title" style="margin-top:25px;">🧠 Possible Faults & Diagnostic Checks</div>'
         )
 
-
         st.html(
             '<div class="section-description">Possible causes, their relationship with the symptoms, and suggested confirmation checks.</div>'
         )
-
 
         st.markdown(
             diagnosis_result
         )
 
-
-        # =================================================
-        # MAINTENANCE CHECKLIST
-        # =================================================
-
         st.html(
             '<div class="section-title" style="margin-top:25px;">🔧 Maintenance Checklist</div>'
         )
 
-
         st.html(
             '<div class="section-description">Tick each inspection when it has been completed.</div>'
         )
-
 
         completed_count = sum(
             1
@@ -3987,25 +3271,20 @@ Additional Observations:
             if st.session_state[item]
         )
 
-
         progress_value = (
             completed_count /
             len(checklist_items)
         )
 
-
         st.progress(
             progress_value,
-
             text=(
                 f"{completed_count} of "
                 f"{len(checklist_items)} checks completed"
             )
         )
 
-
         check1, check2 = st.columns(2)
-
 
         with check1:
 
@@ -4029,7 +3308,6 @@ Additional Observations:
                 key="Check for leakage"
             )
 
-
         with check2:
 
             st.checkbox(
@@ -4052,42 +3330,25 @@ Additional Observations:
                 key="Check operating conditions"
             )
 
-
-        # =================================================
-        # FINAL REPORT
-        # =================================================
-
         st.html(
             '<div class="section-title" style="margin-top:25px;">📋 Engineering Analysis Report</div>'
         )
-
 
         st.html(
             '<div class="section-description">Generated by the MechCare AI multi-agent engineering workflow.</div>'
         )
 
-
         st.markdown(
             final_report
         )
-
-
-        # =================================================
-        # VOICE READER
-        # =================================================
 
         st.html(
             '<div class="section-title" style="margin-top:25px;">🔊 Listen to AI Results</div>'
         )
 
-
         st.html(
             '<div class="section-description">Listen to the complete AI analysis, diagnosis, and final engineering report.</div>'
         )
-
-
-        # Combine all AI-generated results
-        # so the voice reads the complete output.
 
         complete_voice_text = f"""
 MechCare AI Engineering Analysis.
@@ -4105,25 +3366,17 @@ Final Engineering Analysis Report.
 {final_report}
 """
 
-
         speak_text(
             complete_voice_text
         )
-
-
-        # =================================================
-        # PDF REPORT DOWNLOAD
-        # =================================================
 
         st.html(
             '<div class="section-title" style="margin-top:25px;">📄 Engineering Report Export</div>'
         )
 
-
         st.html(
             '<div class="section-description">Generate and download the final engineering report as a PDF.</div>'
         )
-
 
         st.html(
             """
@@ -4146,9 +3399,7 @@ Final Engineering Analysis Report.
             """
         )
 
-
         pdf_filename = "MechCare_AI_Report.pdf"
-
 
         create_pdf_report(
             pdf_filename,
@@ -4157,7 +3408,6 @@ Final Engineering Analysis Report.
             manufacturer,
             final_report
         )
-
 
         with open(
             pdf_filename,
@@ -4179,16 +3429,13 @@ Final Engineering Analysis Report.
 
 st.divider()
 
-
 footer_col1, footer_col2 = st.columns(2)
-
 
 with footer_col1:
 
     st.caption(
         "⚙️ MechCare AI | AI-Based Mechanical Maintenance & Troubleshooting Assistant"
     )
-
 
 with footer_col2:
 
