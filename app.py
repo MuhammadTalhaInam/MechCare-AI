@@ -1,23 +1,11 @@
 import streamlit as st
 import asyncio
 import json
-import re
 import streamlit.components.v1 as components
+
 
 from crew import run_mechcare
 from pdf_report import create_pdf_report
-
-
-# =========================================================
-# PAGE CONFIG
-# =========================================================
-
-st.set_page_config(
-    page_title="MechCare AI",
-    page_icon="⚙️",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 
 # =========================================================
@@ -29,27 +17,30 @@ def speak_text(text):
     # Convert the report into safe JavaScript text
     report_json = json.dumps(str(text))
 
-    components.html(
-        f"""
+    # IMPORTANT:
+    # This HTML is intentionally NOT an f-string.
+    # This prevents JavaScript { } braces from causing
+    # Python f-string syntax errors.
+    voice_html = r"""
         <div style="
-            background:#ffffff;
-            border:1px solid #d9e2ef;
+            background:#0d1021;
+            border:1px solid #34345f;
             border-radius:18px;
             padding:20px;
-            color:#172033;
+            color:#e5e7eb;
             font-family:Arial, sans-serif;
-            box-shadow:0 8px 30px rgba(37,99,235,0.08);
+            box-shadow:0 0 25px rgba(124,58,237,0.10);
         ">
 
             <h3 style="
                 margin-top:0;
-                color:#172033;
+                color:#f8fafc;
             ">
                 🔊 Listen to MechCare AI Results
             </h3>
 
             <p style="
-                color:#4b5563;
+                color:#cbd5e1;
                 margin-bottom:15px;
             ">
                 Listen to the complete AI analysis and change the
@@ -71,9 +62,6 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
-                        background:#4f46e5;
-                        color:white;
-                        font-weight:700;
                     "
                 >
                     ▶️ Play
@@ -87,9 +75,6 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
-                        background:#2563eb;
-                        color:white;
-                        font-weight:700;
                     "
                 >
                     ⏸️ Pause
@@ -103,18 +88,14 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
-                        background:#dc2626;
-                        color:white;
-                        font-weight:700;
                     "
                 >
                     ⏹️ Stop
                 </button>
 
                 <label style="
-                    color:#374151;
+                    color:#e2e8f0;
                     font-size:14px;
-                    font-weight:700;
                 ">
                     Speed:
                 </label>
@@ -125,11 +106,10 @@ def speak_text(text):
                     style="
                         padding:8px 12px;
                         border-radius:7px;
-                        border:1px solid #cbd5e1;
-                        background:#ffffff;
-                        color:#172033;
+                        border:1px solid #475569;
+                        background:#17172f;
+                        color:#f8fafc;
                         font-size:14px;
-                        font-weight:600;
                     "
                 >
                     <option value="0.25">0.25×</option>
@@ -148,9 +128,9 @@ def speak_text(text):
                 id="voiceStatus"
                 style="
                     margin-top:15px;
-                    color:#2563eb;
+                    color:#67e8f9;
                     font-size:14px;
-                    font-weight:700;
+                    font-weight:600;
                 "
             >
                 Ready to play
@@ -161,7 +141,7 @@ def speak_text(text):
 
         <script>
 
-        const rawReportText = {report_json};
+        const rawReportText = __REPORT_JSON__;
 
 
         // -------------------------------------------------
@@ -170,25 +150,25 @@ def speak_text(text):
 
         const reportText = rawReportText
 
-            .replace(/^#+\\s*/gm, "")
+            .replace(/^#+\s*/gm, "")
 
-            .replace(/\\*\\*(.*?)\\*\\*/g, "$1")
+            .replace(/\*\*(.*?)\*\*/g, "$1")
 
-            .replace(/\\*(.*?)\\*/g, "$1")
+            .replace(/\*(.*?)\*/g, "$1")
 
             .replace(/`(.*?)`/g, "$1")
 
-            .replace(/^(---+|___+|\\*\\*\\*+)\\s*$/gm, "")
+            .replace(/^(---+|___+|\*\*\*+)\s*$/gm, "")
 
-            .replace(/^\\s*[-*+]\\s+/gm, "")
+            .replace(/^\s*[-*+]\s+/gm, "")
 
-            .replace(/^\\s*\\d+[.)]\\s+/gm, "")
+            .replace(/^\s*\d+[.)]\s+/gm, "")
 
-            .replace(/^\\s*[#*_]+\\s*/gm, "")
+            .replace(/^\s*[#*_]+\s*/gm, "")
 
-            .replace(/[ \\t]+/g, " ")
+            .replace(/[ \t]+/g, " ")
 
-            .replace(/\\n\\n+/g, "\\n\\n")
+            .replace(/\n\n+/g, "\n\n")
 
             .trim();
 
@@ -222,15 +202,15 @@ def speak_text(text):
         // SPLIT REPORT INTO SMALLER SPEECH CHUNKS
         // =================================================
 
-        function createSpeechChunks(text) {{
+        function createSpeechChunks(text) {
 
             const normalizedText =
-                text.replace(/\\s+/g, " ").trim();
+                text.replace(/\s+/g, " ").trim();
 
 
-            if (!normalizedText) {{
+            if (!normalizedText) {
                 return [];
-            }}
+            }
 
 
             const sentences =
@@ -244,47 +224,47 @@ def speak_text(text):
             let currentChunk = "";
 
 
-            sentences.forEach(function(sentence) {{
+            sentences.forEach(function(sentence) {
 
                 const cleanSentence =
                     sentence.trim();
 
 
-                if (!cleanSentence) {{
+                if (!cleanSentence) {
                     return;
-                }}
+                }
 
 
                 if (
                     (currentChunk + " " + cleanSentence).length
                     <= 450
-                ) {{
+                ) {
 
                     currentChunk =
                         currentChunk
                             ? currentChunk + " " + cleanSentence
                             : cleanSentence;
 
-                }} else {{
+                } else {
 
-                    if (currentChunk) {{
+                    if (currentChunk) {
                         chunks.push(currentChunk);
-                    }}
+                    }
 
                     currentChunk = cleanSentence;
 
-                }}
+                }
 
-            }});
+            });
 
 
-            if (currentChunk) {{
+            if (currentChunk) {
                 chunks.push(currentChunk);
-            }}
+            }
 
 
             return chunks;
-        }}
+        }
 
 
         const speechChunks =
@@ -295,114 +275,114 @@ def speak_text(text):
         // FIND MOBILE-COMPATIBLE VOICE
         // =================================================
 
-        function loadAvailableVoice() {{
+        function loadAvailableVoice() {
 
-            if (!("speechSynthesis" in window)) {{
+            if (!("speechSynthesis" in window)) {
                 return;
-            }}
+            }
 
 
             const voices =
                 window.speechSynthesis.getVoices();
 
 
-            if (!voices || voices.length === 0) {{
+            if (!voices || voices.length === 0) {
                 return;
-            }}
+            }
 
 
             availableVoice =
-                voices.find(function(voice) {{
+                voices.find(function(voice) {
 
                     return voice.lang === "en-US";
 
-                }});
+                });
 
 
-            if (!availableVoice) {{
+            if (!availableVoice) {
 
                 availableVoice =
-                    voices.find(function(voice) {{
+                    voices.find(function(voice) {
 
                         return voice.lang === "en-GB";
 
-                    }});
+                    });
 
-            }}
+            }
 
 
-            if (!availableVoice) {{
+            if (!availableVoice) {
 
                 availableVoice =
-                    voices.find(function(voice) {{
+                    voices.find(function(voice) {
 
                         return voice.lang &&
                             voice.lang.toLowerCase().startsWith("en");
 
-                    }});
+                    });
 
-            }}
+            }
 
 
-            if (!availableVoice && voices.length > 0) {{
+            if (!availableVoice && voices.length > 0) {
 
                 availableVoice = voices[0];
 
-            }}
+            }
 
-        }}
+        }
 
 
-        if ("speechSynthesis" in window) {{
+        if ("speechSynthesis" in window) {
 
             loadAvailableVoice();
 
             window.speechSynthesis.onvoiceschanged =
-                function() {{
+                function() {
 
                     loadAvailableVoice();
 
-                }};
+                };
 
-        }}
+        }
 
 
         // =================================================
         // UPDATE STATUS
         // =================================================
 
-        function updateStatus(message) {{
+        function updateStatus(message) {
 
             const status =
                 document.getElementById("voiceStatus");
 
 
-            if (status) {{
+            if (status) {
 
                 status.innerText = message;
 
-            }}
+            }
 
-        }}
+        }
 
 
         // =================================================
         // CREATE AND START CURRENT CHUNK
         // =================================================
 
-        function speakCurrentChunk(startPosition) {{
+        function speakCurrentChunk(startPosition) {
 
-            if (!("speechSynthesis" in window)) {{
+            if (!("speechSynthesis" in window)) {
 
                 updateStatus(
                     "❌ Text-to-speech is not supported by this browser."
                 );
 
                 return;
-            }}
+            }
 
 
-            if (currentChunkIndex >= speechChunks.length) {{
+            if (currentChunkIndex >= speechChunks.length) {
 
                 currentChunkIndex = 0;
 
@@ -421,15 +401,14 @@ def speak_text(text):
                 updateStatus("✅ Finished");
 
                 return;
-
-            }}
+            }
 
 
             const chunk =
                 speechChunks[currentChunkIndex];
 
 
-            if (!chunk) {{
+            if (!chunk) {
 
                 currentChunkIndex++;
 
@@ -441,7 +420,7 @@ def speak_text(text):
 
                 return;
 
-            }}
+            }
 
 
             let position =
@@ -450,12 +429,12 @@ def speak_text(text):
                     : currentChunkPosition;
 
 
-            if (position < 0) {{
+            if (position < 0) {
                 position = 0;
-            }}
+            }
 
 
-            if (position >= chunk.length) {{
+            if (position >= chunk.length) {
 
                 currentChunkIndex++;
 
@@ -467,14 +446,14 @@ def speak_text(text):
 
                 return;
 
-            }}
+            }
 
 
             const remainingText =
                 chunk.substring(position);
 
 
-            if (!remainingText.trim()) {{
+            if (!remainingText.trim()) {
 
                 currentChunkIndex++;
 
@@ -486,7 +465,7 @@ def speak_text(text):
 
                 return;
 
-            }}
+            }
 
 
             currentChunkPosition = position;
@@ -516,38 +495,38 @@ def speak_text(text):
                 1;
 
 
-            if (availableVoice) {{
+            if (availableVoice) {
 
                 speech.voice =
                     availableVoice;
 
-            }}
+            }
 
 
             if (
                 availableVoice &&
                 availableVoice.lang
-            ) {{
+            ) {
 
                 speech.lang =
                     availableVoice.lang;
 
-            }} else {{
+            } else {
 
                 speech.lang =
                     "en-US";
 
-            }}
+            }
 
 
             isStopped = false;
 
 
-            speech.onstart = function(){{
+            speech.onstart = function(){
 
-                if (thisSession !== speechSession) {{
+                if (thisSession !== speechSession) {
                     return;
-                }}
+                }
 
 
                 isPaused = false;
@@ -559,73 +538,73 @@ def speak_text(text):
                     "×..."
                 );
 
-            }};
+            };
 
 
-            speech.onboundary = function(event) {{
+            speech.onboundary = function(event) {
 
-                if (thisSession !== speechSession) {{
+                if (thisSession !== speechSession) {
                     return;
-                }}
+                }
 
 
                 if (
                     typeof event.charIndex === "number"
-                ) {{
+                ) {
 
                     currentChunkPosition =
                         speechStartPosition +
                         event.charIndex;
 
-                }}
+                }
 
-            }};
+            };
 
 
-            speech.onpause = function(event) {{
+            speech.onpause = function(event) {
 
-                if (thisSession !== speechSession) {{
+                if (thisSession !== speechSession) {
                     return;
-                }}
+                }
 
 
                 if (
                     event &&
                     typeof event.charIndex === "number"
-                ) {{
+                ) {
 
                     currentChunkPosition =
                         speechStartPosition +
                         event.charIndex;
 
-                }}
+                }
 
 
                 isPaused = true;
 
 
-                if (isChangingSpeed) {{
+                if (isChangingSpeed) {
 
                     updateStatus(
                         "🔄 Changing speed..."
                     );
 
-                }} else {{
+                } else {
 
                     updateStatus(
                         "⏸️ Paused — press Play to continue"
                     );
 
-                }}
+                }
 
-            }};
+            };
 
 
-            speech.onresume = function() {{
+            speech.onresume = function() {
 
-                if (thisSession !== speechSession) {{
+                if (thisSession !== speechSession) {
                     return;
-                }}
+                }
 
 
                 isPaused = false;
@@ -637,27 +616,27 @@ def speak_text(text):
                     "×..."
                 );
 
-            }};
+            };
 
 
-            speech.onend = function() {{
+            speech.onend = function() {
 
-                if (thisSession !== speechSession) {{
+                if (thisSession !== speechSession) {
                     return;
-                }}
+                }
 
 
                 speech = null;
 
 
-                if (isPaused) {{
+                if (isPaused) {
                     return;
-                }}
+                }
 
 
-                if (isChangingSpeed) {{
+                if (isChangingSpeed) {
                     return;
-                }}
+                }
 
 
                 currentChunkIndex++;
@@ -667,43 +646,43 @@ def speak_text(text):
                 speechStartPosition = 0;
 
 
-                if (isStopped) {{
+                if (isStopped) {
                     return;
-                }}
+                }
 
 
-                setTimeout(function() {{
+                setTimeout(function() {
 
                     if (
                         thisSession !== speechSession ||
                         isStopped ||
                         isPaused ||
                         isChangingSpeed
-                    ) {{
+                    ) {
                         return;
-                    }}
+                    }
 
 
                     speakCurrentChunk(0);
 
-                }}, 40);
+                }, 40);
 
-            }};
+            };
 
 
-            speech.onerror = function(event) {{
+            speech.onerror = function(event) {
 
-                if (thisSession !== speechSession) {{
+                if (thisSession !== speechSession) {
                     return;
-                }}
+                }
 
 
                 if (
                     event.error === "canceled" ||
                     event.error === "interrupted"
-                ) {{
+                ) {
                     return;
-                }}
+                }
 
 
                 speech = null;
@@ -713,7 +692,7 @@ def speak_text(text):
                     "❌ Voice playback error. Please press Play again."
                 );
 
-            }};
+            };
 
 
             window.speechSynthesis.speak(
@@ -727,22 +706,22 @@ def speak_text(text):
         // PLAY / RESUME
         // =================================================
 
-        function playSpeech() {{
+        function playSpeech() {
 
-            if (!("speechSynthesis" in window)) {{
+            if (!("speechSynthesis" in window)) {
 
                 updateStatus(
                     "❌ Text-to-speech is not supported by this browser."
                 );
 
                 return;
-            }}
+            }
 
 
             loadAvailableVoice();
 
 
-            if (isPaused) {{
+            if (isPaused) {
 
                 const savedChunk =
                     currentChunkIndex;
@@ -784,20 +763,20 @@ def speak_text(text):
                 );
 
 
-                setTimeout(function() {{
+                setTimeout(function() {
 
                     if (
                         !isStopped &&
                         !isPaused
-                    ) {{
+                    ) {
 
                         speakCurrentChunk(
                             savedPosition
                         );
 
-                    }}
+                    }
 
-                }}, 200);
+                }, 200);
 
 
                 return;
@@ -808,7 +787,7 @@ def speak_text(text):
             if (
                 speech &&
                 window.speechSynthesis.speaking
-            ) {{
+            ) {
 
                 return;
 
@@ -818,7 +797,7 @@ def speak_text(text):
             if (
                 currentChunkIndex >=
                 speechChunks.length
-            ) {{
+            ) {
 
                 currentChunkIndex = 0;
 
@@ -826,7 +805,7 @@ def speak_text(text):
 
                 speechStartPosition = 0;
 
-            }}
+            }
 
 
             isStopped = false;
@@ -839,17 +818,17 @@ def speak_text(text):
             window.speechSynthesis.cancel();
 
 
-            setTimeout(function() {{
+            setTimeout(function() {
 
-                if (!isStopped) {{
+                if (!isStopped) {
 
                     speakCurrentChunk(
                         currentChunkPosition
                     );
 
-                }}
+                }
 
-            }}, 150);
+            }, 150);
 
         }
 
@@ -858,22 +837,22 @@ def speak_text(text):
         // PAUSE
         // =================================================
 
-        function pauseSpeech() {{
+        function pauseSpeech() {
 
             if (
                 !("speechSynthesis" in window)
-            ) {{
+            ) {
                 return;
-            }}
+            }
 
 
             if (
                 !speech ||
                 isPaused ||
                 isStopped
-            ) {{
+            ) {
                 return;
-            }}
+            }
 
 
             const savedPosition =
@@ -897,28 +876,28 @@ def speak_text(text):
             window.speechSynthesis.pause();
 
 
-            setTimeout(function() {{
+            setTimeout(function() {
 
-                if (isPaused) {{
+                if (isPaused) {
 
                     updateStatus(
                         "⏸️ Paused — press Play to continue"
                     );
 
-                }}
+                }
 
-            }}, 250);
+            }, 250);
 
-        }}
+        }
 
 
         // =================================================
         // STOP
         // =================================================
 
-        function stopSpeech() {{
+        function stopSpeech() {
 
-            if ("speechSynthesis" in window) {{
+            if ("speechSynthesis" in window) {
 
                 speechSession++;
 
@@ -943,16 +922,16 @@ def speak_text(text):
                     "⏹️ Stopped — press Play to start again"
                 );
 
-            }}
+            }
 
-        }}
+        }
 
 
         // =================================================
         // CHANGE SPEED
         // =================================================
 
-        function changeSpeed() {{
+        function changeSpeed() {
 
             const selectedSpeed =
                 parseFloat(
@@ -960,25 +939,25 @@ def speak_text(text):
                 );
 
 
-            if (isNaN(selectedSpeed)) {{
+            if (isNaN(selectedSpeed)) {
                 return;
-            }}
+            }
 
 
             currentSpeed =
                 selectedSpeed;
 
 
-            if (!("speechSynthesis" in window)) {{
+            if (!("speechSynthesis" in window)) {
                 return;
-            }}
+            }
 
 
             if (
                 speech &&
                 window.speechSynthesis.speaking &&
                 !isPaused
-            ){{
+            ){
 
                 const savedChunk =
                     currentChunkIndex;
@@ -1003,11 +982,11 @@ def speak_text(text):
                 window.speechSynthesis.pause();
 
 
-                setTimeout(function() {{
+                setTimeout(function() {
 
-                    if (!isChangingSpeed) {{
+                    if (!isChangingSpeed) {
                         return;
-                    }}
+                    }
 
 
                     speechSession++;
@@ -1038,9 +1017,9 @@ def speak_text(text):
                     );
 
 
-                    setTimeout(function() {{
+                    setTimeout(function() {
 
-                        if (!isStopped) {{
+                        if (!isStopped) {
 
                             isChangingSpeed = false;
 
@@ -1049,12 +1028,12 @@ def speak_text(text):
                                 savedPosition
                             );
 
-                        }}
+                        }
 
-                    }}, 200);
+                    }, 200);
 
 
-                }}, 250);
+                }, 250);
 
 
                 return;
@@ -1062,7 +1041,7 @@ def speak_text(text):
             }
 
 
-            if (isPaused) {{
+            if (isPaused) {
 
                 updateStatus(
                     "⏸️ Paused — " +
@@ -1072,14 +1051,36 @@ def speak_text(text):
 
                 return;
 
-            }}
+            }
 
-        }}
+        }
 
         </script>
-        """,
+    """
+
+    # Safely insert the JSON after Python has finished
+    # interpreting the HTML/JavaScript.
+    voice_html = voice_html.replace(
+        "__REPORT_JSON__",
+        report_json
+    )
+
+    components.html(
+        voice_html,
         height=210
     )
+
+
+# =========================================================
+# PAGE CONFIG
+# =========================================================
+
+st.set_page_config(
+    page_title="MechCare AI",
+    page_icon="⚙️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 
 # =========================================================
@@ -1127,27 +1128,32 @@ st.markdown(
     <style>
 
     /* =====================================================
-       GLOBAL LIGHT INDUSTRIAL THEME
+       GLOBAL
        ===================================================== */
 
     .stApp {
         background:
             radial-gradient(
-                circle at 8% 4%,
-                rgba(79, 70, 229, 0.08),
+                circle at 10% 5%,
+                rgba(124, 58, 237, 0.18),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 90% 12%,
+                rgba(34, 211, 238, 0.13),
                 transparent 25%
             ),
             radial-gradient(
-                circle at 92% 8%,
-                rgba(37, 99, 235, 0.08),
-                transparent 24%
+                circle at 50% 80%,
+                rgba(168, 85, 247, 0.07),
+                transparent 30%
             ),
-            radial-gradient(
-                circle at 55% 75%,
-                rgba(124, 58, 237, 0.05),
-                transparent 28%
-            ),
-            #f4f7fb;
+            linear-gradient(
+                135deg,
+                #070817 0%,
+                #0b0d1c 45%,
+                #0d1024 100%
+            );
     }
 
     .block-container {
@@ -1159,30 +1165,8 @@ st.markdown(
     }
 
     ::selection {
-        background: rgba(79,70,229,0.20);
-        color: #111827;
-    }
-
-
-    /* =====================================================
-       GENERAL STREAMLIT TEXT
-       ===================================================== */
-
-    .stMarkdown,
-    .stText,
-    .stCaption,
-    p,
-    span,
-    div {
-        scrollbar-color: #cbd5e1 #f8fafc;
-    }
-
-    .stMarkdown p {
-        color: #263247;
-    }
-
-    .stCaption {
-        color: #475569 !important;
+        background: rgba(34,211,238,0.30);
+        color: white;
     }
 
 
@@ -1194,14 +1178,15 @@ st.markdown(
         background:
             linear-gradient(
                 180deg,
-                #f8fafc 0%,
-                #eef3f8 100%
+                #08091a 0%,
+                #0b0d20 50%,
+                #070817 100%
             );
 
-        border-right: 1px solid #d8e1ec;
+        border-right: 1px solid rgba(124,58,237,0.28);
 
         box-shadow:
-            8px 0 35px rgba(30,41,59,0.07);
+            10px 0 45px rgba(0,0,0,0.25);
     }
 
     [data-testid="stSidebar"] > div:first-child {
@@ -1209,7 +1194,7 @@ st.markdown(
     }
 
     [data-testid="stSidebar"] .stMarkdown {
-        color: #263247;
+        color: #cbd5e1;
     }
 
 
@@ -1217,23 +1202,21 @@ st.markdown(
 
     .sidebar-brand {
         padding: 19px;
-
-        border: 1px solid #cdd9e8;
-
+        border: 1px solid rgba(124,58,237,0.42);
         border-radius: 18px;
 
         background:
             linear-gradient(
                 135deg,
-                #ffffff,
-                #eef3ff
+                rgba(42,27,76,0.95),
+                rgba(13,17,38,0.96)
             );
 
         margin-bottom: 20px;
 
         box-shadow:
-            0 8px 25px rgba(37,99,235,0.08),
-            0 0 24px rgba(79,70,229,0.05);
+            0 0 25px rgba(124,58,237,0.12),
+            0 15px 35px rgba(0,0,0,0.25);
 
         position: relative;
         overflow: hidden;
@@ -1241,55 +1224,36 @@ st.markdown(
 
     .sidebar-brand:after {
         content: "";
-
         position: absolute;
-
         width: 100px;
         height: 100px;
-
         border-radius: 50%;
-
         right: -50px;
         top: -50px;
-
-        background: rgba(37,99,235,0.08);
+        background: rgba(34,211,238,0.10);
     }
 
     .sidebar-brand-title {
-        color: #172033;
-
+        color: #f8fafc;
         font-size: 22px;
-
-        font-weight: 850;
-
+        font-weight: 800;
         margin-bottom: 3px;
     }
 
     .sidebar-brand-subtitle {
-        color: #4f46e5;
-
+        color: #67e8f9;
         font-size: 11px;
-
-        font-weight: 800;
-
         letter-spacing: 1.5px;
-
         text-transform: uppercase;
     }
 
     .sidebar-section {
-        color: #334155;
-
+        color: #7176a0;
         font-size: 10px;
-
-        font-weight: 900;
-
+        font-weight: 800;
         letter-spacing: 1.7px;
-
         text-transform: uppercase;
-
         margin-top: 22px;
-
         margin-bottom: 8px;
     }
 
@@ -1297,97 +1261,69 @@ st.markdown(
         background:
             linear-gradient(
                 135deg,
-                #ffffff,
-                #f1f5f9
+                #11132b,
+                #0b0d1e
             );
 
-        border: 1px solid #d7e0eb;
-
+        border: 1px solid rgba(34,211,238,0.18);
         border-radius: 15px;
 
         padding: 14px;
-
         margin-top: 15px;
 
         box-shadow:
-            0 7px 20px rgba(30,41,59,0.06);
+            0 0 22px rgba(34,211,238,0.06);
     }
 
     .sidebar-machine-label {
-        color: #475569;
-
+        color: #7176a0;
         font-size: 10px;
-
-        font-weight: 800;
-
         text-transform: uppercase;
-
         letter-spacing: 1px;
     }
 
     .sidebar-machine-name {
-        color: #172033;
-
+        color: #f8fafc;
         font-size: 15px;
-
-        font-weight: 800;
-
+        font-weight: 700;
         margin-top: 4px;
     }
 
     .sidebar-status {
         display: inline-block;
-
         margin-top: 9px;
-
         padding: 5px 9px;
-
         border-radius: 999px;
 
-        background: #ecfdf5;
+        background: rgba(52,211,153,0.09);
+        color: #6ee7b7;
 
-        color: #047857;
-
-        border: 1px solid #a7f3d0;
+        border: 1px solid rgba(52,211,153,0.25);
 
         font-size: 10px;
-
-        font-weight: 800;
+        font-weight: 700;
     }
 
 
     /* =====================================================
-       HEADINGS
+       HEADERS
        ===================================================== */
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        color: #172033 !important;
+    h1, h2, h3 {
+        color: #f8fafc !important;
     }
 
     .section-title {
-        color: #172033;
-
+        color: #f8fafc;
         font-size: 21px;
-
-        font-weight: 850;
-
-        margin-bottom: 5px;
+        font-weight: 800;
+        margin-bottom: 3px;
     }
 
     .section-description {
-        color: #334155;
-
+        color: #9298b5;
         font-size: 13px;
-
-        font-weight: 550;
-
-        line-height: 1.65;
-
+        line-height: 1.6;
         margin-bottom: 14px;
     }
 
@@ -1398,56 +1334,45 @@ st.markdown(
 
     .top-header {
         display: flex;
-
         justify-content: space-between;
-
         align-items: center;
-
         gap: 20px;
 
         padding: 20px 23px;
-
         margin-bottom: 20px;
 
         background:
             linear-gradient(
                 135deg,
-                #ffffff 0%,
-                #f1f5ff 100%
+                rgba(27,21,55,0.96),
+                rgba(11,14,31,0.96)
             );
 
-        border: 1px solid #d6e0ec;
-
+        border: 1px solid rgba(124,58,237,0.34);
         border-radius: 20px;
 
         box-shadow:
-            0 10px 35px rgba(30,41,59,0.07),
-            0 0 25px rgba(79,70,229,0.05);
+            0 0 35px rgba(124,58,237,0.08),
+            0 18px 45px rgba(0,0,0,0.25);
 
         position: relative;
-
         overflow: hidden;
     }
 
     .top-header:before {
         content: "";
-
         position: absolute;
-
         width: 320px;
-
-        height: 3px;
-
+        height: 2px;
         left: 0;
-
         bottom: 0;
 
         background:
             linear-gradient(
                 90deg,
                 transparent,
-                #4f46e5,
-                #2563eb,
+                #7c3aed,
+                #22d3ee,
                 transparent
             );
 
@@ -1455,44 +1380,32 @@ st.markdown(
     }
 
     .top-title {
-        color: #111827;
-
+        color: #f8fafc;
         font-size: 28px;
-
-        font-weight: 900;
-
+        font-weight: 850;
         margin: 0;
     }
 
     .top-subtitle {
-        color: #334155;
-
+        color: #9298b5;
         font-size: 13px;
-
-        font-weight: 600;
-
-        margin-top: 5px;
+        margin-top: 4px;
     }
 
     .online-badge {
-        background: #eff6ff;
-
-        color: #1d4ed8;
-
-        border: 1px solid #bfdbfe;
-
+        background: rgba(34,211,238,0.08);
+        color: #67e8f9;
+        border: 1px solid rgba(34,211,238,0.28);
         border-radius: 999px;
 
         padding: 8px 13px;
 
         font-size: 11px;
-
-        font-weight: 850;
-
+        font-weight: 700;
         white-space: nowrap;
 
         box-shadow:
-            0 0 18px rgba(37,99,235,0.08);
+            0 0 18px rgba(34,211,238,0.08);
     }
 
 
@@ -1502,19 +1415,17 @@ st.markdown(
 
     .hero {
         position: relative;
-
         overflow: hidden;
 
         background:
             linear-gradient(
                 135deg,
-                #ffffff 0%,
-                #eef4ff 55%,
-                #f5f3ff 100%
+                #171538 0%,
+                #11142c 48%,
+                #10182c 100%
             );
 
-        border: 1px solid #d1dceb;
-
+        border: 1px solid rgba(124,58,237,0.40);
         border-radius: 22px;
 
         padding: 30px;
@@ -1522,18 +1433,15 @@ st.markdown(
         margin-bottom: 22px;
 
         box-shadow:
-            0 12px 40px rgba(30,41,59,0.08),
-            0 0 35px rgba(79,70,229,0.06);
+            0 0 45px rgba(124,58,237,0.10),
+            0 22px 55px rgba(0,0,0,0.28);
     }
 
     .hero:before {
         content: "";
-
         position: absolute;
-
         width: 350px;
         height: 350px;
-
         border-radius: 50%;
 
         right: -140px;
@@ -1542,14 +1450,13 @@ st.markdown(
         background:
             radial-gradient(
                 circle,
-                rgba(37,99,235,0.12),
+                rgba(34,211,238,0.15),
                 transparent 65%
             );
     }
 
     .hero:after {
         content: "";
-
         position: absolute;
 
         width: 170px;
@@ -1563,44 +1470,29 @@ st.markdown(
         background:
             radial-gradient(
                 circle,
-                rgba(124,58,237,0.10),
+                rgba(168,85,247,0.13),
                 transparent 70%
             );
     }
 
     .hero h1 {
-        color: #111827 !important;
-
+        color: #ffffff;
         font-size: 40px;
-
-        font-weight: 900;
-
         margin: 0;
-
         letter-spacing: -1px;
     }
 
     .hero h3 {
-        color: #3730a3 !important;
-
+        color: #67e8f9 !important;
         font-size: 16px;
-
-        font-weight: 800;
-
         margin-top: 6px;
     }
 
     .hero p {
-        color: #263247;
-
+        color: #b7bdd2;
         font-size: 14px;
-
-        font-weight: 550;
-
-        line-height: 1.8;
-
-        max-width: 900px;
-
+        line-height: 1.75;
+        max-width: 850px;
         margin-bottom: 0;
     }
 
@@ -1613,21 +1505,19 @@ st.markdown(
         background:
             linear-gradient(
                 145deg,
-                #ffffff,
-                #f8fafc
+                rgba(17,20,43,0.96),
+                rgba(10,12,27,0.98)
             );
 
-        border: 1px solid #d9e2ed;
-
+        border: 1px solid rgba(92,96,143,0.28);
         border-radius: 17px;
 
         padding: 18px;
-
         margin-bottom: 15px;
 
         box-shadow:
-            0 9px 28px rgba(30,41,59,0.07),
-            0 0 20px rgba(37,99,235,0.025);
+            0 12px 30px rgba(0,0,0,0.18),
+            inset 0 1px 0 rgba(255,255,255,0.025);
 
         transition:
             border-color 0.2s ease,
@@ -1636,47 +1526,34 @@ st.markdown(
     }
 
     .ui-card:hover {
-        border-color: #aebed4;
+        border-color: rgba(34,211,238,0.35);
 
         box-shadow:
-            0 0 24px rgba(37,99,235,0.08),
-            0 13px 30px rgba(30,41,59,0.09);
+            0 0 25px rgba(34,211,238,0.07),
+            0 15px 35px rgba(0,0,0,0.22);
 
         transform: translateY(-1px);
     }
 
     .card-label {
-        color: #475569;
-
+        color: #6f759c;
         font-size: 10px;
-
-        font-weight: 900;
-
+        font-weight: 800;
         text-transform: uppercase;
-
         letter-spacing: 1.4px;
-
         margin-bottom: 6px;
     }
 
     .card-value {
-        color: #111827;
-
+        color: #f8fafc;
         font-size: 19px;
-
-        font-weight: 850;
+        font-weight: 750;
     }
 
     .card-small {
-        color: #475569;
-
+        color: #9298b5;
         font-size: 12px;
-
-        font-weight: 550;
-
         margin-top: 5px;
-
-        line-height: 1.6;
     }
 
 
@@ -1688,12 +1565,11 @@ st.markdown(
         background:
             linear-gradient(
                 145deg,
-                #ffffff,
-                #f7faff
+                rgba(17,20,43,0.98),
+                rgba(10,12,27,0.98)
             );
 
-        border: 1px solid #d7e0eb;
-
+        border: 1px solid rgba(92,96,143,0.30);
         border-radius: 17px;
 
         padding: 17px;
@@ -1701,24 +1577,20 @@ st.markdown(
         min-height: 112px;
 
         box-shadow:
-            0 10px 27px rgba(30,41,59,0.07);
+            0 12px 30px rgba(0,0,0,0.18);
 
         position: relative;
-
         overflow: hidden;
     }
 
     .status-card:after {
         content: "";
-
         position: absolute;
 
         width: 90px;
-
         height: 90px;
 
         right: -45px;
-
         bottom: -45px;
 
         border-radius: 50%;
@@ -1726,42 +1598,30 @@ st.markdown(
         background:
             radial-gradient(
                 circle,
-                rgba(79,70,229,0.09),
+                rgba(124,58,237,0.13),
                 transparent 70%
             );
     }
 
     .status-title {
-        color: #475569;
-
+        color: #6f759c;
         font-size: 10px;
-
-        font-weight: 900;
-
+        font-weight: 800;
         text-transform: uppercase;
-
         letter-spacing: 1.2px;
     }
 
     .status-main {
-        color: #111827;
-
+        color: #f8fafc;
         font-size: 17px;
-
-        font-weight: 850;
-
+        font-weight: 750;
         margin-top: 9px;
-
-        line-height: 1.35;
+        line-height: 1.3;
     }
 
     .status-sub {
-        color: #475569;
-
+        color: #858ba8;
         font-size: 11px;
-
-        font-weight: 550;
-
         margin-top: 5px;
     }
 
@@ -1774,25 +1634,22 @@ st.markdown(
         background:
             linear-gradient(
                 145deg,
-                #ffffff,
-                #f5f8fd
+                #11142b,
+                #0b0d1e
             );
 
-        border: 1px solid #d5dfeb;
-
+        border: 1px solid rgba(124,58,237,0.25);
         border-radius: 17px;
 
         padding: 18px;
 
         height: 100%;
-
         min-height: 155px;
 
         box-shadow:
-            0 9px 26px rgba(30,41,59,0.07);
+            0 10px 28px rgba(0,0,0,0.18);
 
         position: relative;
-
         overflow: hidden;
 
         transition:
@@ -1803,20 +1660,18 @@ st.markdown(
 
     .workflow-card:before {
         content: "";
-
         position: absolute;
 
         left: 0;
         top: 0;
 
-        width: 4px;
+        width: 3px;
         height: 100%;
 
         background:
             linear-gradient(
                 180deg,
-                #2563eb,
-                #4f46e5,
+                #22d3ee,
                 #7c3aed
             );
     }
@@ -1824,42 +1679,31 @@ st.markdown(
     .workflow-card:hover {
         transform: translateY(-3px);
 
-        border-color: #aebed4;
+        border-color: rgba(34,211,238,0.45);
 
         box-shadow:
-            0 0 28px rgba(79,70,229,0.09),
-            0 14px 32px rgba(30,41,59,0.10);
+            0 0 30px rgba(124,58,237,0.10),
+            0 15px 32px rgba(0,0,0,0.25);
     }
 
     .workflow-number {
-        color: #2563eb;
-
+        color: #67e8f9;
         font-size: 10px;
-
         font-weight: 900;
-
         letter-spacing: 1.3px;
     }
 
     .workflow-title {
-        color: #172033;
-
+        color: #f8fafc;
         font-size: 14px;
-
-        font-weight: 850;
-
+        font-weight: 750;
         margin-top: 8px;
     }
 
     .workflow-description {
-        color: #334155;
-
+        color: #858ba8;
         font-size: 12px;
-
-        font-weight: 550;
-
-        line-height: 1.65;
-
+        line-height: 1.6;
         margin-top: 7px;
     }
 
@@ -1872,17 +1716,17 @@ st.markdown(
         background:
             linear-gradient(
                 135deg,
-                #eff6ff,
-                #eef2ff
+                rgba(34,211,238,0.08),
+                rgba(124,58,237,0.08)
             );
 
-        border: 1px solid #bfdbfe;
+        border: 1px solid rgba(34,211,238,0.25);
 
         border-radius: 13px;
 
         padding: 13px 15px;
 
-        color: #1e3a8a;
+        color: #a5f3fc;
 
         margin-top: 10px;
 
@@ -1890,10 +1734,8 @@ st.markdown(
 
         font-size: 13px;
 
-        font-weight: 650;
-
         box-shadow:
-            0 0 20px rgba(37,99,235,0.05);
+            0 0 20px rgba(34,211,238,0.05);
     }
 
 
@@ -1905,13 +1747,11 @@ st.markdown(
         background:
             linear-gradient(
                 145deg,
-                #ffffff,
-                #f7f9fd
+                rgba(20,18,45,0.96),
+                rgba(10,12,27,0.98)
             );
 
-        border: 1px solid #d8e1ec;
-
-        border-left: 4px solid #6366f1;
+        border: 1px solid rgba(124,58,237,0.24);
 
         border-radius: 15px;
 
@@ -1920,100 +1760,59 @@ st.markdown(
         margin-bottom: 11px;
 
         box-shadow:
-            0 7px 20px rgba(30,41,59,0.06);
+            0 8px 22px rgba(0,0,0,0.16);
 
         transition:
             border-color 0.2s ease,
-            transform 0.2s ease,
-            box-shadow 0.2s ease;
+            transform 0.2s ease;
     }
 
     .question-card:hover {
-        border-color: #aebed4;
-
-        border-left-color: #2563eb;
-
+        border-color: rgba(34,211,238,0.38);
         transform: translateX(2px);
-
-        box-shadow:
-            0 0 20px rgba(37,99,235,0.07),
-            0 9px 23px rgba(30,41,59,0.08);
     }
 
     .question-number {
-        color: #4f46e5;
-
+        color: #67e8f9;
         font-size: 9px;
-
         font-weight: 900;
-
         letter-spacing: 1px;
-
         text-transform: uppercase;
     }
 
     .question-text {
-        color: #263247;
-
+        color: #dfe3f2;
         font-size: 12px;
-
-        font-weight: 600;
-
-        line-height: 1.55;
-
+        line-height: 1.5;
         margin-top: 5px;
     }
 
 
     /* =====================================================
-       REPORT CONTAINERS
+       REPORT
        ===================================================== */
 
-    div[data-testid="stVerticalBlockBorderWrapper"] {
+    .report-box {
         background:
             linear-gradient(
                 145deg,
-                #ffffff,
-                #fbfcfe
-            ) !important;
+                #0e1022,
+                #090b18
+            );
 
-        border: 1px solid #d9e2ed !important;
+        border: 1px solid rgba(124,58,237,0.24);
 
-        border-radius: 18px !important;
+        border-radius: 17px;
+
+        padding: 24px;
+
+        color: #dbe4f5;
+
+        line-height: 1.75;
 
         box-shadow:
-            0 10px 30px rgba(30,41,59,0.06) !important;
-
-        padding: 8px !important;
-
-        margin-bottom: 18px !important;
-    }
-
-    div[data-testid="stVerticalBlockBorderWrapper"] p {
-        color: #263247 !important;
-
-        font-size: 14px !important;
-
-        line-height: 1.75 !important;
-    }
-
-    div[data-testid="stVerticalBlockBorderWrapper"] li {
-        color: #263247 !important;
-
-        font-size: 14px !important;
-
-        line-height: 1.7 !important;
-    }
-
-    div[data-testid="stVerticalBlockBorderWrapper"] strong {
-        color: #111827 !important;
-    }
-
-    div[data-testid="stVerticalBlockBorderWrapper"] h1,
-    div[data-testid="stVerticalBlockBorderWrapper"] h2,
-    div[data-testid="stVerticalBlockBorderWrapper"] h3,
-    div[data-testid="stVerticalBlockBorderWrapper"] h4 {
-        color: #172033 !important;
+            0 15px 35px rgba(0,0,0,0.20),
+            0 0 25px rgba(124,58,237,0.04);
     }
 
 
@@ -2024,18 +1823,18 @@ st.markdown(
     .stButton > button {
         border-radius: 10px !important;
 
-        border: 1px solid #c7d2fe !important;
+        border: 1px solid rgba(124,58,237,0.40) !important;
 
         background:
             linear-gradient(
                 135deg,
-                #4f46e5,
-                #2563eb
+                #33206b,
+                #182b58
             ) !important;
 
-        color: #ffffff !important;
+        color: #f8fafc !important;
 
-        font-weight: 800 !important;
+        font-weight: 750 !important;
 
         min-height: 44px;
 
@@ -2047,18 +1846,18 @@ st.markdown(
     }
 
     .stButton > button:hover {
-        border-color: #4338ca !important;
+        border-color: #22d3ee !important;
 
         background:
             linear-gradient(
                 135deg,
-                #4338ca,
-                #1d4ed8
+                #45268c,
+                #173d68
             ) !important;
 
         box-shadow:
-            0 0 22px rgba(37,99,235,0.18),
-            0 0 35px rgba(79,70,229,0.10);
+            0 0 22px rgba(34,211,238,0.14),
+            0 0 35px rgba(124,58,237,0.10);
 
         transform: translateY(-1px);
     }
@@ -2069,13 +1868,11 @@ st.markdown(
        ===================================================== */
 
     div[data-baseweb="select"] > div {
-        background-color: #ffffff !important;
+        background-color: #0d1021 !important;
 
-        border-color: #cbd5e1 !important;
+        border-color: #303454 !important;
 
         border-radius: 10px !important;
-
-        color: #172033 !important;
 
         transition:
             border-color 0.2s ease,
@@ -2083,48 +1880,33 @@ st.markdown(
     }
 
     div[data-baseweb="select"] > div:hover {
-        border-color: #6366f1 !important;
+        border-color: #7c3aed !important;
 
         box-shadow:
-            0 0 14px rgba(79,70,229,0.10);
-    }
-
-    div[data-baseweb="select"] span {
-        color: #172033 !important;
-    }
-
-    div[data-baseweb="select"] input {
-        color: #172033 !important;
+            0 0 14px rgba(124,58,237,0.10);
     }
 
     textarea {
-        background-color: #ffffff !important;
+        background-color: #0d1021 !important;
 
-        border: 1px solid #cbd5e1 !important;
+        border: 1px solid #303454 !important;
 
-        color: #172033 !important;
+        color: #f8fafc !important;
 
         border-radius: 10px !important;
     }
 
-    textarea::placeholder {
-        color: #64748b !important;
-
-        opacity: 1 !important;
-    }
-
     textarea:focus {
-        border-color: #2563eb !important;
+        border-color: #22d3ee !important;
 
         box-shadow:
-            0 0 0 1px rgba(37,99,235,0.20),
-            0 0 18px rgba(37,99,235,0.08) !important;
+            0 0 0 1px rgba(34,211,238,0.25),
+            0 0 18px rgba(34,211,238,0.07) !important;
     }
 
     label {
-        color: #263247 !important;
-
-        font-weight: 750 !important;
+        color: #cdd3e4 !important;
+        font-weight: 600 !important;
     }
 
 
@@ -2136,13 +1918,13 @@ st.markdown(
         background:
             linear-gradient(
                 135deg,
-                #eef2ff,
-                #eff6ff
+                #35206f,
+                #173b61
             ) !important;
 
-        color: #3730a3 !important;
+        color: #e0f2fe !important;
 
-        border: 1px solid #c7d2fe !important;
+        border: 1px solid rgba(34,211,238,0.20);
     }
 
 
@@ -2151,11 +1933,8 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stCheckbox"] label {
-        color: #263247 !important;
-
+        color: #cbd5e1 !important;
         font-size: 13px !important;
-
-        font-weight: 650 !important;
     }
 
 
@@ -2164,17 +1943,11 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stExpander"] {
-        background: #ffffff;
+        background: #0d1021;
 
-        border: 1px solid #d5dfeb;
+        border: 1px solid #303454;
 
         border-radius: 12px;
-    }
-
-    [data-testid="stExpander"] summary {
-        color: #172033 !important;
-
-        font-weight: 750 !important;
     }
 
 
@@ -2184,14 +1957,8 @@ st.markdown(
 
     [data-testid="stStatusWidget"] {
         border-radius: 14px;
-
-        background: #ffffff;
-
-        border-color: #d5dfeb;
-    }
-
-    [data-testid="stStatusWidget"] * {
-        color: #263247;
+        background: #0d1021;
+        border-color: #34345f;
     }
 
 
@@ -2203,23 +1970,12 @@ st.markdown(
         background:
             linear-gradient(
                 90deg,
-                #4f46e5,
-                #2563eb
+                #7c3aed,
+                #22d3ee
             ) !important;
 
         box-shadow:
-            0 0 14px rgba(37,99,235,0.18);
-    }
-
-
-    /* =====================================================
-       WARNING / SUCCESS / ERROR
-       ===================================================== */
-
-    [data-testid="stAlert"] {
-        border-radius: 12px !important;
-
-        font-weight: 600 !important;
+            0 0 14px rgba(34,211,238,0.18);
     }
 
 
@@ -2228,10 +1984,9 @@ st.markdown(
        ===================================================== */
 
     hr {
-        border-color: #d9e2ec !important;
+        border-color: rgba(91,96,142,0.28) !important;
 
         margin-top: 25px !important;
-
         margin-bottom: 25px !important;
     }
 
@@ -2246,30 +2001,18 @@ st.markdown(
         background:
             linear-gradient(
                 135deg,
-                #4f46e5,
-                #2563eb
+                #372078,
+                #174667
             ) !important;
 
-        border: 1px solid #4338ca !important;
+        border: 1px solid rgba(34,211,238,0.30) !important;
 
-        color: #ffffff !important;
+        color: white !important;
 
-        font-weight: 800 !important;
-
-        box-shadow:
-            0 0 22px rgba(37,99,235,0.10);
-    }
-
-    [data-testid="stDownloadButton"] button:hover {
-        background:
-            linear-gradient(
-                135deg,
-                #4338ca,
-                #1d4ed8
-            ) !important;
+        font-weight: 750 !important;
 
         box-shadow:
-            0 0 25px rgba(37,99,235,0.18);
+            0 0 22px rgba(34,211,238,0.07);
     }
 
 
@@ -2343,7 +2086,6 @@ with st.sidebar:
     st.html(
         """
         <div class="sidebar-brand">
-
             <div class="sidebar-brand-title">
                 ⚙️ MechCare AI
             </div>
@@ -2351,7 +2093,6 @@ with st.sidebar:
             <div class="sidebar-brand-subtitle">
                 Engineering Intelligence
             </div>
-
         </div>
         """
     )
@@ -2449,7 +2190,6 @@ st.html(
     <div class="top-header">
 
         <div>
-
             <div class="top-title">
                 Engineering Command Center
             </div>
@@ -2458,7 +2198,6 @@ st.html(
                 AI-powered machine diagnostics, maintenance planning
                 and engineering reporting.
             </div>
-
         </div>
 
         <div class="online-badge">
@@ -2657,14 +2396,6 @@ with right_column:
         (
             "10",
             "Could operating conditions have changed?"
-        ),
-        (
-            "11",
-            "Does the problem occur continuously or intermittently?"
-        ),
-        (
-            "12",
-            "Are current readings different from normal values?"
         )
     ]
 
@@ -3266,66 +2997,34 @@ Additional Observations:
         )
 
 
-        report_text = str(final_report)
+        report_text = final_report
 
 
         # -------------------------------------------------
-        # EXTRACT ONLY THE PRIORITY LEVEL
+        # EXTRACT PRIORITY
         # -------------------------------------------------
 
         priority = "Not specified"
 
 
-        priority_match = re.search(
-            r"(?is)^\s*##\s*Priority\s*$"
-            r"(.*?)"
-            r"(?=^\s*##\s+|\Z)",
-            report_text,
-            re.MULTILINE
-        )
+        if "## Priority" in report_text:
+
+            priority_section = report_text.split(
+                "## Priority",
+                1
+            )[1]
 
 
-        if priority_match:
+            if "##" in priority_section:
 
-            priority_section = priority_match.group(1).strip()
+                priority = priority_section.split(
+                    "##",
+                    1
+                )[0].strip()
 
+            else:
 
-            level_match = re.search(
-                r"\b(Critical|Urgent|High|Medium|Moderate|Low)\b",
-                priority_section,
-                re.IGNORECASE
-            )
-
-
-            if level_match:
-
-                priority = (
-                    level_match.group(1)
-                    .strip()
-                    .capitalize()
-                )
-
-
-        # -------------------------------------------------
-        # FALLBACK PRIORITY SEARCH
-        # -------------------------------------------------
-
-        if priority == "Not specified":
-
-            fallback_match = re.search(
-                r"(?i)\bPriority\s*[:\-]\s*"
-                r"(Critical|Urgent|High|Medium|Moderate|Low)\b",
-                report_text
-            )
-
-
-            if fallback_match:
-
-                priority = (
-                    fallback_match.group(1)
-                    .strip()
-                    .capitalize()
-                )
+                priority = priority_section.strip()
 
 
         # -------------------------------------------------
@@ -3356,14 +3055,9 @@ Additional Observations:
             health_status = "🟡 Monitor"
             maintenance_status = "Further Inspection"
 
-        elif "low" in priority_lower:
-
-            health_status = "🟢 Stable"
-            maintenance_status = "Routine Inspection"
-
         else:
 
-            health_status = "🔵 Review Required"
+            health_status = "🟢 Review Required"
             maintenance_status = "Follow Recommended Checks"
 
 
@@ -3371,10 +3065,7 @@ Additional Observations:
         # DASHBOARD CARDS
         # -------------------------------------------------
 
-        dash1, dash2, dash3, dash4 = st.columns(
-            4,
-            gap="small"
-        )
+        dash1, dash2, dash3, dash4 = st.columns(4, gap="small")
 
 
         with dash1:
@@ -3438,7 +3129,7 @@ Additional Observations:
                     </div>
 
                     <div class="status-sub">
-                        Primary AI priority level
+                        Extracted from final report
                     </div>
 
                 </div>
@@ -3515,12 +3206,9 @@ Additional Observations:
             '<div class="section-description">Collecting these measurements or observations can help confirm the possible machine fault.</div>'
         )
 
-
-        with st.container(border=True):
-
-            st.markdown(
-                problem_analysis
-            )
+        st.markdown(
+            problem_analysis
+        )
 
 
         # =================================================
@@ -3535,12 +3223,9 @@ Additional Observations:
             '<div class="section-description">Possible causes, their relationship with the symptoms, and suggested confirmation checks.</div>'
         )
 
-
-        with st.container(border=True):
-
-            st.markdown(
-                diagnosis_result
-            )
+        st.markdown(
+            diagnosis_result
+        )
 
 
         # =================================================
@@ -3635,12 +3320,9 @@ Additional Observations:
             '<div class="section-description">Generated by the MechCare AI multi-agent engineering workflow.</div>'
         )
 
-
-        with st.container(border=True):
-
-            st.markdown(
-                final_report
-            )
+        st.markdown(
+            final_report
+        )
 
 
         # =================================================
