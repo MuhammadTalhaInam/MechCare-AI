@@ -1,10 +1,23 @@
 import streamlit as st
 import asyncio
 import json
+import re
 import streamlit.components.v1 as components
 
 from crew import run_mechcare
 from pdf_report import create_pdf_report
+
+
+# =========================================================
+# PAGE CONFIG
+# =========================================================
+
+st.set_page_config(
+    page_title="MechCare AI",
+    page_icon="⚙️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 
 # =========================================================
@@ -19,24 +32,24 @@ def speak_text(text):
     components.html(
         f"""
         <div style="
-            background:#0d1021;
-            border:1px solid #34345f;
+            background:#ffffff;
+            border:1px solid #d9e2ef;
             border-radius:18px;
             padding:20px;
-            color:#e5e7eb;
+            color:#172033;
             font-family:Arial, sans-serif;
-            box-shadow:0 0 25px rgba(124,58,237,0.10);
+            box-shadow:0 8px 30px rgba(37,99,235,0.08);
         ">
 
             <h3 style="
                 margin-top:0;
-                color:#f8fafc;
+                color:#172033;
             ">
                 🔊 Listen to MechCare AI Results
             </h3>
 
             <p style="
-                color:#9ca3af;
+                color:#4b5563;
                 margin-bottom:15px;
             ">
                 Listen to the complete AI analysis and change the
@@ -58,6 +71,9 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        background:#4f46e5;
+                        color:white;
+                        font-weight:700;
                     "
                 >
                     ▶️ Play
@@ -71,6 +87,9 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        background:#2563eb;
+                        color:white;
+                        font-weight:700;
                     "
                 >
                     ⏸️ Pause
@@ -84,14 +103,18 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        background:#dc2626;
+                        color:white;
+                        font-weight:700;
                     "
                 >
                     ⏹️ Stop
                 </button>
 
                 <label style="
-                    color:#cbd5e1;
+                    color:#374151;
                     font-size:14px;
+                    font-weight:700;
                 ">
                     Speed:
                 </label>
@@ -102,10 +125,11 @@ def speak_text(text):
                     style="
                         padding:8px 12px;
                         border-radius:7px;
-                        border:1px solid #475569;
-                        background:#17172f;
-                        color:#f8fafc;
+                        border:1px solid #cbd5e1;
+                        background:#ffffff;
+                        color:#172033;
                         font-size:14px;
+                        font-weight:600;
                     "
                 >
                     <option value="0.25">0.25×</option>
@@ -124,8 +148,9 @@ def speak_text(text):
                 id="voiceStatus"
                 style="
                     margin-top:15px;
-                    color:#67e8f9;
+                    color:#2563eb;
                     font-size:14px;
+                    font-weight:700;
                 "
             >
                 Ready to play
@@ -396,6 +421,7 @@ def speak_text(text):
                 updateStatus("✅ Finished");
 
                 return;
+
             }}
 
 
@@ -694,7 +720,7 @@ def speak_text(text):
                 speech
             );
 
-        }}
+        }
 
 
         // =================================================
@@ -776,7 +802,7 @@ def speak_text(text):
 
                 return;
 
-            }}
+            }
 
 
             if (
@@ -786,7 +812,7 @@ def speak_text(text):
 
                 return;
 
-            }}
+            }
 
 
             if (
@@ -825,7 +851,7 @@ def speak_text(text):
 
             }}, 150);
 
-        }}
+        }
 
 
         // =================================================
@@ -1033,7 +1059,7 @@ def speak_text(text):
 
                 return;
 
-            }}
+            }
 
 
             if (isPaused) {{
@@ -1054,18 +1080,6 @@ def speak_text(text):
         """,
         height=210
     )
-
-
-# =========================================================
-# PAGE CONFIG
-# =========================================================
-
-st.set_page_config(
-    page_title="MechCare AI",
-    page_icon="⚙️",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 
 # =========================================================
@@ -1113,32 +1127,27 @@ st.markdown(
     <style>
 
     /* =====================================================
-       GLOBAL
+       GLOBAL LIGHT INDUSTRIAL THEME
        ===================================================== */
 
     .stApp {
         background:
             radial-gradient(
-                circle at 10% 5%,
-                rgba(124, 58, 237, 0.18),
-                transparent 28%
-            ),
-            radial-gradient(
-                circle at 90% 12%,
-                rgba(34, 211, 238, 0.13),
+                circle at 8% 4%,
+                rgba(79, 70, 229, 0.08),
                 transparent 25%
             ),
             radial-gradient(
-                circle at 50% 80%,
-                rgba(168, 85, 247, 0.07),
-                transparent 30%
+                circle at 92% 8%,
+                rgba(37, 99, 235, 0.08),
+                transparent 24%
             ),
-            linear-gradient(
-                135deg,
-                #070817 0%,
-                #0b0d1c 45%,
-                #0d1024 100%
-            );
+            radial-gradient(
+                circle at 55% 75%,
+                rgba(124, 58, 237, 0.05),
+                transparent 28%
+            ),
+            #f4f7fb;
     }
 
     .block-container {
@@ -1150,8 +1159,30 @@ st.markdown(
     }
 
     ::selection {
-        background: rgba(34,211,238,0.30);
-        color: white;
+        background: rgba(79,70,229,0.20);
+        color: #111827;
+    }
+
+
+    /* =====================================================
+       GENERAL STREAMLIT TEXT
+       ===================================================== */
+
+    .stMarkdown,
+    .stText,
+    .stCaption,
+    p,
+    span,
+    div {
+        scrollbar-color: #cbd5e1 #f8fafc;
+    }
+
+    .stMarkdown p {
+        color: #263247;
+    }
+
+    .stCaption {
+        color: #475569 !important;
     }
 
 
@@ -1163,15 +1194,14 @@ st.markdown(
         background:
             linear-gradient(
                 180deg,
-                #08091a 0%,
-                #0b0d20 50%,
-                #070817 100%
+                #f8fafc 0%,
+                #eef3f8 100%
             );
 
-        border-right: 1px solid rgba(124,58,237,0.28);
+        border-right: 1px solid #d8e1ec;
 
         box-shadow:
-            10px 0 45px rgba(0,0,0,0.25);
+            8px 0 35px rgba(30,41,59,0.07);
     }
 
     [data-testid="stSidebar"] > div:first-child {
@@ -1179,7 +1209,7 @@ st.markdown(
     }
 
     [data-testid="stSidebar"] .stMarkdown {
-        color: #cbd5e1;
+        color: #263247;
     }
 
 
@@ -1187,21 +1217,23 @@ st.markdown(
 
     .sidebar-brand {
         padding: 19px;
-        border: 1px solid rgba(124,58,237,0.42);
+
+        border: 1px solid #cdd9e8;
+
         border-radius: 18px;
 
         background:
             linear-gradient(
                 135deg,
-                rgba(42,27,76,0.95),
-                rgba(13,17,38,0.96)
+                #ffffff,
+                #eef3ff
             );
 
         margin-bottom: 20px;
 
         box-shadow:
-            0 0 25px rgba(124,58,237,0.12),
-            0 15px 35px rgba(0,0,0,0.25);
+            0 8px 25px rgba(37,99,235,0.08),
+            0 0 24px rgba(79,70,229,0.05);
 
         position: relative;
         overflow: hidden;
@@ -1209,36 +1241,55 @@ st.markdown(
 
     .sidebar-brand:after {
         content: "";
+
         position: absolute;
+
         width: 100px;
         height: 100px;
+
         border-radius: 50%;
+
         right: -50px;
         top: -50px;
-        background: rgba(34,211,238,0.10);
+
+        background: rgba(37,99,235,0.08);
     }
 
     .sidebar-brand-title {
-        color: #f8fafc;
+        color: #172033;
+
         font-size: 22px;
-        font-weight: 800;
+
+        font-weight: 850;
+
         margin-bottom: 3px;
     }
 
     .sidebar-brand-subtitle {
-        color: #67e8f9;
+        color: #4f46e5;
+
         font-size: 11px;
+
+        font-weight: 800;
+
         letter-spacing: 1.5px;
+
         text-transform: uppercase;
     }
 
     .sidebar-section {
-        color: #7176a0;
+        color: #334155;
+
         font-size: 10px;
-        font-weight: 800;
+
+        font-weight: 900;
+
         letter-spacing: 1.7px;
+
         text-transform: uppercase;
+
         margin-top: 22px;
+
         margin-bottom: 8px;
     }
 
@@ -1246,69 +1297,97 @@ st.markdown(
         background:
             linear-gradient(
                 135deg,
-                #11132b,
-                #0b0d1e
+                #ffffff,
+                #f1f5f9
             );
 
-        border: 1px solid rgba(34,211,238,0.18);
+        border: 1px solid #d7e0eb;
+
         border-radius: 15px;
 
         padding: 14px;
+
         margin-top: 15px;
 
         box-shadow:
-            0 0 22px rgba(34,211,238,0.06);
+            0 7px 20px rgba(30,41,59,0.06);
     }
 
     .sidebar-machine-label {
-        color: #7176a0;
+        color: #475569;
+
         font-size: 10px;
+
+        font-weight: 800;
+
         text-transform: uppercase;
+
         letter-spacing: 1px;
     }
 
     .sidebar-machine-name {
-        color: #f8fafc;
+        color: #172033;
+
         font-size: 15px;
-        font-weight: 700;
+
+        font-weight: 800;
+
         margin-top: 4px;
     }
 
     .sidebar-status {
         display: inline-block;
+
         margin-top: 9px;
+
         padding: 5px 9px;
+
         border-radius: 999px;
 
-        background: rgba(52,211,153,0.09);
-        color: #6ee7b7;
+        background: #ecfdf5;
 
-        border: 1px solid rgba(52,211,153,0.25);
+        color: #047857;
+
+        border: 1px solid #a7f3d0;
 
         font-size: 10px;
-        font-weight: 700;
+
+        font-weight: 800;
     }
 
 
     /* =====================================================
-       HEADERS
+       HEADINGS
        ===================================================== */
 
-    h1, h2, h3 {
-        color: #f8fafc !important;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #172033 !important;
     }
 
     .section-title {
-        color: #f8fafc;
+        color: #172033;
+
         font-size: 21px;
-        font-weight: 800;
-        margin-bottom: 3px;
+
+        font-weight: 850;
+
+        margin-bottom: 5px;
     }
 
     .section-description {
-        color: #9298b5;
+        color: #334155;
+
         font-size: 13px;
-        line-height: 1.6;
+
+        font-weight: 550;
+
+        line-height: 1.65;
+
         margin-bottom: 14px;
     }
 
@@ -1319,45 +1398,56 @@ st.markdown(
 
     .top-header {
         display: flex;
+
         justify-content: space-between;
+
         align-items: center;
+
         gap: 20px;
 
         padding: 20px 23px;
+
         margin-bottom: 20px;
 
         background:
             linear-gradient(
                 135deg,
-                rgba(27,21,55,0.96),
-                rgba(11,14,31,0.96)
+                #ffffff 0%,
+                #f1f5ff 100%
             );
 
-        border: 1px solid rgba(124,58,237,0.34);
+        border: 1px solid #d6e0ec;
+
         border-radius: 20px;
 
         box-shadow:
-            0 0 35px rgba(124,58,237,0.08),
-            0 18px 45px rgba(0,0,0,0.25);
+            0 10px 35px rgba(30,41,59,0.07),
+            0 0 25px rgba(79,70,229,0.05);
 
         position: relative;
+
         overflow: hidden;
     }
 
     .top-header:before {
         content: "";
+
         position: absolute;
+
         width: 320px;
-        height: 2px;
+
+        height: 3px;
+
         left: 0;
+
         bottom: 0;
 
         background:
             linear-gradient(
                 90deg,
                 transparent,
-                #7c3aed,
-                #22d3ee,
+                #4f46e5,
+                #2563eb,
                 transparent
             );
 
@@ -1365,32 +1455,44 @@ st.markdown(
     }
 
     .top-title {
-        color: #f8fafc;
+        color: #111827;
+
         font-size: 28px;
-        font-weight: 850;
+
+        font-weight: 900;
+
         margin: 0;
     }
 
     .top-subtitle {
-        color: #9298b5;
+        color: #334155;
+
         font-size: 13px;
-        margin-top: 4px;
+
+        font-weight: 600;
+
+        margin-top: 5px;
     }
 
     .online-badge {
-        background: rgba(34,211,238,0.08);
-        color: #67e8f9;
-        border: 1px solid rgba(34,211,238,0.28);
+        background: #eff6ff;
+
+        color: #1d4ed8;
+
+        border: 1px solid #bfdbfe;
+
         border-radius: 999px;
 
         padding: 8px 13px;
 
         font-size: 11px;
-        font-weight: 700;
+
+        font-weight: 850;
+
         white-space: nowrap;
 
         box-shadow:
-            0 0 18px rgba(34,211,238,0.08);
+            0 0 18px rgba(37,99,235,0.08);
     }
 
 
@@ -1400,17 +1502,19 @@ st.markdown(
 
     .hero {
         position: relative;
+
         overflow: hidden;
 
         background:
             linear-gradient(
                 135deg,
-                #171538 0%,
-                #11142c 48%,
-                #10182c 100%
+                #ffffff 0%,
+                #eef4ff 55%,
+                #f5f3ff 100%
             );
 
-        border: 1px solid rgba(124,58,237,0.40);
+        border: 1px solid #d1dceb;
+
         border-radius: 22px;
 
         padding: 30px;
@@ -1418,15 +1522,18 @@ st.markdown(
         margin-bottom: 22px;
 
         box-shadow:
-            0 0 45px rgba(124,58,237,0.10),
-            0 22px 55px rgba(0,0,0,0.28);
+            0 12px 40px rgba(30,41,59,0.08),
+            0 0 35px rgba(79,70,229,0.06);
     }
 
     .hero:before {
         content: "";
+
         position: absolute;
+
         width: 350px;
         height: 350px;
+
         border-radius: 50%;
 
         right: -140px;
@@ -1435,13 +1542,14 @@ st.markdown(
         background:
             radial-gradient(
                 circle,
-                rgba(34,211,238,0.15),
+                rgba(37,99,235,0.12),
                 transparent 65%
             );
     }
 
     .hero:after {
         content: "";
+
         position: absolute;
 
         width: 170px;
@@ -1455,29 +1563,44 @@ st.markdown(
         background:
             radial-gradient(
                 circle,
-                rgba(168,85,247,0.13),
+                rgba(124,58,237,0.10),
                 transparent 70%
             );
     }
 
     .hero h1 {
-        color: #ffffff;
+        color: #111827 !important;
+
         font-size: 40px;
+
+        font-weight: 900;
+
         margin: 0;
+
         letter-spacing: -1px;
     }
 
     .hero h3 {
-        color: #67e8f9 !important;
+        color: #3730a3 !important;
+
         font-size: 16px;
+
+        font-weight: 800;
+
         margin-top: 6px;
     }
 
     .hero p {
-        color: #b7bdd2;
+        color: #263247;
+
         font-size: 14px;
-        line-height: 1.75;
-        max-width: 850px;
+
+        font-weight: 550;
+
+        line-height: 1.8;
+
+        max-width: 900px;
+
         margin-bottom: 0;
     }
 
@@ -1490,19 +1613,21 @@ st.markdown(
         background:
             linear-gradient(
                 145deg,
-                rgba(17,20,43,0.96),
-                rgba(10,12,27,0.98)
+                #ffffff,
+                #f8fafc
             );
 
-        border: 1px solid rgba(92,96,143,0.28);
+        border: 1px solid #d9e2ed;
+
         border-radius: 17px;
 
         padding: 18px;
+
         margin-bottom: 15px;
 
         box-shadow:
-            0 12px 30px rgba(0,0,0,0.18),
-            inset 0 1px 0 rgba(255,255,255,0.025);
+            0 9px 28px rgba(30,41,59,0.07),
+            0 0 20px rgba(37,99,235,0.025);
 
         transition:
             border-color 0.2s ease,
@@ -1511,34 +1636,47 @@ st.markdown(
     }
 
     .ui-card:hover {
-        border-color: rgba(34,211,238,0.35);
+        border-color: #aebed4;
 
         box-shadow:
-            0 0 25px rgba(34,211,238,0.07),
-            0 15px 35px rgba(0,0,0,0.22);
+            0 0 24px rgba(37,99,235,0.08),
+            0 13px 30px rgba(30,41,59,0.09);
 
         transform: translateY(-1px);
     }
 
     .card-label {
-        color: #6f759c;
+        color: #475569;
+
         font-size: 10px;
-        font-weight: 800;
+
+        font-weight: 900;
+
         text-transform: uppercase;
+
         letter-spacing: 1.4px;
+
         margin-bottom: 6px;
     }
 
     .card-value {
-        color: #f8fafc;
+        color: #111827;
+
         font-size: 19px;
-        font-weight: 750;
+
+        font-weight: 850;
     }
 
     .card-small {
-        color: #9298b5;
+        color: #475569;
+
         font-size: 12px;
+
+        font-weight: 550;
+
         margin-top: 5px;
+
+        line-height: 1.6;
     }
 
 
@@ -1550,11 +1688,12 @@ st.markdown(
         background:
             linear-gradient(
                 145deg,
-                rgba(17,20,43,0.98),
-                rgba(10,12,27,0.98)
+                #ffffff,
+                #f7faff
             );
 
-        border: 1px solid rgba(92,96,143,0.30);
+        border: 1px solid #d7e0eb;
+
         border-radius: 17px;
 
         padding: 17px;
@@ -1562,20 +1701,24 @@ st.markdown(
         min-height: 112px;
 
         box-shadow:
-            0 12px 30px rgba(0,0,0,0.18);
+            0 10px 27px rgba(30,41,59,0.07);
 
         position: relative;
+
         overflow: hidden;
     }
 
     .status-card:after {
         content: "";
+
         position: absolute;
 
         width: 90px;
+
         height: 90px;
 
         right: -45px;
+
         bottom: -45px;
 
         border-radius: 50%;
@@ -1583,30 +1726,42 @@ st.markdown(
         background:
             radial-gradient(
                 circle,
-                rgba(124,58,237,0.13),
+                rgba(79,70,229,0.09),
                 transparent 70%
             );
     }
 
     .status-title {
-        color: #6f759c;
+        color: #475569;
+
         font-size: 10px;
-        font-weight: 800;
+
+        font-weight: 900;
+
         text-transform: uppercase;
+
         letter-spacing: 1.2px;
     }
 
     .status-main {
-        color: #f8fafc;
+        color: #111827;
+
         font-size: 17px;
-        font-weight: 750;
+
+        font-weight: 850;
+
         margin-top: 9px;
-        line-height: 1.3;
+
+        line-height: 1.35;
     }
 
     .status-sub {
-        color: #858ba8;
+        color: #475569;
+
         font-size: 11px;
+
+        font-weight: 550;
+
         margin-top: 5px;
     }
 
@@ -1619,22 +1774,25 @@ st.markdown(
         background:
             linear-gradient(
                 145deg,
-                #11142b,
-                #0b0d1e
+                #ffffff,
+                #f5f8fd
             );
 
-        border: 1px solid rgba(124,58,237,0.25);
+        border: 1px solid #d5dfeb;
+
         border-radius: 17px;
 
         padding: 18px;
 
         height: 100%;
+
         min-height: 155px;
 
         box-shadow:
-            0 10px 28px rgba(0,0,0,0.18);
+            0 9px 26px rgba(30,41,59,0.07);
 
         position: relative;
+
         overflow: hidden;
 
         transition:
@@ -1645,18 +1803,20 @@ st.markdown(
 
     .workflow-card:before {
         content: "";
+
         position: absolute;
 
         left: 0;
         top: 0;
 
-        width: 3px;
+        width: 4px;
         height: 100%;
 
         background:
             linear-gradient(
                 180deg,
-                #22d3ee,
+                #2563eb,
+                #4f46e5,
                 #7c3aed
             );
     }
@@ -1664,31 +1824,42 @@ st.markdown(
     .workflow-card:hover {
         transform: translateY(-3px);
 
-        border-color: rgba(34,211,238,0.45);
+        border-color: #aebed4;
 
         box-shadow:
-            0 0 30px rgba(124,58,237,0.10),
-            0 15px 32px rgba(0,0,0,0.25);
+            0 0 28px rgba(79,70,229,0.09),
+            0 14px 32px rgba(30,41,59,0.10);
     }
 
     .workflow-number {
-        color: #67e8f9;
+        color: #2563eb;
+
         font-size: 10px;
+
         font-weight: 900;
+
         letter-spacing: 1.3px;
     }
 
     .workflow-title {
-        color: #f8fafc;
+        color: #172033;
+
         font-size: 14px;
-        font-weight: 750;
+
+        font-weight: 850;
+
         margin-top: 8px;
     }
 
     .workflow-description {
-        color: #858ba8;
+        color: #334155;
+
         font-size: 12px;
-        line-height: 1.6;
+
+        font-weight: 550;
+
+        line-height: 1.65;
+
         margin-top: 7px;
     }
 
@@ -1701,17 +1872,17 @@ st.markdown(
         background:
             linear-gradient(
                 135deg,
-                rgba(34,211,238,0.08),
-                rgba(124,58,237,0.08)
+                #eff6ff,
+                #eef2ff
             );
 
-        border: 1px solid rgba(34,211,238,0.25);
+        border: 1px solid #bfdbfe;
 
         border-radius: 13px;
 
         padding: 13px 15px;
 
-        color: #a5f3fc;
+        color: #1e3a8a;
 
         margin-top: 10px;
 
@@ -1719,8 +1890,10 @@ st.markdown(
 
         font-size: 13px;
 
+        font-weight: 650;
+
         box-shadow:
-            0 0 20px rgba(34,211,238,0.05);
+            0 0 20px rgba(37,99,235,0.05);
     }
 
 
@@ -1732,11 +1905,13 @@ st.markdown(
         background:
             linear-gradient(
                 145deg,
-                rgba(20,18,45,0.96),
-                rgba(10,12,27,0.98)
+                #ffffff,
+                #f7f9fd
             );
 
-        border: 1px solid rgba(124,58,237,0.24);
+        border: 1px solid #d8e1ec;
+
+        border-left: 4px solid #6366f1;
 
         border-radius: 15px;
 
@@ -1745,59 +1920,100 @@ st.markdown(
         margin-bottom: 11px;
 
         box-shadow:
-            0 8px 22px rgba(0,0,0,0.16);
+            0 7px 20px rgba(30,41,59,0.06);
 
         transition:
             border-color 0.2s ease,
-            transform 0.2s ease;
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
     .question-card:hover {
-        border-color: rgba(34,211,238,0.38);
+        border-color: #aebed4;
+
+        border-left-color: #2563eb;
+
         transform: translateX(2px);
+
+        box-shadow:
+            0 0 20px rgba(37,99,235,0.07),
+            0 9px 23px rgba(30,41,59,0.08);
     }
 
     .question-number {
-        color: #67e8f9;
+        color: #4f46e5;
+
         font-size: 9px;
+
         font-weight: 900;
+
         letter-spacing: 1px;
+
         text-transform: uppercase;
     }
 
     .question-text {
-        color: #dfe3f2;
+        color: #263247;
+
         font-size: 12px;
-        line-height: 1.5;
+
+        font-weight: 600;
+
+        line-height: 1.55;
+
         margin-top: 5px;
     }
 
 
     /* =====================================================
-       REPORT
+       REPORT CONTAINERS
        ===================================================== */
 
-    .report-box {
+    div[data-testid="stVerticalBlockBorderWrapper"] {
         background:
             linear-gradient(
                 145deg,
-                #0e1022,
-                #090b18
-            );
+                #ffffff,
+                #fbfcfe
+            ) !important;
 
-        border: 1px solid rgba(124,58,237,0.24);
+        border: 1px solid #d9e2ed !important;
 
-        border-radius: 17px;
-
-        padding: 24px;
-
-        color: #dbe4f5;
-
-        line-height: 1.75;
+        border-radius: 18px !important;
 
         box-shadow:
-            0 15px 35px rgba(0,0,0,0.20),
-            0 0 25px rgba(124,58,237,0.04);
+            0 10px 30px rgba(30,41,59,0.06) !important;
+
+        padding: 8px !important;
+
+        margin-bottom: 18px !important;
+    }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] p {
+        color: #263247 !important;
+
+        font-size: 14px !important;
+
+        line-height: 1.75 !important;
+    }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] li {
+        color: #263247 !important;
+
+        font-size: 14px !important;
+
+        line-height: 1.7 !important;
+    }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] strong {
+        color: #111827 !important;
+    }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] h1,
+    div[data-testid="stVerticalBlockBorderWrapper"] h2,
+    div[data-testid="stVerticalBlockBorderWrapper"] h3,
+    div[data-testid="stVerticalBlockBorderWrapper"] h4 {
+        color: #172033 !important;
     }
 
 
@@ -1808,18 +2024,18 @@ st.markdown(
     .stButton > button {
         border-radius: 10px !important;
 
-        border: 1px solid rgba(124,58,237,0.40) !important;
+        border: 1px solid #c7d2fe !important;
 
         background:
             linear-gradient(
                 135deg,
-                #33206b,
-                #182b58
+                #4f46e5,
+                #2563eb
             ) !important;
 
-        color: #f8fafc !important;
+        color: #ffffff !important;
 
-        font-weight: 750 !important;
+        font-weight: 800 !important;
 
         min-height: 44px;
 
@@ -1831,18 +2047,18 @@ st.markdown(
     }
 
     .stButton > button:hover {
-        border-color: #22d3ee !important;
+        border-color: #4338ca !important;
 
         background:
             linear-gradient(
                 135deg,
-                #45268c,
-                #173d68
+                #4338ca,
+                #1d4ed8
             ) !important;
 
         box-shadow:
-            0 0 22px rgba(34,211,238,0.14),
-            0 0 35px rgba(124,58,237,0.10);
+            0 0 22px rgba(37,99,235,0.18),
+            0 0 35px rgba(79,70,229,0.10);
 
         transform: translateY(-1px);
     }
@@ -1853,11 +2069,13 @@ st.markdown(
        ===================================================== */
 
     div[data-baseweb="select"] > div {
-        background-color: #0d1021 !important;
+        background-color: #ffffff !important;
 
-        border-color: #303454 !important;
+        border-color: #cbd5e1 !important;
 
         border-radius: 10px !important;
+
+        color: #172033 !important;
 
         transition:
             border-color 0.2s ease,
@@ -1865,33 +2083,48 @@ st.markdown(
     }
 
     div[data-baseweb="select"] > div:hover {
-        border-color: #7c3aed !important;
+        border-color: #6366f1 !important;
 
         box-shadow:
-            0 0 14px rgba(124,58,237,0.10);
+            0 0 14px rgba(79,70,229,0.10);
+    }
+
+    div[data-baseweb="select"] span {
+        color: #172033 !important;
+    }
+
+    div[data-baseweb="select"] input {
+        color: #172033 !important;
     }
 
     textarea {
-        background-color: #0d1021 !important;
+        background-color: #ffffff !important;
 
-        border: 1px solid #303454 !important;
+        border: 1px solid #cbd5e1 !important;
 
-        color: #f8fafc !important;
+        color: #172033 !important;
 
         border-radius: 10px !important;
     }
 
+    textarea::placeholder {
+        color: #64748b !important;
+
+        opacity: 1 !important;
+    }
+
     textarea:focus {
-        border-color: #22d3ee !important;
+        border-color: #2563eb !important;
 
         box-shadow:
-            0 0 0 1px rgba(34,211,238,0.25),
-            0 0 18px rgba(34,211,238,0.07) !important;
+            0 0 0 1px rgba(37,99,235,0.20),
+            0 0 18px rgba(37,99,235,0.08) !important;
     }
 
     label {
-        color: #cdd3e4 !important;
-        font-weight: 600 !important;
+        color: #263247 !important;
+
+        font-weight: 750 !important;
     }
 
 
@@ -1903,13 +2136,13 @@ st.markdown(
         background:
             linear-gradient(
                 135deg,
-                #35206f,
-                #173b61
+                #eef2ff,
+                #eff6ff
             ) !important;
 
-        color: #e0f2fe !important;
+        color: #3730a3 !important;
 
-        border: 1px solid rgba(34,211,238,0.20);
+        border: 1px solid #c7d2fe !important;
     }
 
 
@@ -1918,8 +2151,11 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stCheckbox"] label {
-        color: #cbd5e1 !important;
+        color: #263247 !important;
+
         font-size: 13px !important;
+
+        font-weight: 650 !important;
     }
 
 
@@ -1928,11 +2164,17 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stExpander"] {
-        background: #0d1021;
+        background: #ffffff;
 
-        border: 1px solid #303454;
+        border: 1px solid #d5dfeb;
 
         border-radius: 12px;
+    }
+
+    [data-testid="stExpander"] summary {
+        color: #172033 !important;
+
+        font-weight: 750 !important;
     }
 
 
@@ -1942,8 +2184,14 @@ st.markdown(
 
     [data-testid="stStatusWidget"] {
         border-radius: 14px;
-        background: #0d1021;
-        border-color: #34345f;
+
+        background: #ffffff;
+
+        border-color: #d5dfeb;
+    }
+
+    [data-testid="stStatusWidget"] * {
+        color: #263247;
     }
 
 
@@ -1955,12 +2203,23 @@ st.markdown(
         background:
             linear-gradient(
                 90deg,
-                #7c3aed,
-                #22d3ee
+                #4f46e5,
+                #2563eb
             ) !important;
 
         box-shadow:
-            0 0 14px rgba(34,211,238,0.18);
+            0 0 14px rgba(37,99,235,0.18);
+    }
+
+
+    /* =====================================================
+       WARNING / SUCCESS / ERROR
+       ===================================================== */
+
+    [data-testid="stAlert"] {
+        border-radius: 12px !important;
+
+        font-weight: 600 !important;
     }
 
 
@@ -1969,9 +2228,10 @@ st.markdown(
        ===================================================== */
 
     hr {
-        border-color: rgba(91,96,142,0.28) !important;
+        border-color: #d9e2ec !important;
 
         margin-top: 25px !important;
+
         margin-bottom: 25px !important;
     }
 
@@ -1986,18 +2246,30 @@ st.markdown(
         background:
             linear-gradient(
                 135deg,
-                #372078,
-                #174667
+                #4f46e5,
+                #2563eb
             ) !important;
 
-        border: 1px solid rgba(34,211,238,0.30) !important;
+        border: 1px solid #4338ca !important;
 
-        color: white !important;
+        color: #ffffff !important;
 
-        font-weight: 750 !important;
+        font-weight: 800 !important;
 
         box-shadow:
-            0 0 22px rgba(34,211,238,0.07);
+            0 0 22px rgba(37,99,235,0.10);
+    }
+
+    [data-testid="stDownloadButton"] button:hover {
+        background:
+            linear-gradient(
+                135deg,
+                #4338ca,
+                #1d4ed8
+            ) !important;
+
+        box-shadow:
+            0 0 25px rgba(37,99,235,0.18);
     }
 
 
@@ -2071,6 +2343,7 @@ with st.sidebar:
     st.html(
         """
         <div class="sidebar-brand">
+
             <div class="sidebar-brand-title">
                 ⚙️ MechCare AI
             </div>
@@ -2078,6 +2351,7 @@ with st.sidebar:
             <div class="sidebar-brand-subtitle">
                 Engineering Intelligence
             </div>
+
         </div>
         """
     )
@@ -2175,6 +2449,7 @@ st.html(
     <div class="top-header">
 
         <div>
+
             <div class="top-title">
                 Engineering Command Center
             </div>
@@ -2183,6 +2458,7 @@ st.html(
                 AI-powered machine diagnostics, maintenance planning
                 and engineering reporting.
             </div>
+
         </div>
 
         <div class="online-badge">
@@ -2381,6 +2657,14 @@ with right_column:
         (
             "10",
             "Could operating conditions have changed?"
+        ),
+        (
+            "11",
+            "Does the problem occur continuously or intermittently?"
+        ),
+        (
+            "12",
+            "Are current readings different from normal values?"
         )
     ]
 
@@ -2982,34 +3266,66 @@ Additional Observations:
         )
 
 
-        report_text = final_report
+        report_text = str(final_report)
 
 
         # -------------------------------------------------
-        # EXTRACT PRIORITY
+        # EXTRACT ONLY THE PRIORITY LEVEL
         # -------------------------------------------------
 
         priority = "Not specified"
 
 
-        if "## Priority" in report_text:
+        priority_match = re.search(
+            r"(?is)^\s*##\s*Priority\s*$"
+            r"(.*?)"
+            r"(?=^\s*##\s+|\Z)",
+            report_text,
+            re.MULTILINE
+        )
 
-            priority_section = report_text.split(
-                "## Priority",
-                1
-            )[1]
+
+        if priority_match:
+
+            priority_section = priority_match.group(1).strip()
 
 
-            if "##" in priority_section:
+            level_match = re.search(
+                r"\b(Critical|Urgent|High|Medium|Moderate|Low)\b",
+                priority_section,
+                re.IGNORECASE
+            )
 
-                priority = priority_section.split(
-                    "##",
-                    1
-                )[0].strip()
 
-            else:
+            if level_match:
 
-                priority = priority_section.strip()
+                priority = (
+                    level_match.group(1)
+                    .strip()
+                    .capitalize()
+                )
+
+
+        # -------------------------------------------------
+        # FALLBACK PRIORITY SEARCH
+        # -------------------------------------------------
+
+        if priority == "Not specified":
+
+            fallback_match = re.search(
+                r"(?i)\bPriority\s*[:\-]\s*"
+                r"(Critical|Urgent|High|Medium|Moderate|Low)\b",
+                report_text
+            )
+
+
+            if fallback_match:
+
+                priority = (
+                    fallback_match.group(1)
+                    .strip()
+                    .capitalize()
+                )
 
 
         # -------------------------------------------------
@@ -3040,9 +3356,14 @@ Additional Observations:
             health_status = "🟡 Monitor"
             maintenance_status = "Further Inspection"
 
+        elif "low" in priority_lower:
+
+            health_status = "🟢 Stable"
+            maintenance_status = "Routine Inspection"
+
         else:
 
-            health_status = "🟢 Review Required"
+            health_status = "🔵 Review Required"
             maintenance_status = "Follow Recommended Checks"
 
 
@@ -3050,7 +3371,10 @@ Additional Observations:
         # DASHBOARD CARDS
         # -------------------------------------------------
 
-        dash1, dash2, dash3, dash4 = st.columns(4, gap="small")
+        dash1, dash2, dash3, dash4 = st.columns(
+            4,
+            gap="small"
+        )
 
 
         with dash1:
@@ -3114,7 +3438,7 @@ Additional Observations:
                     </div>
 
                     <div class="status-sub">
-                        Extracted from final report
+                        Primary AI priority level
                     </div>
 
                 </div>
@@ -3191,9 +3515,12 @@ Additional Observations:
             '<div class="section-description">Collecting these measurements or observations can help confirm the possible machine fault.</div>'
         )
 
-        st.markdown(
-            problem_analysis
-        )
+
+        with st.container(border=True):
+
+            st.markdown(
+                problem_analysis
+            )
 
 
         # =================================================
@@ -3208,9 +3535,12 @@ Additional Observations:
             '<div class="section-description">Possible causes, their relationship with the symptoms, and suggested confirmation checks.</div>'
         )
 
-        st.markdown(
-            diagnosis_result
-        )
+
+        with st.container(border=True):
+
+            st.markdown(
+                diagnosis_result
+            )
 
 
         # =================================================
@@ -3305,9 +3635,12 @@ Additional Observations:
             '<div class="section-description">Generated by the MechCare AI multi-agent engineering workflow.</div>'
         )
 
-        st.markdown(
-            final_report
-        )
+
+        with st.container(border=True):
+
+            st.markdown(
+                final_report
+            )
 
 
         # =================================================
