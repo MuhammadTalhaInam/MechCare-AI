@@ -951,19 +951,19 @@ st.markdown("""
 
 
 /* =========================================================
-   GLOBAL TEXT
+   GLOBAL TEXT — IMPROVED VISIBILITY
    ========================================================= */
 
 [data-testid="stMarkdownContainer"] p,
 [data-testid="stMarkdownContainer"] li {
 
-    color: var(--text-secondary) !important;
+    color: #BFD2E3 !important;
 }
 
 
 [data-testid="stMarkdownContainer"] strong {
 
-    color: var(--text-primary) !important;
+    color: #F3F9FF !important;
 }
 
 
@@ -972,7 +972,7 @@ st.markdown("""
 [data-testid="stMarkdownContainer"] h3,
 [data-testid="stMarkdownContainer"] h4 {
 
-    color: var(--text-primary) !important;
+    color: #F3F9FF !important;
 }
 
 
@@ -1014,7 +1014,7 @@ section[data-testid="stSidebar"] p,
 section[data-testid="stSidebar"] label,
 section[data-testid="stSidebar"] span {
 
-    color: var(--text-secondary);
+    color: #C2D5E6 !important;
 }
 
 
@@ -1130,7 +1130,7 @@ div[data-testid="stRadio"] label:hover {
 section[data-testid="stSidebar"]
 div[data-testid="stRadio"] label p {
 
-    color: #D0E0EF !important;
+    color: #D7E6F2 !important;
 
     font-weight: 650 !important;
 }
@@ -1219,7 +1219,7 @@ section[data-testid="stSidebar"] .stButton > button:hover {
 
 
 /* =========================================================
-   INPUTS
+   INPUTS — IMPROVED TEXT VISIBILITY
    ========================================================= */
 
 [data-baseweb="select"] > div {
@@ -1246,6 +1246,35 @@ section[data-testid="stSidebar"] .stButton > button:hover {
 
 
 [data-baseweb="select"] span {
+
+    color: #E8F1FA !important;
+}
+
+
+/* Dropdown labels */
+[data-baseweb="select"] label,
+.stSelectbox label,
+.stTextInput label,
+.stNumberInput label,
+.stTextArea label {
+
+    color: #D4E3EF !important;
+
+    font-weight: 700 !important;
+}
+
+
+/* Dropdown options */
+[data-baseweb="popover"] *,
+[role="listbox"] *,
+[role="option"] {
+
+    color: #DCEAF5 !important;
+}
+
+
+/* Dropdown selected text */
+[data-baseweb="select"] [data-testid="stMarkdownContainer"] {
 
     color: #E8F1FA !important;
 }
@@ -1296,7 +1325,34 @@ input {
 textarea::placeholder,
 input::placeholder {
 
-    color: #7892AA !important;
+    color: #9FB5C8 !important;
+
+    opacity: 1 !important;
+}
+
+
+/* Helper / supporting text under inputs */
+[data-testid="InputInstructions"],
+.stTextInput small,
+.stNumberInput small,
+.stTextArea small {
+
+    color: #AFC4D6 !important;
+}
+
+
+/* Multiselect text */
+[data-baseweb="tag"] {
+
+    background: #0B4676 !important;
+
+    border: 1px solid #1687D9 !important;
+}
+
+
+[data-baseweb="tag"] span {
+
+    color: #F1F8FF !important;
 }
 
 
@@ -1415,11 +1471,16 @@ textarea:focus {
 
 .top-subtitle {
 
-    color: #8EA9C1;
+    color: #B7CBE0 !important;
 
     font-size: 12px;
 
     margin-top: 4px;
+
+    font-weight: 600;
+
+    text-shadow:
+        0 0 8px rgba(0,169,233,0.08);
 }
 
 
@@ -1542,11 +1603,13 @@ textarea:focus {
 
 .info-text {
 
-    color: #B7CBE0;
+    color: #BFD2E3 !important;
 
     font-size: 13px;
 
     line-height: 1.5;
+
+    font-weight: 550;
 }
 
 
@@ -1661,13 +1724,15 @@ textarea:focus {
 
     margin: 0;
 
-    color: #B7CBE0 !important;
+    color: #BFD2E3 !important;
 
     max-width: 950px;
 
     line-height: 1.7;
 
     font-size: 13px;
+
+    font-weight: 550;
 }
 
 
@@ -1764,15 +1829,20 @@ textarea:focus {
 
 .section-description {
 
-    color: #9EB8D0 !important;
+    color: #B7CBE0 !important;
 
-    font-size: 12px !important;
+    font-size: 13px !important;
 
     line-height: 1.6;
 
     margin: 3px 0 18px 17px;
 
     max-width: 900px;
+
+    font-weight: 550;
+
+    text-shadow:
+        0 0 8px rgba(0,169,233,0.08);
 }
 
 
@@ -1885,11 +1955,13 @@ textarea:focus {
 
 .card-small {
 
-    color: #8FA8C1;
+    color: #B7CBE0 !important;
 
-    font-size: 11px;
+    font-size: 12px;
 
     line-height: 1.55;
+
+    font-weight: 550;
 }
 
 
@@ -1997,13 +2069,15 @@ textarea:focus {
 
 .workflow-description {
 
-    color: #8FA8C1;
+    color: #B7CBE0 !important;
 
-    font-size: 11px;
+    font-size: 12px;
 
     margin-top: 6px;
 
     line-height: 1.5;
+
+    font-weight: 550;
 }
 
 
@@ -2079,7 +2153,7 @@ textarea:focus {
 
 .status-label {
 
-    color: #6F91AD;
+    color: #86A5BE;
 
     font-size: 10px;
 
@@ -2216,11 +2290,13 @@ textarea:focus {
 
 .question-text {
 
-    color: #B7CBE0;
+    color: #BFD2E3 !important;
 
-    font-size: 11px;
+    font-size: 12px;
 
     line-height: 1.45;
+
+    font-weight: 550;
 }
 
 
@@ -2248,7 +2324,7 @@ textarea:focus {
 
     margin-top: 9px;
 
-    color: #C7D9E9;
+    color: #D0E0EC !important;
 
     box-shadow:
         0 0 20px rgba(0,169,233,0.06);
@@ -2371,7 +2447,7 @@ textarea:focus {
 
 .progress-label {
 
-    color: #809AB3;
+    color: #A5BCD0;
 
     font-size: 11px;
 
@@ -2464,7 +2540,7 @@ div[data-testid="stProgressBar"] > div > div {
 
 [data-testid="stCheckbox"] label {
 
-    color: #B7CBE0 !important;
+    color: #C1D3E1 !important;
 }
 
 
@@ -2495,7 +2571,7 @@ div[data-testid="stProgressBar"] > div > div {
 
 [data-testid="stMetricLabel"] {
 
-    color: #809AB3 !important;
+    color: #A3B9CD !important;
 }
 
 
@@ -2540,7 +2616,7 @@ hr {
 
 .footer-left {
 
-    color: #718AA3;
+    color: #8FA8C1;
 
     font-size: 10px;
 }
@@ -3589,7 +3665,7 @@ Additional Observations:
                         🏭 {machine_type}
                     </div>
 
-                    <div style="color:#809AB3;font-size:11px;margin-top:5px;">
+                    <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
                         {machine_id}
                     </div>
 
@@ -3611,7 +3687,7 @@ Additional Observations:
                         {health_status}
                     </div>
 
-                    <div style="color:#809AB3;font-size:11px;margin-top:5px;">
+                    <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
                         AI assessment
                     </div>
 
@@ -3633,7 +3709,7 @@ Additional Observations:
                         ⚠️ {priority}
                     </div>
 
-                    <div style="color:#809AB3;font-size:11px;margin-top:5px;">
+                    <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
                         Primary AI priority
                     </div>
 
@@ -3655,7 +3731,7 @@ Additional Observations:
                         🔧 {maintenance_status}
                     </div>
 
-                    <div style="color:#809AB3;font-size:11px;margin-top:5px;">
+                    <div style="color:#AFC4D6;font-size:11px;margin-top:5px;">
                         Recommended action
                     </div>
 
