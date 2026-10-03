@@ -19,12 +19,13 @@ def speak_text(text):
     components.html(
         f"""
         <div style="
-            background:#0b1928;
-            border:1px solid #245276;
+            background:#0d1021;
+            border:1px solid #34345f;
             border-radius:18px;
             padding:20px;
-            color:#dbeafe;
+            color:#e5e7eb;
             font-family:Arial, sans-serif;
+            box-shadow:0 0 25px rgba(124,58,237,0.10);
         ">
 
             <h3 style="
@@ -35,7 +36,7 @@ def speak_text(text):
             </h3>
 
             <p style="
-                color:#94a3b8;
+                color:#9ca3af;
                 margin-bottom:15px;
             ">
                 Listen to the complete AI analysis and change the
@@ -102,7 +103,7 @@ def speak_text(text):
                         padding:8px 12px;
                         border-radius:7px;
                         border:1px solid #475569;
-                        background:#172b40;
+                        background:#17172f;
                         color:#f8fafc;
                         font-size:14px;
                     "
@@ -123,7 +124,7 @@ def speak_text(text):
                 id="voiceStatus"
                 style="
                     margin-top:15px;
-                    color:#7dd3fc;
+                    color:#67e8f9;
                     font-size:14px;
                 "
             >
@@ -535,7 +536,7 @@ def speak_text(text):
             }};
 
 
-            speech.onboundary = function(event){{
+            speech.onboundary = function(event) {{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -555,7 +556,7 @@ def speak_text(text):
             }};
 
 
-            speech.onpause = function(event){{
+            speech.onpause = function(event) {{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -594,7 +595,7 @@ def speak_text(text):
             }};
 
 
-            speech.onresume = function(){{
+            speech.onresume = function() {{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -613,7 +614,7 @@ def speak_text(text):
             }};
 
 
-            speech.onend = function(){{
+            speech.onend = function() {{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -645,7 +646,7 @@ def speak_text(text):
                 }}
 
 
-                setTimeout(function(){{
+                setTimeout(function() {{
 
                     if (
                         thisSession !== speechSession ||
@@ -664,7 +665,7 @@ def speak_text(text):
             }};
 
 
-            speech.onerror = function(event){{
+            speech.onerror = function(event) {{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -700,7 +701,7 @@ def speak_text(text):
         // PLAY / RESUME
         // =================================================
 
-        function playSpeech(){{
+        function playSpeech() {{
 
             if (!("speechSynthesis" in window)) {{
 
@@ -757,7 +758,7 @@ def speak_text(text):
                 );
 
 
-                setTimeout(function(){{
+                setTimeout(function() {{
 
                     if (
                         !isStopped &&
@@ -812,7 +813,7 @@ def speak_text(text):
             window.speechSynthesis.cancel();
 
 
-            setTimeout(function(){{
+            setTimeout(function() {{
 
                 if (!isStopped) {{
 
@@ -831,7 +832,7 @@ def speak_text(text):
         // PAUSE
         // =================================================
 
-        function pauseSpeech(){{
+        function pauseSpeech() {{
 
             if (
                 !("speechSynthesis" in window)
@@ -870,7 +871,7 @@ def speak_text(text):
             window.speechSynthesis.pause();
 
 
-            setTimeout(function(){{
+            setTimeout(function() {{
 
                 if (isPaused) {{
 
@@ -889,7 +890,7 @@ def speak_text(text):
         // STOP
         // =================================================
 
-        function stopSpeech(){{
+        function stopSpeech() {{
 
             if ("speechSynthesis" in window) {{
 
@@ -925,7 +926,7 @@ def speak_text(text):
         // CHANGE SPEED
         // =================================================
 
-        function changeSpeed(){{
+        function changeSpeed() {{
 
             const selectedSpeed =
                 parseFloat(
@@ -976,7 +977,7 @@ def speak_text(text):
                 window.speechSynthesis.pause();
 
 
-                setTimeout(function(){{
+                setTimeout(function() {{
 
                     if (!isChangingSpeed) {{
                         return;
@@ -1011,7 +1012,7 @@ def speak_text(text):
                     );
 
 
-                    setTimeout(function(){{
+                    setTimeout(function() {{
 
                         if (!isStopped) {{
 
@@ -1111,64 +1112,110 @@ st.markdown(
     """
     <style>
 
+    /* =====================================================
+       GLOBAL
+       ===================================================== */
+
     .stApp {
         background:
             radial-gradient(
-                circle at 15% 10%,
-                rgba(14, 116, 144, 0.12),
-                transparent 30%
+                circle at 10% 5%,
+                rgba(124, 58, 237, 0.18),
+                transparent 28%
             ),
             radial-gradient(
-                circle at 85% 20%,
-                rgba(124, 58, 237, 0.08),
-                transparent 28%
+                circle at 90% 12%,
+                rgba(34, 211, 238, 0.13),
+                transparent 25%
+            ),
+            radial-gradient(
+                circle at 50% 80%,
+                rgba(168, 85, 247, 0.07),
+                transparent 30%
             ),
             linear-gradient(
                 135deg,
-                #050b14 0%,
-                #081421 45%,
-                #0a1724 100%
+                #070817 0%,
+                #0b0d1c 45%,
+                #0d1024 100%
             );
     }
 
     .block-container {
-        max-width: 1500px;
-        padding-top: 1.4rem;
+        max-width: 1550px;
+        padding-top: 1.3rem;
         padding-bottom: 3rem;
         padding-left: 2rem;
         padding-right: 2rem;
     }
 
+    ::selection {
+        background: rgba(34,211,238,0.30);
+        color: white;
+    }
+
+
+    /* =====================================================
+       SIDEBAR
+       ===================================================== */
+
     [data-testid="stSidebar"] {
         background:
             linear-gradient(
                 180deg,
-                #07111d 0%,
-                #081725 55%,
-                #06101b 100%
+                #08091a 0%,
+                #0b0d20 50%,
+                #070817 100%
             );
-        border-right: 1px solid #17344b;
+
+        border-right: 1px solid rgba(124,58,237,0.28);
+
+        box-shadow:
+            10px 0 45px rgba(0,0,0,0.25);
     }
 
     [data-testid="stSidebar"] > div:first-child {
-        padding-top: 1.2rem;
+        padding-top: 1rem;
     }
 
     [data-testid="stSidebar"] .stMarkdown {
         color: #cbd5e1;
     }
 
+
+    /* SIDEBAR BRAND */
+
     .sidebar-brand {
-        padding: 18px;
-        border: 1px solid #1c4059;
-        border-radius: 16px;
-        background: linear-gradient(
-            135deg,
-            #0c2032,
-            #0b1827
-        );
+        padding: 19px;
+        border: 1px solid rgba(124,58,237,0.42);
+        border-radius: 18px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(42,27,76,0.95),
+                rgba(13,17,38,0.96)
+            );
+
         margin-bottom: 20px;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+
+        box-shadow:
+            0 0 25px rgba(124,58,237,0.12),
+            0 15px 35px rgba(0,0,0,0.25);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sidebar-brand:after {
+        content: "";
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        right: -50px;
+        top: -50px;
+        background: rgba(34,211,238,0.10);
     }
 
     .sidebar-brand-title {
@@ -1179,40 +1226,50 @@ st.markdown(
     }
 
     .sidebar-brand-subtitle {
-        color: #38bdf8;
+        color: #67e8f9;
         font-size: 11px;
-        letter-spacing: 1.2px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
     }
 
     .sidebar-section {
-        color: #64748b;
-        font-size: 11px;
+        color: #7176a0;
+        font-size: 10px;
         font-weight: 800;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.7px;
         text-transform: uppercase;
         margin-top: 22px;
         margin-bottom: 8px;
     }
 
     .sidebar-machine {
-        background: #0c1b2a;
-        border: 1px solid #1a3a50;
-        border-radius: 14px;
+        background:
+            linear-gradient(
+                135deg,
+                #11132b,
+                #0b0d1e
+            );
+
+        border: 1px solid rgba(34,211,238,0.18);
+        border-radius: 15px;
+
         padding: 14px;
         margin-top: 15px;
+
+        box-shadow:
+            0 0 22px rgba(34,211,238,0.06);
     }
 
     .sidebar-machine-label {
-        color: #64748b;
-        font-size: 11px;
+        color: #7176a0;
+        font-size: 10px;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
 
     .sidebar-machine-name {
         color: #f8fafc;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 700;
         margin-top: 4px;
     }
@@ -1222,12 +1279,20 @@ st.markdown(
         margin-top: 9px;
         padding: 5px 9px;
         border-radius: 999px;
-        background: rgba(52,211,153,0.12);
-        color: #34d399;
+
+        background: rgba(52,211,153,0.09);
+        color: #6ee7b7;
+
         border: 1px solid rgba(52,211,153,0.25);
-        font-size: 11px;
+
+        font-size: 10px;
         font-weight: 700;
     }
+
+
+    /* =====================================================
+       HEADERS
+       ===================================================== */
 
     h1, h2, h3 {
         color: #f8fafc !important;
@@ -1241,29 +1306,62 @@ st.markdown(
     }
 
     .section-description {
-        color: #8fa3b8;
+        color: #9298b5;
         font-size: 13px;
         line-height: 1.6;
         margin-bottom: 14px;
     }
+
+
+    /* =====================================================
+       TOP HEADER
+       ===================================================== */
 
     .top-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 20px;
-        padding: 20px 22px;
+
+        padding: 20px 23px;
         margin-bottom: 20px;
+
         background:
             linear-gradient(
                 135deg,
-                rgba(13,34,56,0.95),
-                rgba(9,24,39,0.95)
+                rgba(27,21,55,0.96),
+                rgba(11,14,31,0.96)
             );
-        border: 1px solid #1a4059;
-        border-radius: 18px;
+
+        border: 1px solid rgba(124,58,237,0.34);
+        border-radius: 20px;
+
         box-shadow:
-            0 16px 40px rgba(0,0,0,0.22);
+            0 0 35px rgba(124,58,237,0.08),
+            0 18px 45px rgba(0,0,0,0.25);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    .top-header:before {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 2px;
+        left: 0;
+        bottom: 0;
+
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                #7c3aed,
+                #22d3ee,
+                transparent
+            );
+
+        opacity: 0.9;
     }
 
     .top-title {
@@ -1274,87 +1372,160 @@ st.markdown(
     }
 
     .top-subtitle {
-        color: #8fa3b8;
+        color: #9298b5;
         font-size: 13px;
         margin-top: 4px;
     }
 
     .online-badge {
-        background: rgba(52,211,153,0.10);
-        color: #34d399;
-        border: 1px solid rgba(52,211,153,0.28);
+        background: rgba(34,211,238,0.08);
+        color: #67e8f9;
+        border: 1px solid rgba(34,211,238,0.28);
         border-radius: 999px;
+
         padding: 8px 13px;
-        font-size: 12px;
+
+        font-size: 11px;
         font-weight: 700;
         white-space: nowrap;
+
+        box-shadow:
+            0 0 18px rgba(34,211,238,0.08);
     }
+
+
+    /* =====================================================
+       HERO
+       ===================================================== */
 
     .hero {
         position: relative;
         overflow: hidden;
+
         background:
             linear-gradient(
                 135deg,
-                #0c243b 0%,
-                #0b1b2c 60%,
-                #111d31 100%
+                #171538 0%,
+                #11142c 48%,
+                #10182c 100%
             );
-        border: 1px solid #1d4d6b;
-        border-radius: 20px;
-        padding: 28px;
-        margin-bottom: 20px;
+
+        border: 1px solid rgba(124,58,237,0.40);
+        border-radius: 22px;
+
+        padding: 30px;
+
+        margin-bottom: 22px;
+
         box-shadow:
-            0 20px 50px rgba(0,0,0,0.25);
+            0 0 45px rgba(124,58,237,0.10),
+            0 22px 55px rgba(0,0,0,0.28);
+    }
+
+    .hero:before {
+        content: "";
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+
+        right: -140px;
+        top: -160px;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(34,211,238,0.15),
+                transparent 65%
+            );
     }
 
     .hero:after {
         content: "";
         position: absolute;
-        width: 190px;
-        height: 190px;
+
+        width: 170px;
+        height: 170px;
+
         border-radius: 50%;
-        right: -70px;
-        top: -70px;
-        background: rgba(56,189,248,0.08);
+
+        right: 80px;
+        bottom: -120px;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(168,85,247,0.13),
+                transparent 70%
+            );
     }
 
     .hero h1 {
-        color: #f8fafc;
-        font-size: 39px;
+        color: #ffffff;
+        font-size: 40px;
         margin: 0;
+        letter-spacing: -1px;
     }
 
     .hero h3 {
-        color: #38bdf8 !important;
+        color: #67e8f9 !important;
         font-size: 16px;
         margin-top: 6px;
     }
 
     .hero p {
-        color: #b8c7d8;
+        color: #b7bdd2;
         font-size: 14px;
         line-height: 1.75;
         max-width: 850px;
         margin-bottom: 0;
     }
 
+
+    /* =====================================================
+       CARDS
+       ===================================================== */
+
     .ui-card {
-        background: #0b1928;
-        border: 1px solid #1b3b52;
-        border-radius: 16px;
+        background:
+            linear-gradient(
+                145deg,
+                rgba(17,20,43,0.96),
+                rgba(10,12,27,0.98)
+            );
+
+        border: 1px solid rgba(92,96,143,0.28);
+        border-radius: 17px;
+
         padding: 18px;
         margin-bottom: 15px;
+
         box-shadow:
-            0 12px 30px rgba(0,0,0,0.16);
+            0 12px 30px rgba(0,0,0,0.18),
+            inset 0 1px 0 rgba(255,255,255,0.025);
+
+        transition:
+            border-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .ui-card:hover {
+        border-color: rgba(34,211,238,0.35);
+
+        box-shadow:
+            0 0 25px rgba(34,211,238,0.07),
+            0 15px 35px rgba(0,0,0,0.22);
+
+        transform: translateY(-1px);
     }
 
     .card-label {
-        color: #64748b;
+        color: #6f759c;
         font-size: 10px;
         font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 1.3px;
+        letter-spacing: 1.4px;
         margin-bottom: 6px;
     }
 
@@ -1365,23 +1536,60 @@ st.markdown(
     }
 
     .card-small {
-        color: #94a3b8;
+        color: #9298b5;
         font-size: 12px;
         margin-top: 5px;
     }
 
+
+    /* =====================================================
+       STATUS CARDS
+       ===================================================== */
+
     .status-card {
-        background: #0b1928;
-        border: 1px solid #1b3b52;
-        border-radius: 16px;
+        background:
+            linear-gradient(
+                145deg,
+                rgba(17,20,43,0.98),
+                rgba(10,12,27,0.98)
+            );
+
+        border: 1px solid rgba(92,96,143,0.30);
+        border-radius: 17px;
+
         padding: 17px;
+
         min-height: 112px;
+
         box-shadow:
-            0 10px 26px rgba(0,0,0,0.15);
+            0 12px 30px rgba(0,0,0,0.18);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    .status-card:after {
+        content: "";
+        position: absolute;
+
+        width: 90px;
+        height: 90px;
+
+        right: -45px;
+        bottom: -45px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(124,58,237,0.13),
+                transparent 70%
+            );
     }
 
     .status-title {
-        color: #64748b;
+        color: #6f759c;
         font-size: 10px;
         font-weight: 800;
         text-transform: uppercase;
@@ -1397,24 +1605,74 @@ st.markdown(
     }
 
     .status-sub {
-        color: #8fa3b8;
+        color: #858ba8;
         font-size: 11px;
         margin-top: 5px;
     }
 
+
+    /* =====================================================
+       WORKFLOW
+       ===================================================== */
+
     .workflow-card {
-        background: #091725;
-        border: 1px solid #1a3a50;
-        border-radius: 16px;
+        background:
+            linear-gradient(
+                145deg,
+                #11142b,
+                #0b0d1e
+            );
+
+        border: 1px solid rgba(124,58,237,0.25);
+        border-radius: 17px;
+
         padding: 18px;
+
         height: 100%;
         min-height: 155px;
+
         box-shadow:
-            0 10px 26px rgba(0,0,0,0.15);
+            0 10px 28px rgba(0,0,0,0.18);
+
+        position: relative;
+        overflow: hidden;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .workflow-card:before {
+        content: "";
+        position: absolute;
+
+        left: 0;
+        top: 0;
+
+        width: 3px;
+        height: 100%;
+
+        background:
+            linear-gradient(
+                180deg,
+                #22d3ee,
+                #7c3aed
+            );
+    }
+
+    .workflow-card:hover {
+        transform: translateY(-3px);
+
+        border-color: rgba(34,211,238,0.45);
+
+        box-shadow:
+            0 0 30px rgba(124,58,237,0.10),
+            0 15px 32px rgba(0,0,0,0.25);
     }
 
     .workflow-number {
-        color: #38bdf8;
+        color: #67e8f9;
         font-size: 10px;
         font-weight: 900;
         letter-spacing: 1.3px;
@@ -1428,112 +1686,324 @@ st.markdown(
     }
 
     .workflow-description {
-        color: #8fa3b8;
+        color: #858ba8;
         font-size: 12px;
         line-height: 1.6;
         margin-top: 7px;
     }
 
+
+    /* =====================================================
+       SYMPTOM BOX
+       ===================================================== */
+
     .symptom-box {
-        background: rgba(14,116,144,0.12);
-        border: 1px solid rgba(56,189,248,0.25);
-        border-radius: 13px;
-        padding: 13px 15px;
-        color: #7dd3fc;
-        margin-top: 10px;
-        line-height: 1.6;
-        font-size: 13px;
-    }
-
-    .report-box {
-        background: #081522;
-        border: 1px solid #1c4058;
-        border-radius: 17px;
-        padding: 24px;
-        color: #dbeafe;
-        line-height: 1.75;
-        box-shadow:
-            0 15px 35px rgba(0,0,0,0.18);
-    }
-
-    .stButton > button {
-        border-radius: 10px !important;
-        border: 1px solid #245b7c !important;
         background:
             linear-gradient(
                 135deg,
-                #0e4566,
-                #0b314b
+                rgba(34,211,238,0.08),
+                rgba(124,58,237,0.08)
+            );
+
+        border: 1px solid rgba(34,211,238,0.25);
+
+        border-radius: 13px;
+
+        padding: 13px 15px;
+
+        color: #a5f3fc;
+
+        margin-top: 10px;
+
+        line-height: 1.6;
+
+        font-size: 13px;
+
+        box-shadow:
+            0 0 20px rgba(34,211,238,0.05);
+    }
+
+
+    /* =====================================================
+       QUESTIONS
+       ===================================================== */
+
+    .question-card {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(20,18,45,0.96),
+                rgba(10,12,27,0.98)
+            );
+
+        border: 1px solid rgba(124,58,237,0.24);
+
+        border-radius: 15px;
+
+        padding: 14px 15px;
+
+        margin-bottom: 11px;
+
+        box-shadow:
+            0 8px 22px rgba(0,0,0,0.16);
+
+        transition:
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .question-card:hover {
+        border-color: rgba(34,211,238,0.38);
+        transform: translateX(2px);
+    }
+
+    .question-number {
+        color: #67e8f9;
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .question-text {
+        color: #dfe3f2;
+        font-size: 12px;
+        line-height: 1.5;
+        margin-top: 5px;
+    }
+
+
+    /* =====================================================
+       REPORT
+       ===================================================== */
+
+    .report-box {
+        background:
+            linear-gradient(
+                145deg,
+                #0e1022,
+                #090b18
+            );
+
+        border: 1px solid rgba(124,58,237,0.24);
+
+        border-radius: 17px;
+
+        padding: 24px;
+
+        color: #dbe4f5;
+
+        line-height: 1.75;
+
+        box-shadow:
+            0 15px 35px rgba(0,0,0,0.20),
+            0 0 25px rgba(124,58,237,0.04);
+    }
+
+
+    /* =====================================================
+       BUTTONS
+       ===================================================== */
+
+    .stButton > button {
+        border-radius: 10px !important;
+
+        border: 1px solid rgba(124,58,237,0.40) !important;
+
+        background:
+            linear-gradient(
+                135deg,
+                #33206b,
+                #182b58
             ) !important;
+
         color: #f8fafc !important;
+
         font-weight: 750 !important;
+
         min-height: 44px;
+
         transition:
             transform 0.15s ease,
             border-color 0.15s ease,
-            box-shadow 0.15s ease;
+            box-shadow 0.15s ease,
+            background 0.15s ease;
     }
 
     .stButton > button:hover {
-        border-color: #38bdf8 !important;
+        border-color: #22d3ee !important;
+
+        background:
+            linear-gradient(
+                135deg,
+                #45268c,
+                #173d68
+            ) !important;
+
         box-shadow:
-            0 0 20px rgba(56,189,248,0.15);
+            0 0 22px rgba(34,211,238,0.14),
+            0 0 35px rgba(124,58,237,0.10);
+
         transform: translateY(-1px);
     }
 
+
+    /* =====================================================
+       INPUTS
+       ===================================================== */
+
     div[data-baseweb="select"] > div {
-        background-color: #0b1928 !important;
-        border-color: #23455d !important;
+        background-color: #0d1021 !important;
+
+        border-color: #303454 !important;
+
         border-radius: 10px !important;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
     div[data-baseweb="select"] > div:hover {
-        border-color: #38bdf8 !important;
+        border-color: #7c3aed !important;
+
+        box-shadow:
+            0 0 14px rgba(124,58,237,0.10);
     }
 
     textarea {
-        background-color: #0b1928 !important;
-        border: 1px solid #23455d !important;
+        background-color: #0d1021 !important;
+
+        border: 1px solid #303454 !important;
+
         color: #f8fafc !important;
+
         border-radius: 10px !important;
     }
 
     textarea:focus {
-        border-color: #38bdf8 !important;
+        border-color: #22d3ee !important;
+
         box-shadow:
-            0 0 0 1px rgba(56,189,248,0.25) !important;
+            0 0 0 1px rgba(34,211,238,0.25),
+            0 0 18px rgba(34,211,238,0.07) !important;
     }
 
     label {
-        color: #cbd5e1 !important;
+        color: #cdd3e4 !important;
         font-weight: 600 !important;
     }
 
+
+    /* =====================================================
+       MULTISELECT
+       ===================================================== */
+
     [data-baseweb="tag"] {
-        background-color: #12405e !important;
-        color: #dbeafe !important;
+        background:
+            linear-gradient(
+                135deg,
+                #35206f,
+                #173b61
+            ) !important;
+
+        color: #e0f2fe !important;
+
+        border: 1px solid rgba(34,211,238,0.20);
     }
+
+
+    /* =====================================================
+       CHECKBOX
+       ===================================================== */
 
     [data-testid="stCheckbox"] label {
         color: #cbd5e1 !important;
         font-size: 13px !important;
     }
 
+
+    /* =====================================================
+       EXPANDERS
+       ===================================================== */
+
     [data-testid="stExpander"] {
-        background: #0b1928;
-        border: 1px solid #1b3b52;
+        background: #0d1021;
+
+        border: 1px solid #303454;
+
         border-radius: 12px;
     }
 
+
+    /* =====================================================
+       STATUS
+       ===================================================== */
+
     [data-testid="stStatusWidget"] {
         border-radius: 14px;
+        background: #0d1021;
+        border-color: #34345f;
     }
 
+
+    /* =====================================================
+       PROGRESS BAR
+       ===================================================== */
+
+    [data-testid="stProgressBar"] > div > div {
+        background:
+            linear-gradient(
+                90deg,
+                #7c3aed,
+                #22d3ee
+            ) !important;
+
+        box-shadow:
+            0 0 14px rgba(34,211,238,0.18);
+    }
+
+
+    /* =====================================================
+       DIVIDER
+       ===================================================== */
+
     hr {
-        border-color: #17354a !important;
+        border-color: rgba(91,96,142,0.28) !important;
+
         margin-top: 25px !important;
         margin-bottom: 25px !important;
     }
+
+
+    /* =====================================================
+       DOWNLOAD BUTTON
+       ===================================================== */
+
+    [data-testid="stDownloadButton"] button {
+        border-radius: 11px !important;
+
+        background:
+            linear-gradient(
+                135deg,
+                #372078,
+                #174667
+            ) !important;
+
+        border: 1px solid rgba(34,211,238,0.30) !important;
+
+        color: white !important;
+
+        font-weight: 750 !important;
+
+        box-shadow:
+            0 0 22px rgba(34,211,238,0.07);
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
 
     @media (max-width: 1100px) {
 
@@ -1692,13 +2162,8 @@ with st.sidebar:
 
     st.markdown("")
 
-    st.caption(
-        "MechCare AI v1.0"
-    )
-
-    st.caption(
-        "Engineering decision support system"
-    )
+    st.caption("MechCare AI v1.0")
+    st.caption("Engineering decision support system")
 
 
 # =========================================================
@@ -1864,6 +2329,80 @@ with right_column:
     )
 
 
+    # =====================================================
+    # ENGINEERING QUESTIONS
+    # =====================================================
+
+    st.html(
+        '<div class="section-title" style="margin-top:22px;">💡 Engineering Questions</div>'
+    )
+
+    st.html(
+        '<div class="section-description">Useful questions to consider during machine inspection.</div>'
+    )
+
+    engineering_questions = [
+        (
+            "01",
+            "What changed before the problem started?"
+        ),
+        (
+            "02",
+            "Does the symptom increase with machine speed?"
+        ),
+        (
+            "03",
+            "Does the problem appear under heavy load?"
+        ),
+        (
+            "04",
+            "Is the machine temperature higher than normal?"
+        ),
+        (
+            "05",
+            "Has the machine recently been repaired or adjusted?"
+        ),
+        (
+            "06",
+            "Is the vibration coming from a specific component?"
+        ),
+        (
+            "07",
+            "When was the machine last lubricated?"
+        ),
+        (
+            "08",
+            "Are there any unusual sounds, smells or leaks?"
+        ),
+        (
+            "09",
+            "Has machine performance gradually decreased?"
+        ),
+        (
+            "10",
+            "Could operating conditions have changed?"
+        )
+    ]
+
+    for number, question in engineering_questions:
+
+        st.html(
+            f"""
+            <div class="question-card">
+
+                <div class="question-number">
+                    ENGINEERING CHECK {number}
+                </div>
+
+                <div class="question-text">
+                    {question}
+                </div>
+
+            </div>
+            """
+        )
+
+
 # =========================================================
 # CENTER WORKSPACE
 # =========================================================
@@ -1881,6 +2420,7 @@ with main_column:
     st.html(
         '<div class="section-description">Your machine problem is processed through four specialized engineering agents.</div>'
     )
+
 
     workflow = [
         (
@@ -1905,7 +2445,9 @@ with main_column:
         )
     ]
 
+
     workflow_columns = st.columns(4, gap="small")
+
 
     for column, agent in zip(workflow_columns, workflow):
 
@@ -1932,6 +2474,7 @@ with main_column:
                 </div>
                 """
             )
+
 
     st.divider()
 
@@ -2008,7 +2551,12 @@ with main_column:
     }
 
 
+    # =====================================================
+    # MACHINE INFORMATION
+    # =====================================================
+
     col1, col2, col3 = st.columns(3)
+
 
     with col1:
 
@@ -2025,6 +2573,7 @@ with main_column:
                 "Other"
             ]
         )
+
 
     with col2:
 
@@ -2043,6 +2592,7 @@ with main_column:
             ]
         )
 
+
     with col3:
 
         manufacturer = st.selectbox(
@@ -2060,7 +2610,9 @@ with main_column:
             ]
         )
 
+
     col4, col5, col6 = st.columns(3)
+
 
     with col4:
 
@@ -2068,6 +2620,7 @@ with main_column:
             "🔧 Model",
             MACHINE_MODELS[machine_type]
         )
+
 
     with col5:
 
@@ -2082,6 +2635,7 @@ with main_column:
                 "Unknown"
             ]
         )
+
 
     with col6:
 
@@ -2098,7 +2652,9 @@ with main_column:
             ]
         )
 
+
     col7, col8, col9 = st.columns(3)
+
 
     with col7:
 
@@ -2115,6 +2671,7 @@ with main_column:
             ]
         )
 
+
     with col8:
 
         load_condition = st.selectbox(
@@ -2129,6 +2686,7 @@ with main_column:
             ]
         )
 
+
     with col9:
 
         last_maintenance = st.selectbox(
@@ -2142,6 +2700,7 @@ with main_column:
                 "Unknown"
             ]
         )
+
 
     st.divider()
 
@@ -2158,6 +2717,7 @@ with main_column:
         '<div class="section-description">Select all symptoms currently observed in the machine.</div>'
     )
 
+
     symptom_options = [
         "🔊 Unusual Noise",
         "📳 Excessive Vibration",
@@ -2173,11 +2733,13 @@ with main_column:
         "⚠️ Other"
     ]
 
+
     selected_symptoms = st.multiselect(
         "Select observed symptoms",
         symptom_options,
         placeholder="Choose one or more symptoms..."
     )
+
 
     if selected_symptoms:
 
@@ -2186,6 +2748,7 @@ with main_column:
             + "  •  ".join(selected_symptoms)
             + "</div>"
         )
+
 
     st.divider()
 
@@ -2202,6 +2765,7 @@ with main_column:
         '<div class="section-description">Describe what is happening. More useful information gives the AI better engineering context.</div>'
     )
 
+
     problem_description = st.text_area(
         "Problem Description",
         placeholder=(
@@ -2210,6 +2774,7 @@ with main_column:
         ),
         height=130
     )
+
 
     operating_condition = st.text_area(
         "Operating Condition",
@@ -2220,6 +2785,7 @@ with main_column:
         height=110
     )
 
+
     additional_observations = st.text_area(
         "Additional Observations",
         placeholder=(
@@ -2229,7 +2795,13 @@ with main_column:
         height=110
     )
 
+
+    # =====================================================
+    # ANALYZE BUTTON
+    # =====================================================
+
     st.write("")
+
 
     analyze_button = st.button(
         "🔍 Analyze Machine Problem",
@@ -2256,6 +2828,11 @@ with main_column:
                 if selected_symptoms
                 else "No specific symptoms selected"
             )
+
+
+            # -------------------------------------------------
+            # CREATE MACHINE INFORMATION FOR THE AI
+            # -------------------------------------------------
 
             machine_problem = f"""
 
@@ -2305,6 +2882,11 @@ Additional Observations:
 
 """
 
+
+            # -------------------------------------------------
+            # RUN FOUR AGENTS
+            # -------------------------------------------------
+
             with st.status(
                 "⚙️ MechCare AI is analyzing your machine...",
                 expanded=True
@@ -2339,6 +2921,7 @@ Additional Observations:
                     )
 
                     st.session_state.analysis_result = result
+
                     st.session_state.agents_completed = True
 
                     st.success(
@@ -2374,6 +2957,11 @@ Additional Observations:
 
         result = st.session_state.analysis_result
 
+
+        # -------------------------------------------------
+        # GET RESULTS
+        # -------------------------------------------------
+
         problem_analysis = result["problem_analysis"]
         diagnosis_result = result["diagnosis"]
         final_report = result["final_report"]
@@ -2393,9 +2981,16 @@ Additional Observations:
             '<div class="section-description">AI-generated health and maintenance overview based on the current engineering analysis.</div>'
         )
 
+
         report_text = final_report
 
+
+        # -------------------------------------------------
+        # EXTRACT PRIORITY
+        # -------------------------------------------------
+
         priority = "Not specified"
+
 
         if "## Priority" in report_text:
 
@@ -2403,6 +2998,7 @@ Additional Observations:
                 "## Priority",
                 1
             )[1]
+
 
             if "##" in priority_section:
 
@@ -2415,7 +3011,13 @@ Additional Observations:
 
                 priority = priority_section.strip()
 
+
+        # -------------------------------------------------
+        # DETERMINE HEALTH STATUS
+        # -------------------------------------------------
+
         priority_lower = priority.lower()
+
 
         if (
             "critical" in priority_lower
@@ -2444,7 +3046,12 @@ Additional Observations:
             maintenance_status = "Follow Recommended Checks"
 
 
+        # -------------------------------------------------
+        # DASHBOARD CARDS
+        # -------------------------------------------------
+
         dash1, dash2, dash3, dash4 = st.columns(4, gap="small")
+
 
         with dash1:
 
@@ -2468,6 +3075,7 @@ Additional Observations:
                 """
             )
 
+
         with dash2:
 
             st.html(
@@ -2490,6 +3098,7 @@ Additional Observations:
                 """
             )
 
+
         with dash3:
 
             st.html(
@@ -2511,6 +3120,7 @@ Additional Observations:
                 </div>
                 """
             )
+
 
         with dash4:
 
@@ -2581,7 +3191,9 @@ Additional Observations:
             '<div class="section-description">Collecting these measurements or observations can help confirm the possible machine fault.</div>'
         )
 
-        st.markdown(problem_analysis)
+        st.markdown(
+            problem_analysis
+        )
 
 
         # =================================================
@@ -2596,7 +3208,9 @@ Additional Observations:
             '<div class="section-description">Possible causes, their relationship with the symptoms, and suggested confirmation checks.</div>'
         )
 
-        st.markdown(diagnosis_result)
+        st.markdown(
+            diagnosis_result
+        )
 
 
         # =================================================
@@ -2611,22 +3225,27 @@ Additional Observations:
             '<div class="section-description">Tick each inspection when it has been completed.</div>'
         )
 
+
         completed_count = sum(
             1
             for item in checklist_items
             if st.session_state[item]
         )
 
+
         progress_value = (
             completed_count / len(checklist_items)
         )
+
 
         st.progress(
             progress_value,
             text=f"{completed_count} of {len(checklist_items)} checks completed"
         )
 
+
         check1, check2 = st.columns(2)
+
 
         with check1:
 
@@ -2649,6 +3268,7 @@ Additional Observations:
                 "Check for leakage",
                 key="Check for leakage"
             )
+
 
         with check2:
 
@@ -2685,7 +3305,9 @@ Additional Observations:
             '<div class="section-description">Generated by the MechCare AI multi-agent engineering workflow.</div>'
         )
 
-        st.markdown(final_report)
+        st.markdown(
+            final_report
+        )
 
 
         # =================================================
@@ -2700,6 +3322,9 @@ Additional Observations:
             '<div class="section-description">Listen to the complete AI analysis, diagnosis, and final engineering report.</div>'
         )
 
+
+        # Combine all AI-generated results
+        # so the voice reads the complete output.
 
         complete_voice_text = f"""
 MechCare AI Engineering Analysis.
