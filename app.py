@@ -63,6 +63,19 @@ def speak_text(text):
                 </button>
 
                 <button
+                    onclick="pauseSpeech()"
+                    style="
+                        padding:9px 18px;
+                        border:none;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-size:14px;
+                    "
+                >
+                    ⏸️ Pause
+                </button>
+
+                <button
                     onclick="stopSpeech()"
                     style="
                         padding:9px 18px;
@@ -124,32 +137,49 @@ def speak_text(text):
 
         const rawReportText = {report_json};
 
-        // Clean Markdown formatting ONLY for voice output.
-        // The original report shown in Streamlit remains unchanged.
+
+        // -------------------------------------------------
+        // CLEAN TEXT FOR VOICE
+        // -------------------------------------------------
+        // This cleaning is ONLY for the voice.
+        // The original report displayed in Streamlit
+        // remains completely unchanged.
 
         const reportText = rawReportText
-            // Remove Markdown headings: #, ##, ###, etc.
-            .replace(/^#{1,6}\\s*/gm, "")
 
-            // Remove bold Markdown: **text**
+            // Remove Markdown heading symbols
+            // Example: ## Priority -> Priority
+            .replace(/^#+\\s*/gm, "")
+
+            // Remove bold Markdown
+            // Example: **Important** -> Important
             .replace(/\\*\\*(.*?)\\*\\*/g, "$1")
 
-            // Remove italic Markdown: *text*
+            // Remove italic Markdown
+            // Example: *Important* -> Important
             .replace(/\\*(.*?)\\*/g, "$1")
 
-            // Remove inline code formatting: `text`
+            // Remove inline code formatting
+            // Example: `RPM` -> RPM
             .replace(/`(.*?)`/g, "$1")
 
             // Remove Markdown horizontal lines
             .replace(/^[-*_]{3,}\\s*$/gm, "")
 
-            // Remove Markdown bullet symbols
+            // Remove bullet symbols
             .replace(/^\\s*[-*+]\\s+/gm, "")
 
-            // Remove extra spaces
+            // Remove numbered-list Markdown formatting
+            // Example: 1. Check bearing -> Check bearing
+            .replace(/^\\s*\\d+[.)]\\s+/gm, "")
+
+            // Remove remaining Markdown characters
+            .replace(/^\\s*[#*_]+\\s*/gm, "")
+
+            // Clean extra spaces
             .replace(/[ \\t]+/g, " ")
 
-            // Remove excessive blank lines
+            // Clean excessive blank lines
             .replace(/\\n{3,}/g, "\\n\\n")
 
             .trim();
@@ -157,10 +187,11 @@ def speak_text(text):
 
         let speech = null;
         let currentSpeed = 1;
+        let isStopped = true;
 
 
         // -------------------------------------------------
-        // PLAY
+        // PLAY / RESUME
         // -------------------------------------------------
 
         function playSpeech() {{
@@ -174,7 +205,34 @@ def speak_text(text):
             }}
 
 
-            // Stop anything currently playing
+            // If speech is paused, resume from the same position.
+            if (
+                speech &&
+                window.speechSynthesis.paused
+            ) {{
+
+                window.speechSynthesis.resume();
+
+                isStopped = false;
+
+                document.getElementById("voiceStatus").innerText =
+                    "🔊 Speaking...";
+
+                return;
+            }}
+
+
+            // If speech is already speaking, do nothing.
+            if (
+                speech &&
+                window.speechSynthesis.speaking
+            ) {{
+
+                return;
+            }}
+
+
+            // Start a completely new speech.
             window.speechSynthesis.cancel();
 
 
@@ -190,7 +248,24 @@ def speak_text(text):
             speech.volume = 1;
 
 
+            isStopped = false;
+
+
             speech.onstart = function() {{
+
+                document.getElementById("voiceStatus").innerText =
+                    "🔊 Speaking...";
+            }};
+
+
+            speech.onpause = function() {{
+
+                document.getElementById("voiceStatus").innerText =
+                    "⏸️ Paused";
+            }};
+
+
+            speech.onresume = function() {{
 
                 document.getElementById("voiceStatus").innerText =
                     "🔊 Speaking...";
@@ -201,10 +276,21 @@ def speak_text(text):
 
                 document.getElementById("voiceStatus").innerText =
                     "✅ Finished";
+
+                speech = null;
+
+                isStopped = false;
             }};
 
 
-            speech.onerror = function() {{
+            speech.onerror = function(event) {{
+
+                // Ignore the normal interruption caused by Stop.
+                if (event.error === "canceled" || event.error === "interrupted") {{
+
+                    return;
+                }}
+
 
                 document.getElementById("voiceStatus").innerText =
                     "❌ Voice playback error.";
@@ -218,6 +304,26 @@ def speak_text(text):
 
 
         // -------------------------------------------------
+        // PAUSE
+        // -------------------------------------------------
+
+        function pauseSpeech() {{
+
+            if (
+                "speechSynthesis" in window &&
+                speech &&
+                window.speechSynthesis.speaking
+            ) {{
+
+                window.speechSynthesis.pause();
+
+                document.getElementById("voiceStatus").innerText =
+                    "⏸️ Paused";
+            }}
+        }}
+
+
+        // -------------------------------------------------
         // STOP
         // -------------------------------------------------
 
@@ -227,8 +333,12 @@ def speak_text(text):
 
                 window.speechSynthesis.cancel();
 
+                speech = null;
+
+                isStopped = true;
+
                 document.getElementById("voiceStatus").innerText =
-                    "⏹️ Stopped";
+                    "⏹️ Stopped — press Play to start again";
             }}
         }}
 
@@ -244,21 +354,36 @@ def speak_text(text):
             );
 
 
-            // If speech is currently playing,
-            // restart it using the new speed.
+            // If speech is currently playing, pause it,
+            // update the speed, then resume.
+            //
+            // This avoids restarting the report from the
+            // beginning when the speed is changed.
 
             if (
                 "speechSynthesis" in window &&
+                speech &&
                 window.speechSynthesis.speaking
             ) {{
 
-                window.speechSynthesis.cancel();
+                const wasPaused =
+                    window.speechSynthesis.paused;
 
-                setTimeout(function() {{
 
-                    playSpeech();
+                window.speechSynthesis.pause();
 
-                }}, 100);
+
+                speech.rate = currentSpeed;
+
+
+                if (!wasPaused) {{
+
+                    setTimeout(function() {{
+
+                        window.speechSynthesis.resume();
+
+                    }}, 100);
+                }}
             }}
         }}
 
