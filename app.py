@@ -1,6 +1,7 @@
 import streamlit as st
 import asyncio
 import json
+import re
 import streamlit.components.v1 as components
 
 from crew import run_mechcare
@@ -19,24 +20,24 @@ def speak_text(text):
     components.html(
         f"""
         <div style="
-            background:#0d1021;
-            border:1px solid #34345f;
+            background:#ffffff;
+            border:1px solid #dbe4f0;
             border-radius:18px;
             padding:20px;
-            color:#e5e7eb;
+            color:#263449;
             font-family:Arial, sans-serif;
-            box-shadow:0 0 25px rgba(124,58,237,0.10);
+            box-shadow:0 8px 28px rgba(37,99,235,0.08);
         ">
 
             <h3 style="
                 margin-top:0;
-                color:#f8fafc;
+                color:#172033;
             ">
                 🔊 Listen to MechCare AI Results
             </h3>
 
             <p style="
-                color:#9ca3af;
+                color:#64748b;
                 margin-bottom:15px;
             ">
                 Listen to the complete AI analysis and change the
@@ -58,6 +59,8 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        background:#e8efff;
+                        color:#2454c5;
                     "
                 >
                     ▶️ Play
@@ -71,6 +74,8 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        background:#f1edff;
+                        color:#6d45c7;
                     "
                 >
                     ⏸️ Pause
@@ -84,13 +89,15 @@ def speak_text(text):
                         border-radius:8px;
                         cursor:pointer;
                         font-size:14px;
+                        background:#fff0f0;
+                        color:#c43d4b;
                     "
                 >
                     ⏹️ Stop
                 </button>
 
                 <label style="
-                    color:#cbd5e1;
+                    color:#475569;
                     font-size:14px;
                 ">
                     Speed:
@@ -102,9 +109,9 @@ def speak_text(text):
                     style="
                         padding:8px 12px;
                         border-radius:7px;
-                        border:1px solid #475569;
-                        background:#17172f;
-                        color:#f8fafc;
+                        border:1px solid #cbd5e1;
+                        background:#ffffff;
+                        color:#172033;
                         font-size:14px;
                     "
                 >
@@ -124,7 +131,7 @@ def speak_text(text):
                 id="voiceStatus"
                 style="
                     margin-top:15px;
-                    color:#67e8f9;
+                    color:#2563eb;
                     font-size:14px;
                 "
             >
@@ -595,7 +602,7 @@ def speak_text(text):
             }};
 
 
-            speech.onresume = function() {{
+            speech.onresume = function(){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -614,7 +621,7 @@ def speak_text(text):
             }};
 
 
-            speech.onend = function() {{
+            speech.onend = function(){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -646,7 +653,7 @@ def speak_text(text):
                 }}
 
 
-                setTimeout(function() {{
+                setTimeout(function(){{
 
                     if (
                         thisSession !== speechSession ||
@@ -665,7 +672,7 @@ def speak_text(text):
             }};
 
 
-            speech.onerror = function(event) {{
+            speech.onerror = function(event){{
 
                 if (thisSession !== speechSession) {{
                     return;
@@ -758,7 +765,7 @@ def speak_text(text):
                 );
 
 
-                setTimeout(function() {{
+                setTimeout(function(){{
 
                     if (
                         !isStopped &&
@@ -813,7 +820,7 @@ def speak_text(text):
             window.speechSynthesis.cancel();
 
 
-            setTimeout(function() {{
+            setTimeout(function(){{
 
                 if (!isStopped) {{
 
@@ -871,7 +878,7 @@ def speak_text(text):
             window.speechSynthesis.pause();
 
 
-            setTimeout(function() {{
+            setTimeout(function(){{
 
                 if (isPaused) {{
 
@@ -977,7 +984,7 @@ def speak_text(text):
                 window.speechSynthesis.pause();
 
 
-                setTimeout(function() {{
+                setTimeout(function(){{
 
                     if (!isChangingSpeed) {{
                         return;
@@ -1012,7 +1019,7 @@ def speak_text(text):
                     );
 
 
-                    setTimeout(function() {{
+                    setTimeout(function(){{
 
                         if (!isStopped) {{
 
@@ -1113,45 +1120,57 @@ st.markdown(
     <style>
 
     /* =====================================================
-       GLOBAL
+       GLOBAL LIGHT INDUSTRIAL THEME
        ===================================================== */
 
     .stApp {
+
         background:
             radial-gradient(
-                circle at 10% 5%,
-                rgba(124, 58, 237, 0.18),
-                transparent 28%
-            ),
-            radial-gradient(
-                circle at 90% 12%,
-                rgba(34, 211, 238, 0.13),
+                circle at 8% 4%,
+                rgba(79,70,229,0.10),
                 transparent 25%
             ),
+
             radial-gradient(
-                circle at 50% 80%,
-                rgba(168, 85, 247, 0.07),
+                circle at 92% 8%,
+                rgba(14,165,233,0.10),
+                transparent 25%
+            ),
+
+            radial-gradient(
+                circle at 55% 85%,
+                rgba(139,92,246,0.07),
                 transparent 30%
             ),
+
             linear-gradient(
                 135deg,
-                #070817 0%,
-                #0b0d1c 45%,
-                #0d1024 100%
+                #f7f9fc 0%,
+                #f4f6fb 45%,
+                #f8f7fc 100%
             );
+
+        color:#263449;
     }
+
 
     .block-container {
-        max-width: 1550px;
-        padding-top: 1.3rem;
-        padding-bottom: 3rem;
-        padding-left: 2rem;
-        padding-right: 2rem;
+
+        max-width:1550px;
+
+        padding-top:1.3rem;
+        padding-bottom:3rem;
+
+        padding-left:2rem;
+        padding-right:2rem;
     }
 
+
     ::selection {
-        background: rgba(34,211,238,0.30);
-        color: white;
+
+        background:rgba(79,70,229,0.20);
+        color:#172033;
     }
 
 
@@ -1160,156 +1179,229 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stSidebar"] {
+
         background:
             linear-gradient(
                 180deg,
-                #08091a 0%,
-                #0b0d20 50%,
-                #070817 100%
+                #ffffff 0%,
+                #f7f8fc 55%,
+                #f3f5fb 100%
             );
 
-        border-right: 1px solid rgba(124,58,237,0.28);
+        border-right:1px solid #dce3ef;
 
         box-shadow:
-            10px 0 45px rgba(0,0,0,0.25);
+            8px 0 35px rgba(30,41,59,0.06);
     }
+
 
     [data-testid="stSidebar"] > div:first-child {
-        padding-top: 1rem;
+
+        padding-top:1rem;
     }
+
 
     [data-testid="stSidebar"] .stMarkdown {
-        color: #cbd5e1;
-    }
 
-
-    /* SIDEBAR BRAND */
-
-    .sidebar-brand {
-        padding: 19px;
-        border: 1px solid rgba(124,58,237,0.42);
-        border-radius: 18px;
-
-        background:
-            linear-gradient(
-                135deg,
-                rgba(42,27,76,0.95),
-                rgba(13,17,38,0.96)
-            );
-
-        margin-bottom: 20px;
-
-        box-shadow:
-            0 0 25px rgba(124,58,237,0.12),
-            0 15px 35px rgba(0,0,0,0.25);
-
-        position: relative;
-        overflow: hidden;
-    }
-
-    .sidebar-brand:after {
-        content: "";
-        position: absolute;
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        right: -50px;
-        top: -50px;
-        background: rgba(34,211,238,0.10);
-    }
-
-    .sidebar-brand-title {
-        color: #f8fafc;
-        font-size: 22px;
-        font-weight: 800;
-        margin-bottom: 3px;
-    }
-
-    .sidebar-brand-subtitle {
-        color: #67e8f9;
-        font-size: 11px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-    }
-
-    .sidebar-section {
-        color: #7176a0;
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 1.7px;
-        text-transform: uppercase;
-        margin-top: 22px;
-        margin-bottom: 8px;
-    }
-
-    .sidebar-machine {
-        background:
-            linear-gradient(
-                135deg,
-                #11132b,
-                #0b0d1e
-            );
-
-        border: 1px solid rgba(34,211,238,0.18);
-        border-radius: 15px;
-
-        padding: 14px;
-        margin-top: 15px;
-
-        box-shadow:
-            0 0 22px rgba(34,211,238,0.06);
-    }
-
-    .sidebar-machine-label {
-        color: #7176a0;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .sidebar-machine-name {
-        color: #f8fafc;
-        font-size: 15px;
-        font-weight: 700;
-        margin-top: 4px;
-    }
-
-    .sidebar-status {
-        display: inline-block;
-        margin-top: 9px;
-        padding: 5px 9px;
-        border-radius: 999px;
-
-        background: rgba(52,211,153,0.09);
-        color: #6ee7b7;
-
-        border: 1px solid rgba(52,211,153,0.25);
-
-        font-size: 10px;
-        font-weight: 700;
+        color:#475569;
     }
 
 
     /* =====================================================
-       HEADERS
+       SIDEBAR BRAND
        ===================================================== */
 
-    h1, h2, h3 {
-        color: #f8fafc !important;
+    .sidebar-brand {
+
+        padding:19px;
+
+        border:1px solid #d7def0;
+
+        border-radius:18px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #ffffff,
+                #f3f5ff
+            );
+
+        margin-bottom:20px;
+
+        box-shadow:
+            0 8px 25px rgba(79,70,229,0.08),
+            0 0 25px rgba(14,165,233,0.04);
+
+        position:relative;
+        overflow:hidden;
     }
+
+
+    .sidebar-brand:after {
+
+        content:"";
+
+        position:absolute;
+
+        width:100px;
+        height:100px;
+
+        border-radius:50%;
+
+        right:-50px;
+        top:-50px;
+
+        background:
+            rgba(79,70,229,0.08);
+    }
+
+
+    .sidebar-brand-title {
+
+        color:#172033;
+
+        font-size:22px;
+
+        font-weight:800;
+
+        margin-bottom:3px;
+    }
+
+
+    .sidebar-brand-subtitle {
+
+        color:#4f46e5;
+
+        font-size:11px;
+
+        letter-spacing:1.5px;
+
+        text-transform:uppercase;
+    }
+
+
+    .sidebar-section {
+
+        color:#64748b;
+
+        font-size:10px;
+
+        font-weight:800;
+
+        letter-spacing:1.7px;
+
+        text-transform:uppercase;
+
+        margin-top:22px;
+
+        margin-bottom:8px;
+    }
+
+
+    .sidebar-machine {
+
+        background:
+            linear-gradient(
+                135deg,
+                #ffffff,
+                #f5f7fc
+            );
+
+        border:1px solid #dbe3ef;
+
+        border-radius:15px;
+
+        padding:14px;
+
+        margin-top:15px;
+
+        box-shadow:
+            0 8px 20px rgba(30,41,59,0.06);
+    }
+
+
+    .sidebar-machine-label {
+
+        color:#64748b;
+
+        font-size:10px;
+
+        text-transform:uppercase;
+
+        letter-spacing:1px;
+    }
+
+
+    .sidebar-machine-name {
+
+        color:#172033;
+
+        font-size:15px;
+
+        font-weight:700;
+
+        margin-top:4px;
+    }
+
+
+    .sidebar-status {
+
+        display:inline-block;
+
+        margin-top:9px;
+
+        padding:5px 9px;
+
+        border-radius:999px;
+
+        background:#ecfdf5;
+
+        color:#059669;
+
+        border:1px solid #a7f3d0;
+
+        font-size:10px;
+
+        font-weight:700;
+
+        box-shadow:
+            0 0 14px rgba(16,185,129,0.07);
+    }
+
+
+    /* =====================================================
+       HEADINGS
+       ===================================================== */
+
+    h1,
+    h2,
+    h3 {
+
+        color:#172033 !important;
+    }
+
 
     .section-title {
-        color: #f8fafc;
-        font-size: 21px;
-        font-weight: 800;
-        margin-bottom: 3px;
+
+        color:#172033;
+
+        font-size:21px;
+
+        font-weight:800;
+
+        margin-bottom:3px;
     }
 
+
     .section-description {
-        color: #9298b5;
-        font-size: 13px;
-        line-height: 1.6;
-        margin-bottom: 14px;
+
+        color:#64748b;
+
+        font-size:13px;
+
+        line-height:1.6;
+
+        margin-bottom:14px;
     }
 
 
@@ -1318,79 +1410,109 @@ st.markdown(
        ===================================================== */
 
     .top-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
 
-        padding: 20px 23px;
-        margin-bottom: 20px;
+        display:flex;
+
+        justify-content:space-between;
+
+        align-items:center;
+
+        gap:20px;
+
+        padding:20px 23px;
+
+        margin-bottom:20px;
 
         background:
             linear-gradient(
                 135deg,
-                rgba(27,21,55,0.96),
-                rgba(11,14,31,0.96)
+                #ffffff,
+                #f5f7ff
             );
 
-        border: 1px solid rgba(124,58,237,0.34);
-        border-radius: 20px;
+        border:1px solid #dce3ef;
+
+        border-radius:20px;
 
         box-shadow:
-            0 0 35px rgba(124,58,237,0.08),
-            0 18px 45px rgba(0,0,0,0.25);
+            0 10px 30px rgba(30,41,59,0.06),
+            0 0 28px rgba(79,70,229,0.05);
 
-        position: relative;
-        overflow: hidden;
+        position:relative;
+
+        overflow:hidden;
     }
 
+
     .top-header:before {
-        content: "";
-        position: absolute;
-        width: 320px;
-        height: 2px;
-        left: 0;
-        bottom: 0;
+
+        content:"";
+
+        position:absolute;
+
+        width:340px;
+
+        height:2px;
+
+        left:0;
+
+        bottom:0;
 
         background:
             linear-gradient(
                 90deg,
                 transparent,
-                #7c3aed,
-                #22d3ee,
+                #4f46e5,
+                #0ea5e9,
                 transparent
             );
 
-        opacity: 0.9;
+        opacity:0.75;
     }
+
 
     .top-title {
-        color: #f8fafc;
-        font-size: 28px;
-        font-weight: 850;
-        margin: 0;
+
+        color:#172033;
+
+        font-size:28px;
+
+        font-weight:850;
+
+        margin:0;
     }
+
 
     .top-subtitle {
-        color: #9298b5;
-        font-size: 13px;
-        margin-top: 4px;
+
+        color:#64748b;
+
+        font-size:13px;
+
+        margin-top:4px;
     }
 
+
     .online-badge {
-        background: rgba(34,211,238,0.08);
-        color: #67e8f9;
-        border: 1px solid rgba(34,211,238,0.28);
-        border-radius: 999px;
 
-        padding: 8px 13px;
+        background:#eff6ff;
 
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
+        color:#2563eb;
+
+        border:1px solid #bfdbfe;
+
+        border-radius:999px;
+
+        padding:8px 13px;
+
+        font-size:11px;
+
+        font-weight:700;
+
+        white-space:nowrap;
 
         box-shadow:
-            0 0 18px rgba(34,211,238,0.08);
+            0 0 18px rgba(37,99,235,0.08);
     }
 
 
@@ -1399,110 +1521,139 @@ st.markdown(
        ===================================================== */
 
     .hero {
-        position: relative;
-        overflow: hidden;
+
+        position:relative;
+
+        overflow:hidden;
 
         background:
             linear-gradient(
                 135deg,
-                #171538 0%,
-                #11142c 48%,
-                #10182c 100%
+                #eef3ff 0%,
+                #f7f4ff 50%,
+                #edf9ff 100%
             );
 
-        border: 1px solid rgba(124,58,237,0.40);
-        border-radius: 22px;
+        border:1px solid #d7def0;
 
-        padding: 30px;
+        border-radius:22px;
 
-        margin-bottom: 22px;
+        padding:30px;
+
+        margin-bottom:22px;
 
         box-shadow:
-            0 0 45px rgba(124,58,237,0.10),
-            0 22px 55px rgba(0,0,0,0.28);
+            0 14px 38px rgba(79,70,229,0.08),
+            0 0 30px rgba(14,165,233,0.05);
     }
 
-    .hero:before {
-        content: "";
-        position: absolute;
-        width: 350px;
-        height: 350px;
-        border-radius: 50%;
 
-        right: -140px;
-        top: -160px;
+    .hero:before {
+
+        content:"";
+
+        position:absolute;
+
+        width:360px;
+        height:360px;
+
+        border-radius:50%;
+
+        right:-140px;
+        top:-160px;
 
         background:
             radial-gradient(
                 circle,
-                rgba(34,211,238,0.15),
+                rgba(14,165,233,0.12),
                 transparent 65%
             );
     }
 
+
     .hero:after {
-        content: "";
-        position: absolute;
 
-        width: 170px;
-        height: 170px;
+        content:"";
 
-        border-radius: 50%;
+        position:absolute;
 
-        right: 80px;
-        bottom: -120px;
+        width:180px;
+        height:180px;
+
+        border-radius:50%;
+
+        right:90px;
+        bottom:-120px;
 
         background:
             radial-gradient(
                 circle,
-                rgba(168,85,247,0.13),
+                rgba(124,58,237,0.10),
                 transparent 70%
             );
     }
 
+
     .hero h1 {
-        color: #ffffff;
-        font-size: 40px;
-        margin: 0;
-        letter-spacing: -1px;
+
+        color:#172033;
+
+        font-size:40px;
+
+        margin:0;
+
+        letter-spacing:-1px;
     }
+
 
     .hero h3 {
-        color: #67e8f9 !important;
-        font-size: 16px;
-        margin-top: 6px;
+
+        color:#4f46e5 !important;
+
+        font-size:16px;
+
+        margin-top:6px;
     }
 
+
     .hero p {
-        color: #b7bdd2;
-        font-size: 14px;
-        line-height: 1.75;
-        max-width: 850px;
-        margin-bottom: 0;
+
+        color:#526174;
+
+        font-size:14px;
+
+        line-height:1.75;
+
+        max-width:850px;
+
+        margin-bottom:0;
     }
 
 
     /* =====================================================
-       CARDS
+       GENERAL CARDS
        ===================================================== */
 
     .ui-card {
+
         background:
             linear-gradient(
                 145deg,
-                rgba(17,20,43,0.96),
-                rgba(10,12,27,0.98)
+                #ffffff,
+                #f9fafc
             );
 
-        border: 1px solid rgba(92,96,143,0.28);
-        border-radius: 17px;
+        border:1px solid #dce3ef;
 
-        padding: 18px;
-        margin-bottom: 15px;
+        border-radius:17px;
+
+        padding:18px;
+
+        margin-bottom:15px;
 
         box-shadow:
-            0 12px 30px rgba(0,0,0,0.18),
-            inset 0 1px 0 rgba(255,255,255,0.025);
+            0 9px 25px rgba(30,41,59,0.055),
+            inset 0 1px 0 rgba(255,255,255,0.8);
 
         transition:
             border-color 0.2s ease,
@@ -1510,35 +1661,54 @@ st.markdown(
             box-shadow 0.2s ease;
     }
 
+
     .ui-card:hover {
-        border-color: rgba(34,211,238,0.35);
+
+        border-color:#b9c6e8;
 
         box-shadow:
-            0 0 25px rgba(34,211,238,0.07),
-            0 15px 35px rgba(0,0,0,0.22);
+            0 0 22px rgba(79,70,229,0.07),
+            0 12px 30px rgba(30,41,59,0.08);
 
-        transform: translateY(-1px);
+        transform:translateY(-1px);
     }
+
 
     .card-label {
-        color: #6f759c;
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1.4px;
-        margin-bottom: 6px;
+
+        color:#64748b;
+
+        font-size:10px;
+
+        font-weight:800;
+
+        text-transform:uppercase;
+
+        letter-spacing:1.4px;
+
+        margin-bottom:6px;
     }
+
 
     .card-value {
-        color: #f8fafc;
-        font-size: 19px;
-        font-weight: 750;
+
+        color:#172033;
+
+        font-size:19px;
+
+        font-weight:750;
     }
 
+
     .card-small {
-        color: #9298b5;
-        font-size: 12px;
-        margin-top: 5px;
+
+        color:#64748b;
+
+        font-size:12px;
+
+        margin-top:5px;
+
+        line-height:1.5;
     }
 
 
@@ -1547,67 +1717,173 @@ st.markdown(
        ===================================================== */
 
     .status-card {
+
         background:
             linear-gradient(
                 145deg,
-                rgba(17,20,43,0.98),
-                rgba(10,12,27,0.98)
+                #ffffff,
+                #f8fafc
             );
 
-        border: 1px solid rgba(92,96,143,0.30);
-        border-radius: 17px;
+        border:1px solid #dce3ef;
 
-        padding: 17px;
+        border-radius:17px;
 
-        min-height: 112px;
+        padding:17px;
+
+        min-height:112px;
 
         box-shadow:
-            0 12px 30px rgba(0,0,0,0.18);
+            0 9px 25px rgba(30,41,59,0.055);
 
-        position: relative;
-        overflow: hidden;
+        position:relative;
+
+        overflow:hidden;
     }
 
+
     .status-card:after {
-        content: "";
-        position: absolute;
 
-        width: 90px;
-        height: 90px;
+        content:"";
 
-        right: -45px;
-        bottom: -45px;
+        position:absolute;
 
-        border-radius: 50%;
+        width:100px;
+        height:100px;
+
+        right:-50px;
+        bottom:-50px;
+
+        border-radius:50%;
 
         background:
             radial-gradient(
                 circle,
-                rgba(124,58,237,0.13),
+                rgba(79,70,229,0.09),
                 transparent 70%
             );
     }
 
+
     .status-title {
-        color: #6f759c;
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
+
+        color:#64748b;
+
+        font-size:10px;
+
+        font-weight:800;
+
+        text-transform:uppercase;
+
+        letter-spacing:1.2px;
     }
+
 
     .status-main {
-        color: #f8fafc;
-        font-size: 17px;
-        font-weight: 750;
-        margin-top: 9px;
-        line-height: 1.3;
+
+        color:#172033;
+
+        font-size:16px;
+
+        font-weight:750;
+
+        margin-top:9px;
+
+        line-height:1.35;
     }
 
+
     .status-sub {
-        color: #858ba8;
-        font-size: 11px;
-        margin-top: 5px;
+
+        color:#64748b;
+
+        font-size:11px;
+
+        margin-top:5px;
+    }
+
+
+    /* =====================================================
+       PRIORITY CARD
+       ===================================================== */
+
+    .priority-clean {
+
+        display:flex;
+
+        align-items:center;
+
+        gap:8px;
+
+        margin-top:8px;
+    }
+
+
+    .priority-badge {
+
+        display:inline-flex;
+
+        align-items:center;
+
+        padding:5px 10px;
+
+        border-radius:999px;
+
+        font-size:11px;
+
+        font-weight:800;
+
+        letter-spacing:0.2px;
+    }
+
+
+    .priority-high {
+
+        background:#fff7ed;
+
+        color:#c2410c;
+
+        border:1px solid #fed7aa;
+    }
+
+
+    .priority-medium {
+
+        background:#fffbeb;
+
+        color:#a16207;
+
+        border:1px solid #fde68a;
+    }
+
+
+    .priority-low {
+
+        background:#ecfdf5;
+
+        color:#047857;
+
+        border:1px solid #a7f3d0;
+    }
+
+
+    .priority-critical {
+
+        background:#fef2f2;
+
+        color:#b91c1c;
+
+        border:1px solid #fecaca;
+    }
+
+
+    .priority-normal {
+
+        background:#eff6ff;
+
+        color:#2563eb;
+
+        border:1px solid #bfdbfe;
     }
 
 
@@ -1616,26 +1892,30 @@ st.markdown(
        ===================================================== */
 
     .workflow-card {
+
         background:
             linear-gradient(
                 145deg,
-                #11142b,
-                #0b0d1e
+                #ffffff,
+                #f8fafc
             );
 
-        border: 1px solid rgba(124,58,237,0.25);
-        border-radius: 17px;
+        border:1px solid #dce3ef;
 
-        padding: 18px;
+        border-radius:17px;
 
-        height: 100%;
-        min-height: 155px;
+        padding:18px;
+
+        height:100%;
+
+        min-height:155px;
 
         box-shadow:
-            0 10px 28px rgba(0,0,0,0.18);
+            0 9px 25px rgba(30,41,59,0.055);
 
-        position: relative;
-        overflow: hidden;
+        position:relative;
+
+        overflow:hidden;
 
         transition:
             transform 0.2s ease,
@@ -1643,53 +1923,75 @@ st.markdown(
             box-shadow 0.2s ease;
     }
 
+
     .workflow-card:before {
-        content: "";
-        position: absolute;
 
-        left: 0;
-        top: 0;
+        content:"";
 
-        width: 3px;
-        height: 100%;
+        position:absolute;
+
+        left:0;
+
+        top:0;
+
+        width:3px;
+
+        height:100%;
 
         background:
             linear-gradient(
                 180deg,
-                #22d3ee,
-                #7c3aed
+                #4f46e5,
+                #0ea5e9
             );
     }
 
-    .workflow-card:hover {
-        transform: translateY(-3px);
 
-        border-color: rgba(34,211,238,0.45);
+    .workflow-card:hover {
+
+        transform:translateY(-3px);
+
+        border-color:#b8c5e5;
 
         box-shadow:
-            0 0 30px rgba(124,58,237,0.10),
-            0 15px 32px rgba(0,0,0,0.25);
+            0 0 25px rgba(79,70,229,0.08),
+            0 15px 30px rgba(30,41,59,0.08);
     }
+
 
     .workflow-number {
-        color: #67e8f9;
-        font-size: 10px;
-        font-weight: 900;
-        letter-spacing: 1.3px;
+
+        color:#4f46e5;
+
+        font-size:10px;
+
+        font-weight:900;
+
+        letter-spacing:1.3px;
     }
+
 
     .workflow-title {
-        color: #f8fafc;
-        font-size: 14px;
-        font-weight: 750;
-        margin-top: 8px;
+
+        color:#172033;
+
+        font-size:14px;
+
+        font-weight:750;
+
+        margin-top:8px;
     }
 
+
     .workflow-description {
-        color: #858ba8;
-        font-size: 12px;
-        line-height: 1.6;
-        margin-top: 7px;
+
+        color:#64748b;
+
+        font-size:12px;
+
+        line-height:1.6;
+
+        margin-top:7px;
     }
 
 
@@ -1698,106 +2000,238 @@ st.markdown(
        ===================================================== */
 
     .symptom-box {
+
         background:
             linear-gradient(
                 135deg,
-                rgba(34,211,238,0.08),
-                rgba(124,58,237,0.08)
+                #eff6ff,
+                #f5f3ff
             );
 
-        border: 1px solid rgba(34,211,238,0.25);
+        border:1px solid #c7d2fe;
 
-        border-radius: 13px;
+        border-radius:13px;
 
-        padding: 13px 15px;
+        padding:13px 15px;
 
-        color: #a5f3fc;
+        color:#334e8c;
 
-        margin-top: 10px;
+        margin-top:10px;
 
-        line-height: 1.6;
+        line-height:1.7;
 
-        font-size: 13px;
+        font-size:13px;
 
         box-shadow:
-            0 0 20px rgba(34,211,238,0.05);
+            0 0 20px rgba(79,70,229,0.05);
     }
 
 
     /* =====================================================
-       QUESTIONS
+       ENGINEERING QUESTIONS
        ===================================================== */
 
     .question-card {
+
         background:
             linear-gradient(
                 145deg,
-                rgba(20,18,45,0.96),
-                rgba(10,12,27,0.98)
+                #ffffff,
+                #f8fafc
             );
 
-        border: 1px solid rgba(124,58,237,0.24);
+        border:1px solid #dce3ef;
 
-        border-radius: 15px;
+        border-radius:15px;
 
-        padding: 14px 15px;
+        padding:14px 15px;
 
-        margin-bottom: 11px;
+        margin-bottom:11px;
 
         box-shadow:
-            0 8px 22px rgba(0,0,0,0.16);
+            0 7px 19px rgba(30,41,59,0.045);
 
         transition:
             border-color 0.2s ease,
-            transform 0.2s ease;
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
     }
+
 
     .question-card:hover {
-        border-color: rgba(34,211,238,0.38);
-        transform: translateX(2px);
+
+        border-color:#b9c6e8;
+
+        transform:translateX(2px);
+
+        box-shadow:
+            0 0 20px rgba(79,70,229,0.06);
     }
+
 
     .question-number {
-        color: #67e8f9;
-        font-size: 9px;
-        font-weight: 900;
-        letter-spacing: 1px;
-        text-transform: uppercase;
+
+        color:#4f46e5;
+
+        font-size:9px;
+
+        font-weight:900;
+
+        letter-spacing:1px;
+
+        text-transform:uppercase;
     }
 
+
     .question-text {
-        color: #dfe3f2;
-        font-size: 12px;
-        line-height: 1.5;
-        margin-top: 5px;
+
+        color:#334155;
+
+        font-size:12px;
+
+        line-height:1.55;
+
+        margin-top:5px;
     }
 
 
     /* =====================================================
-       REPORT
+       DIAGNOSTIC MINDSET
        ===================================================== */
 
-    .report-box {
+    .mindset-card {
+
         background:
             linear-gradient(
-                145deg,
-                #0e1022,
-                #090b18
+                135deg,
+                #f0f7ff,
+                #f6f1ff
             );
 
-        border: 1px solid rgba(124,58,237,0.24);
+        border:1px solid #cbd5e1;
 
-        border-radius: 17px;
+        border-radius:16px;
 
-        padding: 24px;
+        padding:16px;
 
-        color: #dbe4f5;
-
-        line-height: 1.75;
+        margin-top:5px;
 
         box-shadow:
-            0 15px 35px rgba(0,0,0,0.20),
-            0 0 25px rgba(124,58,237,0.04);
+            0 8px 22px rgba(79,70,229,0.055);
+    }
+
+
+    .mindset-title {
+
+        color:#172033;
+
+        font-size:13px;
+
+        font-weight:800;
+    }
+
+
+    .mindset-flow {
+
+        color:#4f46e5;
+
+        font-size:12px;
+
+        font-weight:700;
+
+        line-height:1.8;
+
+        margin-top:7px;
+    }
+
+
+    /* =====================================================
+       REPORT SECTION
+       ===================================================== */
+
+    .report-header-card {
+
+        background:
+            linear-gradient(
+                135deg,
+                #eef4ff,
+                #f7f3ff
+            );
+
+        border:1px solid #d5ddf1;
+
+        border-radius:15px;
+
+        padding:15px 17px;
+
+        margin-top:20px;
+
+        margin-bottom:12px;
+    }
+
+
+    .report-header-title {
+
+        color:#172033;
+
+        font-size:14px;
+
+        font-weight:800;
+    }
+
+
+    .report-header-sub {
+
+        color:#64748b;
+
+        font-size:11px;
+
+        margin-top:4px;
+    }
+
+
+    /* =====================================================
+       STREAMLIT MARKDOWN REPORT AREA
+       ===================================================== */
+
+    .report-content {
+
+        background:#ffffff;
+
+        border:1px solid #dce3ef;
+
+        border-radius:17px;
+
+        padding:24px;
+
+        box-shadow:
+            0 9px 26px rgba(30,41,59,0.055);
+
+        color:#334155;
+
+        line-height:1.75;
+
+        margin-bottom:18px;
+    }
+
+
+    .report-content h1,
+    .report-content h2,
+    .report-content h3 {
+
+        color:#172033 !important;
+    }
+
+
+    .report-content strong {
+
+        color:#24324a;
+    }
+
+
+    .report-content hr {
+
+        border-color:#e2e8f0 !important;
     }
 
 
@@ -1806,22 +2240,23 @@ st.markdown(
        ===================================================== */
 
     .stButton > button {
-        border-radius: 10px !important;
 
-        border: 1px solid rgba(124,58,237,0.40) !important;
+        border-radius:10px !important;
+
+        border:1px solid #c7d2fe !important;
 
         background:
             linear-gradient(
                 135deg,
-                #33206b,
-                #182b58
+                #eef2ff,
+                #eff6ff
             ) !important;
 
-        color: #f8fafc !important;
+        color:#3730a3 !important;
 
-        font-weight: 750 !important;
+        font-weight:750 !important;
 
-        min-height: 44px;
+        min-height:44px;
 
         transition:
             transform 0.15s ease,
@@ -1830,21 +2265,58 @@ st.markdown(
             background 0.15s ease;
     }
 
+
     .stButton > button:hover {
-        border-color: #22d3ee !important;
+
+        border-color:#818cf8 !important;
 
         background:
             linear-gradient(
                 135deg,
-                #45268c,
-                #173d68
+                #e0e7ff,
+                #e0f2fe
             ) !important;
 
         box-shadow:
-            0 0 22px rgba(34,211,238,0.14),
-            0 0 35px rgba(124,58,237,0.10);
+            0 0 20px rgba(79,70,229,0.12),
+            0 0 30px rgba(14,165,233,0.06);
 
-        transform: translateY(-1px);
+        transform:translateY(-1px);
+    }
+
+
+    /* PRIMARY BUTTON */
+
+    div.stButton > button[kind="primary"] {
+
+        background:
+            linear-gradient(
+                135deg,
+                #4f46e5,
+                #2563eb
+            ) !important;
+
+        color:#ffffff !important;
+
+        border-color:#4f46e5 !important;
+
+        box-shadow:
+            0 7px 20px rgba(79,70,229,0.18);
+    }
+
+
+    div.stButton > button[kind="primary"]:hover {
+
+        background:
+            linear-gradient(
+                135deg,
+                #4338ca,
+                #1d4ed8
+            ) !important;
+
+        box-shadow:
+            0 0 22px rgba(79,70,229,0.18),
+            0 10px 25px rgba(37,99,235,0.13);
     }
 
 
@@ -1853,45 +2325,63 @@ st.markdown(
        ===================================================== */
 
     div[data-baseweb="select"] > div {
-        background-color: #0d1021 !important;
 
-        border-color: #303454 !important;
+        background-color:#ffffff !important;
 
-        border-radius: 10px !important;
+        border-color:#cbd5e1 !important;
+
+        border-radius:10px !important;
+
+        color:#172033 !important;
 
         transition:
             border-color 0.2s ease,
             box-shadow 0.2s ease;
     }
 
+
     div[data-baseweb="select"] > div:hover {
-        border-color: #7c3aed !important;
+
+        border-color:#818cf8 !important;
 
         box-shadow:
-            0 0 14px rgba(124,58,237,0.10);
+            0 0 14px rgba(79,70,229,0.08);
     }
+
 
     textarea {
-        background-color: #0d1021 !important;
 
-        border: 1px solid #303454 !important;
+        background-color:#ffffff !important;
 
-        color: #f8fafc !important;
+        border:1px solid #cbd5e1 !important;
 
-        border-radius: 10px !important;
+        color:#172033 !important;
+
+        border-radius:10px !important;
     }
+
 
     textarea:focus {
-        border-color: #22d3ee !important;
+
+        border-color:#6366f1 !important;
 
         box-shadow:
-            0 0 0 1px rgba(34,211,238,0.25),
-            0 0 18px rgba(34,211,238,0.07) !important;
+            0 0 0 1px rgba(99,102,241,0.20),
+            0 0 18px rgba(79,70,229,0.07) !important;
     }
 
+
+    input {
+
+        color:#172033 !important;
+    }
+
+
     label {
-        color: #cdd3e4 !important;
-        font-weight: 600 !important;
+
+        color:#334155 !important;
+
+        font-weight:600 !important;
     }
 
 
@@ -1900,16 +2390,17 @@ st.markdown(
        ===================================================== */
 
     [data-baseweb="tag"] {
+
         background:
             linear-gradient(
                 135deg,
-                #35206f,
-                #173b61
+                #e0e7ff,
+                #e0f2fe
             ) !important;
 
-        color: #e0f2fe !important;
+        color:#3730a3 !important;
 
-        border: 1px solid rgba(34,211,238,0.20);
+        border:1px solid #c7d2fe;
     }
 
 
@@ -1918,8 +2409,10 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stCheckbox"] label {
-        color: #cbd5e1 !important;
-        font-size: 13px !important;
+
+        color:#475569 !important;
+
+        font-size:13px !important;
     }
 
 
@@ -1928,11 +2421,15 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stExpander"] {
-        background: #0d1021;
 
-        border: 1px solid #303454;
+        background:#ffffff;
 
-        border-radius: 12px;
+        border:1px solid #dce3ef;
+
+        border-radius:12px;
+
+        box-shadow:
+            0 5px 15px rgba(30,41,59,0.04);
     }
 
 
@@ -1941,9 +2438,15 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stStatusWidget"] {
-        border-radius: 14px;
-        background: #0d1021;
-        border-color: #34345f;
+
+        border-radius:14px;
+
+        background:#ffffff;
+
+        border-color:#dce3ef;
+
+        box-shadow:
+            0 8px 22px rgba(30,41,59,0.05);
     }
 
 
@@ -1952,15 +2455,16 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stProgressBar"] > div > div {
+
         background:
             linear-gradient(
                 90deg,
-                #7c3aed,
-                #22d3ee
+                #4f46e5,
+                #0ea5e9
             ) !important;
 
         box-shadow:
-            0 0 14px rgba(34,211,238,0.18);
+            0 0 14px rgba(79,70,229,0.15);
     }
 
 
@@ -1969,10 +2473,12 @@ st.markdown(
        ===================================================== */
 
     hr {
-        border-color: rgba(91,96,142,0.28) !important;
 
-        margin-top: 25px !important;
-        margin-bottom: 25px !important;
+        border-color:#e2e8f0 !important;
+
+        margin-top:25px !important;
+
+        margin-bottom:25px !important;
     }
 
 
@@ -1981,23 +2487,42 @@ st.markdown(
        ===================================================== */
 
     [data-testid="stDownloadButton"] button {
-        border-radius: 11px !important;
+
+        border-radius:11px !important;
 
         background:
             linear-gradient(
                 135deg,
-                #372078,
-                #174667
+                #4f46e5,
+                #2563eb
             ) !important;
 
-        border: 1px solid rgba(34,211,238,0.30) !important;
+        border:1px solid #4f46e5 !important;
 
-        color: white !important;
+        color:white !important;
 
-        font-weight: 750 !important;
+        font-weight:750 !important;
 
         box-shadow:
-            0 0 22px rgba(34,211,238,0.07);
+            0 7px 20px rgba(79,70,229,0.15);
+    }
+
+
+    [data-testid="stDownloadButton"] button:hover {
+
+        box-shadow:
+            0 0 22px rgba(79,70,229,0.17),
+            0 10px 25px rgba(37,99,235,0.12);
+    }
+
+
+    /* =====================================================
+       SUCCESS / WARNING / ERROR
+       ===================================================== */
+
+    [data-testid="stAlert"] {
+
+        border-radius:12px;
     }
 
 
@@ -2005,55 +2530,75 @@ st.markdown(
        RESPONSIVE
        ===================================================== */
 
-    @media (max-width: 1100px) {
+    @media (max-width:1100px) {
 
         .block-container {
-            padding-left: 1rem;
-            padding-right: 1rem;
+
+            padding-left:1rem;
+
+            padding-right:1rem;
         }
+
 
         .top-title {
-            font-size: 23px;
+
+            font-size:23px;
         }
+
 
         .hero h1 {
-            font-size: 32px;
-        }
 
+            font-size:32px;
+        }
     }
 
-    @media (max-width: 700px) {
+
+    @media (max-width:700px) {
 
         .block-container {
-            padding-left: 0.7rem;
-            padding-right: 0.7rem;
-            padding-top: 0.8rem;
+
+            padding-left:0.7rem;
+
+            padding-right:0.7rem;
+
+            padding-top:0.8rem;
         }
+
 
         .hero {
-            padding: 21px;
+
+            padding:21px;
         }
+
 
         .hero h1 {
-            font-size: 28px;
+
+            font-size:28px;
         }
+
 
         .hero h3 {
-            font-size: 14px;
+
+            font-size:14px;
         }
+
 
         .top-header {
-            padding: 16px;
+
+            padding:16px;
         }
+
 
         .top-title {
-            font-size: 20px;
+
+            font-size:20px;
         }
+
 
         .online-badge {
-            display: none;
-        }
 
+            display:none;
+        }
     }
 
     </style>
@@ -2071,6 +2616,7 @@ with st.sidebar:
     st.html(
         """
         <div class="sidebar-brand">
+
             <div class="sidebar-brand-title">
                 ⚙️ MechCare AI
             </div>
@@ -2078,13 +2624,16 @@ with st.sidebar:
             <div class="sidebar-brand-subtitle">
                 Engineering Intelligence
             </div>
+
         </div>
         """
     )
 
+
     st.html(
         '<div class="sidebar-section">Navigation</div>'
     )
+
 
     navigation = st.radio(
         "Navigation",
@@ -2097,9 +2646,11 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
+
     st.html(
         '<div class="sidebar-section">Machine Category</div>'
     )
+
 
     machine_category_filter = st.selectbox(
         "Machine Category",
@@ -2117,28 +2668,34 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
+
     st.html(
         '<div class="sidebar-section">Quick System Links</div>'
     )
+
 
     st.button(
         "📋 Active Machine Profiles",
         use_container_width=True
     )
 
+
     st.button(
         "🛠️ Maintenance Logs",
         use_container_width=True
     )
+
 
     st.button(
         "📄 Generated Reports",
         use_container_width=True
     )
 
+
     st.html(
         '<div class="sidebar-section">Current Machine</div>'
     )
+
 
     st.html(
         """
@@ -2160,10 +2717,14 @@ with st.sidebar:
         """
     )
 
+
     st.markdown("")
 
     st.caption("MechCare AI v1.0")
-    st.caption("Engineering decision support system")
+
+    st.caption(
+        "Engineering decision support system"
+    )
 
 
 # =========================================================
@@ -2175,6 +2736,7 @@ st.html(
     <div class="top-header">
 
         <div>
+
             <div class="top-title">
                 Engineering Command Center
             </div>
@@ -2183,6 +2745,7 @@ st.html(
                 AI-powered machine diagnostics, maintenance planning
                 and engineering reporting.
             </div>
+
         </div>
 
         <div class="online-badge">
@@ -2241,9 +2804,11 @@ with right_column:
         '<div class="section-title">⚡ Quick Intelligence</div>'
     )
 
+
     st.html(
         '<div class="section-description">System information and quick diagnostic context.</div>'
     )
+
 
     st.html(
         """
@@ -2265,6 +2830,7 @@ with right_column:
         """
     )
 
+
     st.html(
         """
         <div class="ui-card">
@@ -2285,6 +2851,7 @@ with right_column:
         """
     )
 
+
     st.html(
         """
         <div class="ui-card">
@@ -2304,6 +2871,7 @@ with right_column:
         </div>
         """
     )
+
 
     st.html(
         """
@@ -2337,52 +2905,75 @@ with right_column:
         '<div class="section-title" style="margin-top:22px;">💡 Engineering Questions</div>'
     )
 
+
     st.html(
         '<div class="section-description">Useful questions to consider during machine inspection.</div>'
     )
 
+
     engineering_questions = [
+
         (
             "01",
             "What changed before the problem started?"
         ),
+
         (
             "02",
             "Does the symptom increase with machine speed?"
         ),
+
         (
             "03",
             "Does the problem appear under heavy load?"
         ),
+
         (
             "04",
             "Is the machine temperature higher than normal?"
         ),
+
         (
             "05",
             "Has the machine recently been repaired or adjusted?"
         ),
+
         (
             "06",
             "Is the vibration coming from a specific component?"
         ),
+
         (
             "07",
             "When was the machine last lubricated?"
         ),
+
         (
             "08",
             "Are there any unusual sounds, smells or leaks?"
         ),
+
         (
             "09",
             "Has machine performance gradually decreased?"
         ),
+
         (
             "10",
             "Could operating conditions have changed?"
+        ),
+
+        (
+            "11",
+            "Is the symptom constant or does it appear intermittently?"
+        ),
+
+        (
+            "12",
+            "What measurement could help confirm the suspected fault?"
         )
     ]
+
 
     for number, question in engineering_questions:
 
@@ -2403,6 +2994,23 @@ with right_column:
         )
 
 
+    st.html(
+        """
+        <div class="mindset-card">
+
+            <div class="mindset-title">
+                🧭 Diagnostic Mindset
+            </div>
+
+            <div class="mindset-flow">
+                Observe → Compare → Measure → Confirm
+            </div>
+
+        </div>
+        """
+    )
+
+
 # =========================================================
 # CENTER WORKSPACE
 # =========================================================
@@ -2417,27 +3025,32 @@ with main_column:
         '<div class="section-title">🤖 Multi-Agent Engineering Workflow</div>'
     )
 
+
     st.html(
         '<div class="section-description">Your machine problem is processed through four specialized engineering agents.</div>'
     )
 
 
     workflow = [
+
         (
             "01",
             "🔍 Problem Analysis",
             "Analyzes machine information, symptoms, observations and missing information."
         ),
+
         (
             "02",
             "🧠 Fault Diagnosis",
             "Examines symptoms and identifies possible mechanical and operational causes."
         ),
+
         (
             "03",
             "🛠️ Maintenance Planning",
             "Converts possible causes into practical inspection and maintenance actions."
         ),
+
         (
             "04",
             "🛡️ Safety & Report",
@@ -2446,10 +3059,16 @@ with main_column:
     ]
 
 
-    workflow_columns = st.columns(4, gap="small")
+    workflow_columns = st.columns(
+        4,
+        gap="small"
+    )
 
 
-    for column, agent in zip(workflow_columns, workflow):
+    for column, agent in zip(
+        workflow_columns,
+        workflow
+    ):
 
         number, title, description = agent
 
@@ -2486,6 +3105,7 @@ with main_column:
     st.html(
         '<div class="section-title">🏭 Machine Profile</div>'
     )
+
 
     st.html(
         '<div class="section-description">Provide the machine context used by the AI diagnostic workflow.</div>'
@@ -2713,12 +3333,14 @@ with main_column:
         '<div class="section-title">🔍 Observed Symptoms</div>'
     )
 
+
     st.html(
         '<div class="section-description">Select all symptoms currently observed in the machine.</div>'
     )
 
 
     symptom_options = [
+
         "🔊 Unusual Noise",
         "📳 Excessive Vibration",
         "🌡️ Overheating",
@@ -2760,6 +3382,7 @@ with main_column:
     st.html(
         '<div class="section-title">🚨 Problem Information</div>'
     )
+
 
     st.html(
         '<div class="section-description">Describe what is happening. More useful information gives the AI better engineering context.</div>'
@@ -2805,7 +3428,8 @@ with main_column:
 
     analyze_button = st.button(
         "🔍 Analyze Machine Problem",
-        use_container_width=True
+        use_container_width=True,
+        type="primary"
     )
 
 
@@ -2815,7 +3439,10 @@ with main_column:
 
     if analyze_button:
 
-        if not problem_description.strip() and not selected_symptoms:
+        if (
+            not problem_description.strip()
+            and not selected_symptoms
+        ):
 
             st.warning(
                 "Please provide a problem description or select at least one symptom."
@@ -2824,8 +3451,11 @@ with main_column:
         else:
 
             selected_symptoms_text = (
+
                 ", ".join(selected_symptoms)
+
                 if selected_symptoms
+
                 else "No specific symptoms selected"
             )
 
@@ -2910,9 +3540,11 @@ Additional Observations:
                         "🛡️ Safety & Final Report Agent — preparing final report..."
                     )
 
+
                     result = asyncio.run(
                         run_mechcare(machine_problem)
                     )
+
 
                     analysis_status.update(
                         label="✅ Analysis Complete",
@@ -2920,13 +3552,16 @@ Additional Observations:
                         expanded=False
                     )
 
+
                     st.session_state.analysis_result = result
 
                     st.session_state.agents_completed = True
 
+
                     st.success(
                         "✅ Machine analysis completed successfully."
                     )
+
 
                 except Exception as e:
 
@@ -2936,22 +3571,25 @@ Additional Observations:
                         expanded=True
                     )
 
+
                     st.error(
                         "❌ An error occurred while analyzing the machine."
                     )
 
+
                     st.warning(
                         "Please check your Groq API key and Streamlit deployment logs."
                     )
+
 
                     st.code(
                         str(e)
                     )
 
 
-    # =====================================================
+    # =========================================================
     # DISPLAY AI ANALYSIS
-    # =====================================================
+    # =========================================================
 
     if st.session_state.analysis_result is not None:
 
@@ -2963,7 +3601,9 @@ Additional Observations:
         # -------------------------------------------------
 
         problem_analysis = result["problem_analysis"]
+
         diagnosis_result = result["diagnosis"]
+
         final_report = result["final_report"]
 
 
@@ -2973,48 +3613,119 @@ Additional Observations:
 
         st.divider()
 
+
         st.html(
             '<div class="section-title">📊 Machine Health Dashboard</div>'
         )
+
 
         st.html(
             '<div class="section-description">AI-generated health and maintenance overview based on the current engineering analysis.</div>'
         )
 
 
-        report_text = final_report
+        report_text = str(final_report)
 
 
-        # -------------------------------------------------
-        # EXTRACT PRIORITY
-        # -------------------------------------------------
+        # =================================================
+        # IMPROVED PRIORITY EXTRACTION
+        # =================================================
 
         priority = "Not specified"
 
 
-        if "## Priority" in report_text:
-
-            priority_section = report_text.split(
-                "## Priority",
-                1
-            )[1]
+        priority_match = re.search(
+            r"(?is)(?:^|\n)\s*#{1,6}\s*Priority\s*:?\s*(.*?)(?=\n\s*#{1,6}\s|\Z)",
+            report_text
+        )
 
 
-            if "##" in priority_section:
+        if priority_match:
 
-                priority = priority_section.split(
-                    "##",
-                    1
-                )[0].strip()
+            priority_section = priority_match.group(1).strip()
+
+
+            # Remove markdown formatting
+            priority_clean = re.sub(
+                r"\*\*",
+                "",
+                priority_section
+            )
+
+
+            priority_clean = re.sub(
+                r"__",
+                "",
+                priority_clean
+            )
+
+
+            # Look specifically for a priority level.
+            # This prevents the entire multi-line priority
+            # section from appearing inside the dashboard card.
+
+            priority_level_match = re.search(
+                r"\b(critical|urgent|high|medium|moderate|low|normal)\b",
+                priority_clean,
+                re.IGNORECASE
+            )
+
+
+            if priority_level_match:
+
+                priority = (
+                    priority_level_match
+                    .group(1)
+                    .capitalize()
+                )
 
             else:
 
-                priority = priority_section.strip()
+                first_line = (
+                    priority_clean
+                    .splitlines()[0].strip()
+                    if priority_clean.splitlines()
+                    else ""
+                )
 
 
-        # -------------------------------------------------
+                first_line = re.sub(
+                    r"^[\-\*\d\.\)\s]+",
+                    "",
+                    first_line
+                ).strip()
+
+
+                if first_line:
+
+                    priority = first_line[:40]
+
+
+        else:
+
+            # Fallback:
+            # Search the complete report for a clear
+            # priority statement.
+
+            fallback_priority = re.search(
+                r"\b(critical|urgent|high|medium|moderate|low|normal)\b",
+                report_text,
+                re.IGNORECASE
+            )
+
+
+            if fallback_priority:
+
+                priority = (
+                    fallback_priority
+                    .group(1)
+                    .capitalize()
+                )
+
+
+        # =================================================
         # DETERMINE HEALTH STATUS
-        # -------------------------------------------------
+        # =================================================
 
         priority_lower = priority.lower()
 
@@ -3025,12 +3736,20 @@ Additional Observations:
         ):
 
             health_status = "🔴 Critical"
+
             maintenance_status = "Immediate Inspection"
+
+            priority_class = "priority-critical"
+
 
         elif "high" in priority_lower:
 
             health_status = "🟠 Attention Required"
+
             maintenance_status = "Inspection Recommended"
+
+            priority_class = "priority-high"
+
 
         elif (
             "medium" in priority_lower
@@ -3038,19 +3757,38 @@ Additional Observations:
         ):
 
             health_status = "🟡 Monitor"
+
             maintenance_status = "Further Inspection"
+
+            priority_class = "priority-medium"
+
+
+        elif "low" in priority_lower:
+
+            health_status = "🟢 Normal"
+
+            maintenance_status = "Routine Checks"
+
+            priority_class = "priority-low"
+
 
         else:
 
-            health_status = "🟢 Review Required"
+            health_status = "🔵 Review Required"
+
             maintenance_status = "Follow Recommended Checks"
+
+            priority_class = "priority-normal"
 
 
         # -------------------------------------------------
         # DASHBOARD CARDS
         # -------------------------------------------------
 
-        dash1, dash2, dash3, dash4 = st.columns(4, gap="small")
+        dash1, dash2, dash3, dash4 = st.columns(
+            4,
+            gap="small"
+        )
 
 
         with dash1:
@@ -3109,12 +3847,16 @@ Additional Observations:
                         PRIORITY
                     </div>
 
-                    <div class="status-main">
-                        ⚠️ {priority}
+                    <div class="priority-clean">
+
+                        <span class="priority-badge {priority_class}">
+                            ⚠️ {priority}
+                        </span>
+
                     </div>
 
                     <div class="status-sub">
-                        Extracted from final report
+                        Priority level extracted from report
                     </div>
 
                 </div>
@@ -3187,12 +3929,26 @@ Additional Observations:
             '<div class="section-title">📈 Additional Data Recommended</div>'
         )
 
+
         st.html(
             '<div class="section-description">Collecting these measurements or observations can help confirm the possible machine fault.</div>'
         )
 
+
+        st.markdown(
+            '<div class="report-content">',
+            unsafe_allow_html=True
+        )
+
+
         st.markdown(
             problem_analysis
+        )
+
+
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
         )
 
 
@@ -3204,12 +3960,26 @@ Additional Observations:
             '<div class="section-title" style="margin-top:25px;">🧠 Possible Faults & Diagnostic Checks</div>'
         )
 
+
         st.html(
             '<div class="section-description">Possible causes, their relationship with the symptoms, and suggested confirmation checks.</div>'
         )
 
+
+        st.markdown(
+            '<div class="report-content">',
+            unsafe_allow_html=True
+        )
+
+
         st.markdown(
             diagnosis_result
+        )
+
+
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
         )
 
 
@@ -3220,6 +3990,7 @@ Additional Observations:
         st.html(
             '<div class="section-title" style="margin-top:25px;">🔧 Maintenance Checklist</div>'
         )
+
 
         st.html(
             '<div class="section-description">Tick each inspection when it has been completed.</div>'
@@ -3254,15 +4025,18 @@ Additional Observations:
                 key="Check machine for unusual noise"
             )
 
+
             st.checkbox(
                 "Check for excessive vibration",
                 key="Check for excessive vibration"
             )
 
+
             st.checkbox(
                 "Check temperature",
                 key="Check temperature"
             )
+
 
             st.checkbox(
                 "Check for leakage",
@@ -3277,15 +4051,18 @@ Additional Observations:
                 key="Check lubrication condition"
             )
 
+
             st.checkbox(
                 "Check loose components",
                 key="Check loose components"
             )
 
+
             st.checkbox(
                 "Check alignment",
                 key="Check alignment"
             )
+
 
             st.checkbox(
                 "Check operating conditions",
@@ -3298,15 +4075,31 @@ Additional Observations:
         # =================================================
 
         st.html(
-            '<div class="section-title" style="margin-top:25px;">📋 Engineering Analysis Report</div>'
+            '<div class="report-header-card">'
+            '<div class="report-header-title">'
+            '📋 Engineering Analysis Report'
+            '</div>'
+            '<div class="report-header-sub">'
+            'Generated by the MechCare AI multi-agent engineering workflow.'
+            '</div>'
+            '</div>'
         )
 
-        st.html(
-            '<div class="section-description">Generated by the MechCare AI multi-agent engineering workflow.</div>'
+
+        st.markdown(
+            '<div class="report-content">',
+            unsafe_allow_html=True
         )
+
 
         st.markdown(
             final_report
+        )
+
+
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
         )
 
 
@@ -3317,6 +4110,7 @@ Additional Observations:
         st.html(
             '<div class="section-title" style="margin-top:25px;">🔊 Listen to AI Results</div>'
         )
+
 
         st.html(
             '<div class="section-description">Listen to the complete AI analysis, diagnosis, and final engineering report.</div>'
@@ -3356,6 +4150,7 @@ Final Engineering Analysis Report.
             '<div class="section-title" style="margin-top:25px;">📄 Engineering Report Export</div>'
         )
 
+
         st.html(
             '<div class="section-description">Generate and download the final engineering report as a PDF.</div>'
         )
@@ -3373,7 +4168,10 @@ Final Engineering Analysis Report.
         )
 
 
-        with open(pdf_filename, "rb") as pdf_file:
+        with open(
+            pdf_filename,
+            "rb"
+        ) as pdf_file:
 
             st.download_button(
                 label="📄 Download PDF Report",
