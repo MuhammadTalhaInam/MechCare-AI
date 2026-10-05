@@ -1222,8 +1222,8 @@ section[data-testid="stSidebar"] .stButton > button:hover {
    INPUTS — IMPROVED TEXT VISIBILITY
    ========================================================= */
 
+
 /* =========================================================
-   /* =========================================================
    MECHCARE SELECTBOX — FIXED SELECTED VALUE VISIBILITY
    ========================================================= */
 
@@ -1231,7 +1231,6 @@ section[data-testid="stSidebar"] .stButton > button:hover {
     width: 100% !important;
 }
 
-/* Main dropdown box */
 .stSelectbox [data-baseweb="select"] > div {
     background: #061F40 !important;
     border: 1px solid #15517E !important;
@@ -1240,13 +1239,11 @@ section[data-testid="stSidebar"] .stButton > button:hover {
     box-shadow: none !important;
 }
 
-/* Selected value */
 .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] {
     background: transparent !important;
     color: #F1F8FF !important;
 }
 
-/* The actual selected text */
 .stSelectbox [data-baseweb="select"] [data-baseweb="single-value"] {
     color: #F1F8FF !important;
     -webkit-text-fill-color: #F1F8FF !important;
@@ -1255,7 +1252,6 @@ section[data-testid="stSidebar"] .stButton > button:hover {
     visibility: visible !important;
 }
 
-/* Selected text and all nested elements */
 .stSelectbox [data-baseweb="select"] [data-baseweb="single-value"] *,
 .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] * {
     color: #F1F8FF !important;
@@ -1264,26 +1260,22 @@ section[data-testid="stSidebar"] .stButton > button:hover {
     visibility: visible !important;
 }
 
-/* Placeholder */
 .stSelectbox [data-baseweb="select"] [data-baseweb="placeholder"] {
     color: #9FB5C8 !important;
     -webkit-text-fill-color: #9FB5C8 !important;
     opacity: 1 !important;
 }
 
-/* Dropdown arrow */
 .stSelectbox [data-baseweb="select"] svg {
     fill: #9FB5C8 !important;
     color: #9FB5C8 !important;
 }
 
-/* Hover */
 .stSelectbox [data-baseweb="select"] > div:hover {
     background: #08264A !important;
     border-color: #008FE0 !important;
 }
 
-/* Focus */
 .stSelectbox [data-baseweb="select"] > div:focus-within {
     border-color: #00A9E9 !important;
     box-shadow:
@@ -1334,8 +1326,104 @@ section[data-testid="stSidebar"] .stButton > button:hover {
     color: #FFFFFF !important;
 }
 
+
+/* =========================================================
+   TEXT AREAS — PROBLEM INFORMATION FIX
+   ========================================================= */
+
+.stTextArea {
+    width: 100% !important;
+}
+
+.stTextArea textarea {
+    background: #061F40 !important;
+    color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
+
+    border: 1px solid #15517E !important;
+    border-radius: 9px !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    caret-color: #F1F8FF !important;
+
+    box-shadow: none !important;
+}
+
+.stTextArea textarea::placeholder {
+    color: #9FB5C8 !important;
+    -webkit-text-fill-color: #9FB5C8 !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.stTextArea textarea:hover {
+    background: #08264A !important;
+    border-color: #008FE0 !important;
+}
+
+.stTextArea textarea:focus {
+    background: #061F40 !important;
+
+    color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
+
     border-color: #00A9E9 !important;
 
+    box-shadow:
+        0 0 0 1px rgba(0,169,233,0.35),
+        0 0 18px rgba(0,169,233,0.12) !important;
+
+    outline: none !important;
+}
+
+.stTextArea label {
+    color: #D4E3EF !important;
+    font-weight: 700 !important;
+}
+
+.stTextArea label p {
+    color: #D4E3EF !important;
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   NUMBER INPUTS
+   ========================================================= */
+
+div[data-baseweb="input"] {
+    background: #061F40 !important;
+    border: 1px solid #15517E !important;
+    border-radius: 9px !important;
+}
+
+div[data-baseweb="input"] input {
+    background: #061F40 !important;
+    color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
+    opacity: 1 !important;
+}
+
+div[data-baseweb="input"] input::placeholder {
+    color: #9FB5C8 !important;
+    -webkit-text-fill-color: #9FB5C8 !important;
+    opacity: 1 !important;
+}
+
+.stNumberInput label {
+    color: #D4E3EF !important;
+    font-weight: 700 !important;
+}
+
+div[data-baseweb="input"]:hover {
+    border-color: #008FE0 !important;
+}
+
+div[data-baseweb="input"]:focus-within {
+    border-color: #00A9E9 !important;
     box-shadow:
         0 0 0 1px rgba(0,169,233,0.35),
         0 0 18px rgba(0,169,233,0.12) !important;
@@ -3063,10 +3151,6 @@ with main_column:
     st.html(
         '<div class="section-description">Your machine problem is processed through five specialized engineering agents.</div>'
     )
-
-    # =====================================================
-    # WORKFLOW — AGENT NAME ONLY
-    # =====================================================
 
     workflow = [
 
