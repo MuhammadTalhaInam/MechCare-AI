@@ -1222,89 +1222,115 @@ section[data-testid="stSidebar"] .stButton > button:hover {
    INPUTS — IMPROVED TEXT VISIBILITY
    ========================================================= */
 
-/* Streamlit selectboxes — theme-safe */
+/* =========================================================
+   SELECTBOXES — MATCH MECHCARE INPUT BOXES
+   Fixed dark/navy style so browser/Streamlit light or dark
+   themes cannot change the dropdown appearance or hide text.
+   ========================================================= */
+
+/* Main selectbox field */
+[data-baseweb="select"] {
+    color: #F1F8FF !important;
+}
+
 [data-baseweb="select"] > div {
+    background-color: #061F40 !important;
     background: #061F40 !important;
     border: 1px solid #15517E !important;
-    color: #F1F8FF !important;
     border-radius: 9px !important;
-    transition: all 0.2s ease;
+    color: #F1F8FF !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
 }
 
 [data-baseweb="select"] > div:hover {
+    background-color: #061F40 !important;
     border-color: #008FE0 !important;
-    box-shadow: 0 0 15px rgba(0,169,233,0.10);
+    box-shadow: 0 0 15px rgba(0,169,233,0.10) !important;
 }
 
-/* Selected value — force the actual selected text to stay visible */
+/* Selected value — force every possible BaseWeb text element to match input boxes */
 [data-baseweb="select"] [data-baseweb="value-container"],
 [data-baseweb="select"] [data-baseweb="single-value"],
 [data-baseweb="select"] [class*="valueContainer"],
 [data-baseweb="select"] [class*="singleValue"],
 [data-baseweb="select"] [class*="SingleValue"],
 [data-baseweb="select"] [role="combobox"],
-[data-baseweb="select"] input,
+[data-baseweb="select"] [role="combobox"] *,
+[data-baseweb="select"] [data-baseweb="value-container"] *,
+[data-baseweb="select"] [data-baseweb="single-value"] *,
 [data-baseweb="select"] span,
-[data-baseweb="select"] [class*="ValueContainer"] {
+[data-baseweb="select"] div {
     color: #F1F8FF !important;
     -webkit-text-fill-color: #F1F8FF !important;
     opacity: 1 !important;
     visibility: visible !important;
 }
 
-/* The selected item is sometimes rendered inside a generated class by BaseWeb. */
-[data-baseweb="select"] [class*="singleValue"] *,
-[data-baseweb="select"] [class*="SingleValue"] *,
-[data-baseweb="select"] [data-baseweb="value-container"] * {
-    color: #F1F8FF !important;
-    -webkit-text-fill-color: #F1F8FF !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* Keep the placeholder readable before anything is selected. */
+/* Placeholder before a value is selected */
 [data-baseweb="select"] [class*="placeholder"] {
     color: #9FB5C8 !important;
     -webkit-text-fill-color: #9FB5C8 !important;
     opacity: 1 !important;
 }
 
-/* Dropdown menu is rendered in a portal, so style it independently */
+/* Dropdown popup — same navy style as the app's text/number inputs */
 [data-baseweb="popover"],
-[data-baseweb="menu"],
 [data-baseweb="popover"] > div,
+[data-baseweb="menu"],
+[data-baseweb="menu"] > div,
+[data-baseweb="menu"] ul,
 [role="listbox"] {
+    background-color: #061F40 !important;
     background: #061F40 !important;
+    border-color: #15517E !important;
     color: #F1F8FF !important;
-    border: 1px solid #15517E !important;
 }
 
+/* Every option */
 [data-baseweb="popover"] [role="option"],
+[data-baseweb="menu"] [role="option"],
 [role="listbox"] [role="option"] {
+    background-color: #061F40 !important;
     background: #061F40 !important;
     color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
 }
 
 [data-baseweb="popover"] [role="option"] *,
+[data-baseweb="menu"] [role="option"] *,
 [role="listbox"] [role="option"] * {
     color: #F1F8FF !important;
     -webkit-text-fill-color: #F1F8FF !important;
 }
 
+/* Hover / selected option */
 [data-baseweb="popover"] [role="option"]:hover,
+[data-baseweb="menu"] [role="option"]:hover,
 [role="listbox"] [role="option"]:hover,
 [data-baseweb="popover"] [role="option"][aria-selected="true"],
+[data-baseweb="menu"] [role="option"][aria-selected="true"],
 [role="listbox"] [role="option"][aria-selected="true"] {
+    background-color: #0B4676 !important;
     background: #0B4676 !important;
     color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
 }
 
 [data-baseweb="popover"] [role="option"]:hover *,
+[data-baseweb="menu"] [role="option"]:hover *,
 [role="listbox"] [role="option"]:hover *,
 [data-baseweb="popover"] [role="option"][aria-selected="true"] *,
+[data-baseweb="menu"] [role="option"][aria-selected="true"] *,
 [role="listbox"] [role="option"][aria-selected="true"] * {
     color: #FFFFFF !important;
     -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Dropdown arrow */
+[data-baseweb="select"] svg {
+    fill: #9FB5C8 !important;
+    color: #9FB5C8 !important;
 }
 
 /* Dropdown labels */
@@ -1313,26 +1339,8 @@ section[data-testid="stSidebar"] .stButton > button:hover {
 .stTextInput label,
 .stNumberInput label,
 .stTextArea label {
-
     color: #D4E3EF !important;
-
     font-weight: 700 !important;
-}
-
-
-/* Dropdown options */
-[data-baseweb="popover"] *,
-[role="listbox"] *,
-[role="option"] {
-
-    color: #DCEAF5 !important;
-}
-
-
-/* Dropdown selected text */
-[data-baseweb="select"] [data-testid="stMarkdownContainer"] {
-
-    color: #E8F1FA !important;
 }
 
 
