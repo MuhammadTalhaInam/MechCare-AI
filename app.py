@@ -1222,34 +1222,67 @@ section[data-testid="stSidebar"] .stButton > button:hover {
    INPUTS — IMPROVED TEXT VISIBILITY
    ========================================================= */
 
+/* Streamlit selectboxes — theme-safe */
 [data-baseweb="select"] > div {
-
     background: #061F40 !important;
-
     border: 1px solid #15517E !important;
-
-    color: #E8F1FA !important;
-
+    color: #F1F8FF !important;
     border-radius: 9px !important;
-
     transition: all 0.2s ease;
 }
 
-
 [data-baseweb="select"] > div:hover {
-
     border-color: #008FE0 !important;
-
-    box-shadow:
-        0 0 15px rgba(0,169,233,0.10);
+    box-shadow: 0 0 15px rgba(0,169,233,0.10);
 }
 
-
+/* Selected value — force readable text on both app themes */
+[data-baseweb="select"] [data-baseweb="value-container"],
+[data-baseweb="select"] [data-baseweb="single-value"],
+[data-baseweb="select"] [data-baseweb="input"] input,
+[data-baseweb="select"] [role="combobox"],
 [data-baseweb="select"] span {
-
-    color: #E8F1FA !important;
+    color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
 }
 
+/* Dropdown menu is rendered in a portal, so style it independently */
+[data-baseweb="popover"],
+[data-baseweb="menu"],
+[data-baseweb="popover"] > div,
+[role="listbox"] {
+    background: #061F40 !important;
+    color: #F1F8FF !important;
+    border: 1px solid #15517E !important;
+}
+
+[data-baseweb="popover"] [role="option"],
+[role="listbox"] [role="option"] {
+    background: #061F40 !important;
+    color: #F1F8FF !important;
+}
+
+[data-baseweb="popover"] [role="option"] *,
+[role="listbox"] [role="option"] * {
+    color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
+}
+
+[data-baseweb="popover"] [role="option"]:hover,
+[role="listbox"] [role="option"]:hover,
+[data-baseweb="popover"] [role="option"][aria-selected="true"],
+[role="listbox"] [role="option"][aria-selected="true"] {
+    background: #0B4676 !important;
+    color: #FFFFFF !important;
+}
+
+[data-baseweb="popover"] [role="option"]:hover *,
+[role="listbox"] [role="option"]:hover *,
+[data-baseweb="popover"] [role="option"][aria-selected="true"] *,
+[role="listbox"] [role="option"][aria-selected="true"] * {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
 
 /* Dropdown labels */
 [data-baseweb="select"] label,
@@ -1351,8 +1384,21 @@ input::placeholder {
 
 
 [data-baseweb="tag"] span {
-
     color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
+}
+
+/* Multiselect dropdown and selected items — theme-safe */
+[data-baseweb="popover"] [data-baseweb="tag"],
+[data-baseweb="select"] [data-baseweb="tag"] {
+    background: #0B4676 !important;
+    border: 1px solid #1687D9 !important;
+}
+
+[data-baseweb="popover"] [data-baseweb="tag"] span,
+[data-baseweb="select"] [data-baseweb="tag"] span {
+    color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
 }
 
 
