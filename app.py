@@ -1223,219 +1223,116 @@ section[data-testid="stSidebar"] .stButton > button:hover {
    ========================================================= */
 
 /* =========================================================
-   SELECTBOXES — MATCH MECHCARE INPUT BOXES
-   Fixed dark/navy style so browser/Streamlit light or dark
-   themes cannot change the dropdown appearance or hide text.
+   /* =========================================================
+   MECHCARE SELECTBOX — FIXED SELECTED VALUE VISIBILITY
    ========================================================= */
 
-/* Main selectbox field */
-[data-baseweb="select"] {
-    color: #F1F8FF !important;
+.stSelectbox [data-baseweb="select"] {
+    width: 100% !important;
 }
 
-[data-baseweb="select"] > div {
-    background-color: #061F40 !important;
+/* Main dropdown box */
+.stSelectbox [data-baseweb="select"] > div {
     background: #061F40 !important;
     border: 1px solid #15517E !important;
     border-radius: 9px !important;
-    color: #F1F8FF !important;
+    min-height: 42px !important;
     box-shadow: none !important;
+}
+
+/* Selected value */
+.stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] {
+    background: transparent !important;
+    color: #F1F8FF !important;
+}
+
+/* The actual selected text */
+.stSelectbox [data-baseweb="select"] [data-baseweb="single-value"] {
+    color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
+    font-weight: 600 !important;
     opacity: 1 !important;
+    visibility: visible !important;
 }
 
-[data-baseweb="select"] > div:hover {
-    background-color: #061F40 !important;
-    border-color: #008FE0 !important;
-    box-shadow: 0 0 15px rgba(0,169,233,0.10) !important;
-}
-
-/* Selected value — force every possible BaseWeb text element to match input boxes */
-[data-baseweb="select"] [data-baseweb="value-container"],
-[data-baseweb="select"] [data-baseweb="single-value"],
-[data-baseweb="select"] [class*="valueContainer"],
-[data-baseweb="select"] [class*="singleValue"],
-[data-baseweb="select"] [class*="SingleValue"],
-[data-baseweb="select"] [role="combobox"],
-[data-baseweb="select"] [role="combobox"] *,
-[data-baseweb="select"] [data-baseweb="value-container"] *,
-[data-baseweb="select"] [data-baseweb="single-value"] *,
-[data-baseweb="select"] span,
-[data-baseweb="select"] div {
+/* Selected text and all nested elements */
+.stSelectbox [data-baseweb="select"] [data-baseweb="single-value"] *,
+.stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] * {
     color: #F1F8FF !important;
     -webkit-text-fill-color: #F1F8FF !important;
     opacity: 1 !important;
     visibility: visible !important;
 }
 
-/* Placeholder before a value is selected */
-[data-baseweb="select"] [class*="placeholder"] {
+/* Placeholder */
+.stSelectbox [data-baseweb="select"] [data-baseweb="placeholder"] {
     color: #9FB5C8 !important;
     -webkit-text-fill-color: #9FB5C8 !important;
     opacity: 1 !important;
 }
 
-/* Dropdown popup — same navy style as the app's text/number inputs */
-[data-baseweb="popover"],
-[data-baseweb="popover"] > div,
-[data-baseweb="menu"],
-[data-baseweb="menu"] > div,
-[data-baseweb="menu"] ul,
-[role="listbox"] {
-    background-color: #061F40 !important;
-    background: #061F40 !important;
-    border-color: #15517E !important;
-    color: #F1F8FF !important;
-}
-
-/* Every option */
-[data-baseweb="popover"] [role="option"],
-[data-baseweb="menu"] [role="option"],
-[role="listbox"] [role="option"] {
-    background-color: #061F40 !important;
-    background: #061F40 !important;
-    color: #F1F8FF !important;
-    -webkit-text-fill-color: #F1F8FF !important;
-}
-
-[data-baseweb="popover"] [role="option"] *,
-[data-baseweb="menu"] [role="option"] *,
-[role="listbox"] [role="option"] * {
-    color: #F1F8FF !important;
-    -webkit-text-fill-color: #F1F8FF !important;
-}
-
-/* Hover / selected option */
-[data-baseweb="popover"] [role="option"]:hover,
-[data-baseweb="menu"] [role="option"]:hover,
-[role="listbox"] [role="option"]:hover,
-[data-baseweb="popover"] [role="option"][aria-selected="true"],
-[data-baseweb="menu"] [role="option"][aria-selected="true"],
-[role="listbox"] [role="option"][aria-selected="true"] {
-    background-color: #0B4676 !important;
-    background: #0B4676 !important;
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-}
-
-[data-baseweb="popover"] [role="option"]:hover *,
-[data-baseweb="menu"] [role="option"]:hover *,
-[role="listbox"] [role="option"]:hover *,
-[data-baseweb="popover"] [role="option"][aria-selected="true"] *,
-[data-baseweb="menu"] [role="option"][aria-selected="true"] *,
-[role="listbox"] [role="option"][aria-selected="true"] * {
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-}
-
 /* Dropdown arrow */
-[data-baseweb="select"] svg {
+.stSelectbox [data-baseweb="select"] svg {
     fill: #9FB5C8 !important;
     color: #9FB5C8 !important;
 }
 
-/* Dropdown labels */
-[data-baseweb="select"] label,
-.stSelectbox label,
-.stTextInput label,
-.stNumberInput label,
-.stTextArea label {
-    color: #D4E3EF !important;
-    font-weight: 700 !important;
-}
-
-
-div[data-baseweb="input"] {
-
-    background: #061F40 !important;
-
-    border: 1px solid #15517E !important;
-
-    border-radius: 9px !important;
-}
-
-
-div[data-baseweb="input"] input {
-
-    color: #E8F1FA !important;
-}
-
-
-textarea {
-
-    background: #061F40 !important;
-
-    color: #E8F1FA !important;
-
-    border: 1px solid #15517E !important;
-
-    border-radius: 10px !important;
-
-    transition: all 0.2s ease;
-}
-
-
-textarea:hover {
-
+/* Hover */
+.stSelectbox [data-baseweb="select"] > div:hover {
+    background: #08264A !important;
     border-color: #008FE0 !important;
 }
 
-
-input {
-
-    color: #E8F1FA !important;
+/* Focus */
+.stSelectbox [data-baseweb="select"] > div:focus-within {
+    border-color: #00A9E9 !important;
+    box-shadow:
+        0 0 0 1px rgba(0,169,233,0.35),
+        0 0 18px rgba(0,169,233,0.12) !important;
 }
 
 
-textarea::placeholder,
-input::placeholder {
+/* =========================================================
+   DROPDOWN MENU
+   ========================================================= */
 
-    color: #9FB5C8 !important;
-
-    opacity: 1 !important;
+[data-baseweb="popover"] {
+    background: #061F40 !important;
 }
 
-
-/* Helper / supporting text under inputs */
-[data-testid="InputInstructions"],
-.stTextInput small,
-.stNumberInput small,
-.stTextArea small {
-
-    color: #AFC4D6 !important;
+[data-baseweb="popover"] [role="listbox"] {
+    background: #061F40 !important;
+    border: 1px solid #15517E !important;
 }
 
-
-/* Multiselect text */
-[data-baseweb="tag"] {
-
-    background: #0B4676 !important;
-
-    border: 1px solid #1687D9 !important;
-}
-
-
-[data-baseweb="tag"] span {
+[data-baseweb="popover"] [role="option"] {
+    background: #061F40 !important;
     color: #F1F8FF !important;
     -webkit-text-fill-color: #F1F8FF !important;
 }
 
-/* Multiselect dropdown and selected items — theme-safe */
-[data-baseweb="popover"] [data-baseweb="tag"],
-[data-baseweb="select"] [data-baseweb="tag"] {
-    background: #0B4676 !important;
-    border: 1px solid #1687D9 !important;
-}
-
-[data-baseweb="popover"] [data-baseweb="tag"] span,
-[data-baseweb="select"] [data-baseweb="tag"] span {
+[data-baseweb="popover"] [role="option"] * {
     color: #F1F8FF !important;
     -webkit-text-fill-color: #F1F8FF !important;
 }
 
+[data-baseweb="popover"] [role="option"]:hover {
+    background: #0B4676 !important;
+    color: #FFFFFF !important;
+}
 
-[data-baseweb="select"] > div:focus-within,
-div[data-baseweb="input"]:focus-within,
-textarea:focus {
+[data-baseweb="popover"] [role="option"]:hover * {
+    color: #FFFFFF !important;
+}
+
+[data-baseweb="popover"] [role="option"][aria-selected="true"] {
+    background: #0B4676 !important;
+    color: #FFFFFF !important;
+}
+
+[data-baseweb="popover"] [role="option"][aria-selected="true"] * {
+    color: #FFFFFF !important;
+}
 
     border-color: #00A9E9 !important;
 
