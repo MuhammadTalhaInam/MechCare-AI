@@ -1236,14 +1236,37 @@ section[data-testid="stSidebar"] .stButton > button:hover {
     box-shadow: 0 0 15px rgba(0,169,233,0.10);
 }
 
-/* Selected value — force readable text on both app themes */
+/* Selected value — force the actual selected text to stay visible */
 [data-baseweb="select"] [data-baseweb="value-container"],
 [data-baseweb="select"] [data-baseweb="single-value"],
-[data-baseweb="select"] [data-baseweb="input"] input,
+[data-baseweb="select"] [class*="valueContainer"],
+[data-baseweb="select"] [class*="singleValue"],
+[data-baseweb="select"] [class*="SingleValue"],
 [data-baseweb="select"] [role="combobox"],
-[data-baseweb="select"] span {
+[data-baseweb="select"] input,
+[data-baseweb="select"] span,
+[data-baseweb="select"] [class*="ValueContainer"] {
     color: #F1F8FF !important;
     -webkit-text-fill-color: #F1F8FF !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* The selected item is sometimes rendered inside a generated class by BaseWeb. */
+[data-baseweb="select"] [class*="singleValue"] *,
+[data-baseweb="select"] [class*="SingleValue"] *,
+[data-baseweb="select"] [data-baseweb="value-container"] * {
+    color: #F1F8FF !important;
+    -webkit-text-fill-color: #F1F8FF !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Keep the placeholder readable before anything is selected. */
+[data-baseweb="select"] [class*="placeholder"] {
+    color: #9FB5C8 !important;
+    -webkit-text-fill-color: #9FB5C8 !important;
+    opacity: 1 !important;
 }
 
 /* Dropdown menu is rendered in a portal, so style it independently */
